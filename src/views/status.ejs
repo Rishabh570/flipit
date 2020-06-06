@@ -1,0 +1,21 @@
+<% if (!user) { %>
+	<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
+<% } else { %>
+	<h1>Hello, <%= user.name %>.</h1>
+	<p>THIS IS A PROTECTED ROUTE!</p>
+	<br>
+
+
+	<% if (!user.services.google) { %>
+		<p>Connect google account <a href="/v1/auth/connect/google">Connect Google!</a></p>
+	<% } %>
+	
+	<% if (!user.services.facebook) { %>
+		<p>Connect fb account <a href="/v1/auth/connect/facebook">Connect Facebook!</a></p>
+	<% } %>
+
+	<br>
+	<a href="/v1/auth/logout">Logout</a>
+	
+
+<% } %>

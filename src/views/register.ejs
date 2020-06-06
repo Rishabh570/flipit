@@ -1,0 +1,27 @@
+<head>
+	<title>Register</title>
+</head>
+<body>
+
+	<form name="register" method="POST" action="/v1/auth/register">
+    <table>
+        <tr>
+        <td>Email</td>
+        <td><input type="email" name="email" ></td>
+        </tr>
+        <tr>
+        <td>Password</td>
+        <td><input type="password" name="password" ></td>
+        </tr>
+        <tr>
+        <td colspan="2"><input type="submit" value="Save" ></td>
+        </tr>
+    </table>
+	</form>  
+	
+
+	<a href="/v1/auth/login">Login</a>
+	<a href="/v1/auth/google">Sign in with Google</a>
+
+</body>
+</html>
