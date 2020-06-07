@@ -185,7 +185,7 @@ exports.forgotPasswordPOST = async (req, res, next) => {
 		  	res.redirect('/v1/auth/password/forgot');
 		}
 		
-		// Generate a temp password and send it to user
+		// Generate a password reset link and mail it to user
 		const { name } = user;
 		const resetPassToken = user.resetToken();
 		const passResetLink = `https://localhost:3000/v1/auth/password/reset/${resetPassToken}`;
@@ -223,3 +223,25 @@ exports.oAuth = async (req, res, next) => {
 };
 
 
+/**
+ * Disconnects the linked Google account
+ */
+exports.disconnectGoogle = async (req, res, next) => {
+	const { user } = req;
+	const userObj = await User.findById(user.id);
+	userObj.services.google = undefined;
+	await userObj.save();
+	res.redirect('/v1/status');
+}
+
+
+/**
+ * Disconnects the linked Facebook account
+ */
+exports.disconnectFacebook = async (req, res, next) => {
+	const { user } = req;
+	const userObj = await User.findById(user.id);
+	userObj.services.facebook = undefined;
+	await userObj.save();
+	res.redirect('/v1/status');
+}

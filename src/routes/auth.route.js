@@ -65,6 +65,8 @@ router.get('/connect/google/callback', passport.authorize('google', {
 
 router.get('/connect/google', passport.authorize('google', { scope : ['profile', 'email'] }));
 
+router.get('/disconnect/google', verifyJWT(), authController.disconnectGoogle);
+
 
 /**
  * Facebook auth routes
@@ -82,7 +84,7 @@ router.get('/connect/facebook/callback', passport.authorize('facebook', {
 
 router.get('/connect/facebook', passport.authorize('facebook', { scope : ['email'] }));
 
-
+router.get('/disconnect/facebook', verifyJWT(), authController.disconnectFacebook);
 
 
 module.exports = router;

@@ -7,11 +7,15 @@
 
 
 	<% if (!user.services.google) { %>
-		<p>Connect google account <a href="/v1/auth/connect/google">Connect Google!</a></p>
+		<p>Connect your google account <a href="/v1/auth/connect/google">Connect Google!</a></p>
+	<% } else { %>
+		<p>Disconnect your google account <a href="/v1/auth/disconnect/google">Disconnect Google!</a></p>
 	<% } %>
 	
 	<% if (!user.services.facebook) { %>
-		<p>Connect fb account <a href="/v1/auth/connect/facebook">Connect Facebook!</a></p>
+		<p>Connect your facebook account <a href="/v1/auth/connect/facebook">Connect Facebook!</a></p>
+	<% } else { %>
+		<p>Disconnect your facebook account <a href="/v1/auth/disconnect/facebook">Disconnect Facebook!</a></p>
 	<% } %>
 
 	<br>
