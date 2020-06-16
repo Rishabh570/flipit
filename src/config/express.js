@@ -42,6 +42,8 @@ app.use(helmet());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 
+// Set static files folder
+app.use(express.static(path.join(__dirname, '../../public')));
 
 
 // Setting up sessions (These are stored on the client)

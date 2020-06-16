@@ -22,5 +22,7 @@ module.exports = {
 	mongo: {
 		uri: env.NODE_ENV === 'test' ? env.MONGO_URI_TESTS : env.MONGO_URI
 	},
-	logs: env.NODE_ENV === 'production' ? 'combined' : 'dev'
+	logs: env.NODE_ENV === 'production' ? 'combined' : 'dev',
+	STRIPE_SECRET_KEY: env.STRIPE_SECRET_KEY,
+	STRIPE_PUBLISHABLE_KEY: env.STRIPE_PUBLISHABLE_KEY
 }

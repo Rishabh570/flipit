@@ -1,0 +1,42 @@
+<% if (!user) { %>
+	<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
+<% } else { %>
+	<h1>Hello, <%= user.name %>.</h1>
+	<p>Check out the listings available and find a steal!</p>
+	<br>
+
+	<% if (items) { %>
+		<div class="item-div">
+			<% for( let i = 0; i < items.length; i++ ) { %>
+				<div class="items" id=<%= items[i].id %> >
+					<h3 class="items-head"><%= items[i].name %> </h3>
+					<p>Qty: <%= items[i].quantity %> </p>
+					<p>Condition: <%= items[i].condition %> </p>
+					<h4>Price: <%= items[i].price %> </p>
+					<% URL = `/v1/item/checkout/${items[i].id}` %> 
+					<a href=<%= URL %>> Buy</a>
+				</div>
+			<% } %>
+		</div>
+	<% } else { %>
+		<h4>No items to display!!!</h4>
+	<% } %>
+
+
+	<% if (!user.services.google) { %>
+		<p>Connect your google account <a href="/v1/auth/connect/google">Connect Google!</a></p>
+	<% } else { %>
+		<p>Disconnect your google account <a href="/v1/auth/disconnect/google">Disconnect Google!</a></p>
+	<% } %>
+	
+	<% if (!user.services.facebook) { %>
+		<p>Connect your facebook account <a href="/v1/auth/connect/facebook">Connect Facebook!</a></p>
+	<% } else { %>
+		<p>Disconnect your facebook account <a href="/v1/auth/disconnect/facebook">Disconnect Facebook!</a></p>
+	<% } %>
+
+	<br>
+	<a href="/v1/auth/logout">Logout</a>
+	
+
+<% } %>

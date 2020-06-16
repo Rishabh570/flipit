@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
-const httpStatus = require('http-status');
 const moment = require('moment-timezone');
-const { User } = require('../models');
-const RefreshToken = require('../models/refreshToken.model');
+const { User, RefreshToken } = require('../models/index');
 const {sendEmail, forgotPasswordEmail} = require('../utils/email.utils');
 
 
@@ -16,8 +14,8 @@ exports.registerGET = (req, res, next) => {
 exports.registerPOST = async (req, res, next) => {
   	try {
 		req.body.name = req.body.email.split('@')[0];
-		const user = await new User(req.body).save();
-    	res.status(httpStatus.CREATED).json(user);
+		await new User(req.body).save();
+    	res.redirect('/v1/auth/login');
  	}	 
   	catch (error) {
 		console.log("ERROR: In register user! = ", error.message);
