@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
 		unique: true,
 		trim: true,
 		lowercase: true,
-		index: { unique: true }
+		index: { unique: true, background: true }
     },
     password: {
 		type: String,
@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema(
     name: {
 		type: String,
 		maxlength: 128,
-		index: true,
 		trim: true
     },
     services: {

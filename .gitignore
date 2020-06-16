@@ -1,2 +1,5 @@
 node_modules/
 .env
+
+# Stripe
+stripe_backup_code.txt
