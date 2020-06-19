@@ -22,11 +22,19 @@ app.use(morgan(logs));
 app.use(cors());
 
 // Setting up cookie parser
-app.use(cookieParser(COOKIE_SECRET))
+app.use(cookieParser(COOKIE_SECRET));
 
 // parse body params and attach them to req.body
-app.use(bodyParser.json({ limit: `${UPLOAD_LIMIT}mb` }));
-app.use(bodyParser.urlencoded({ extended: true, limit: `${UPLOAD_LIMIT}mb` }));
+// Using raw for ONLY /v1/item/webhook (in item routes)
+app.use((req, res, next) => {
+	if(req.originalUrl === '/v1/item/webhook') next();
+	else bodyParser.json({ limit: `${UPLOAD_LIMIT}mb` })(req, res, next);
+});
+
+app.use((req, res, next) => {
+	if(req.originalUrl === '/v1/item/webhook') next();
+	else bodyParser.urlencoded({ extended: true, limit: `${UPLOAD_LIMIT}mb` })(req, res, next);
+});
 
 // gzip compression
 app.use(compress());
@@ -68,6 +76,8 @@ passport.use('facebook', strategies.facebook);
 
 // Mount API v1 routes
 app.use('/v1', routes);
-app.use('/*', (req, res) => res.send("You're lost!"))
+app.use('/*', (req, res) => res.send("You're lost!"));
 
+
+// EXPORTS
 module.exports = app;

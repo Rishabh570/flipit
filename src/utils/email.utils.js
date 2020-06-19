@@ -18,7 +18,7 @@ const genFromTemplate = (fileName, data) => {
  * Templates for Emails
  */
 
-// 1. Forgot Password Email Template
+// 1. Forgot password email template
 function forgotPasswordEmail({ name, email, passResetLink }) {
 	return {
 		from: EMAIL_FROM_SUPPORT,
@@ -27,9 +27,33 @@ function forgotPasswordEmail({ name, email, passResetLink }) {
 		text: genFromTemplate('forgot-password.txt', { name, passResetLink }),
 		html: genFromTemplate('forgot-password.html', { name, passResetLink })
 	};
-  }
+}
 
+// 2. Item purchase successful email template for the "Seller"
+function confirmationForSeller(seller, itemSold, buyer) {
+	return {
+		from: EMAIL_FROM_SUPPORT,
+		to: `${seller.name} <${seller.email}>`,
+		subject: `Congrats!!! Someone bought ${itemSold.name} for ₹${itemSold.price}! 💵💵💵`,
+		text: genFromTemplate('sold-confirmation-seller.txt', { seller, itemSold, buyer }),
+		html: genFromTemplate('sold-confirmation-seller.html', { seller, itemSold, buyer })
+	}
+}
 
+// 3. Item purchase successful email template for the "Buyer"
+function confirmationForBuyer(buyer, itemSold, seller) {
+	return {
+		from: EMAIL_FROM_SUPPORT,
+		to: `${buyer.name} <${buyer.email}>`,
+		subject: `Congrats!!! Purchase of ${itemSold.name} is completed successfully! 🎉🎉🎉`,
+		text: genFromTemplate('bought-confirmation-buyer.txt', { buyer, itemSold, seller }),
+		html: genFromTemplate('bought-confirmation-buyer.html', { buyer, itemSold, seller })
+	}
+}
+
+/**
+ * Send Email function
+ */
 function sendEmail(emailContent) {
 	return new Promise((resolve, reject) => {
 		try {
@@ -53,7 +77,10 @@ function sendEmail(emailContent) {
 }
 
 
+// EXPORTS
 module.exports = {
 	sendEmail,
-	forgotPasswordEmail	
+	forgotPasswordEmail,
+	confirmationForSeller,
+	confirmationForBuyer
 };

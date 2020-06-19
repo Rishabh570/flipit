@@ -10,7 +10,6 @@
 			<% for( let i = 0; i < items.length; i++ ) { %>
 				<div class="items" id=<%= items[i].id %> >
 					<h3 class="items-head"><%= items[i].name %> </h3>
-					<p>Qty: <%= items[i].quantity %> </p>
 					<p>Condition: <%= items[i].condition %> </p>
 					<h4>Price: <%= items[i].price %> </p>
 					<% URL = `/v1/item/checkout/${items[i].id}` %> 

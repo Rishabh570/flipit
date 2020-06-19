@@ -41,7 +41,7 @@ exports.loginPOST = async (req, res, next) => {
 		res.redirect('/v1/status');
 	}
 	catch (error) {
-		console.log("ERROR: while logging in!");
+		console.log("ERROR: while logging in!, err = ", error.message);
 		res.redirect('/v1/auth/login');
 	}
 };

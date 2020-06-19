@@ -6,8 +6,6 @@ module.exports = {
 		body: Joi.object({
 			name: Joi.string()
 					.required(),
-			quantity: Joi.number()
-						.required(),
 			price: Joi.number()
 					.required(),
 			condition: Joi.number()

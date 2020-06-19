@@ -14,10 +14,6 @@ const itemSchema = new mongoose.Schema(
 		lowercase: true,
 		trim: true
 	},
-	quantity: {
-		type: Number,
-		default: 1,
-	},
 	price: {
 		type: Number,
 		required: true,
@@ -26,7 +22,7 @@ const itemSchema = new mongoose.Schema(
 		type: Number,
 		default: 3
 	},
-	ownerId: {
+	sellerId: {
 		type: String,
 		index: { background: true },
 		required: true,
@@ -39,7 +35,11 @@ const itemSchema = new mongoose.Schema(
 	priceId: {			// References the stripe Price object
 		type: String,
 		index: true
-	}   
+	},
+	buyerId: {
+		type: String,
+		index: { background: true }
+	}
 },
 {
 	timestamps: true,

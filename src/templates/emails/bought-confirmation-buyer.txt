@@ -1,0 +1,20 @@
+Hi <%= buyer.name %>,
+Congratulations! The purchase of <%= itemSold.name %> is completed successfully!!! 🎉
+Contact the seller for the delivery. The details are given below.
+
+Details of the product:
+
+Name: <%= itemSold.name %>
+Price: <%= itemSold.price %>
+
+Details of the seller:
+
+Name: <%= seller.name %>
+email: <%= seller.email %>
+
+Be sure to be on the lookout for more such steals at https://localhost:3000/v1/item/sell.
+Happy flipping! 🎉🎉🎉
+
+
+Regards,
+Flipit Support.

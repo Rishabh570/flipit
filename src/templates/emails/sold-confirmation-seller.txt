@@ -1,0 +1,14 @@
+Hi <%= seller.name %>,
+Congratulations! <%= buyer.name %> (<%= buyer.email %>) bought one of your listings!!! 🎉
+
+Details of the product:
+
+Name: <%= itemSold.name %>
+Price: <%= itemSold.price %>
+
+You can post more listings by visiting https://localhost:3000/v1/item/sell.
+Happy flipping! 🎉🎉🎉
+
+
+Regards,
+Flipit Support.
