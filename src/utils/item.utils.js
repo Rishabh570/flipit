@@ -14,7 +14,6 @@ async function createStripeEntry(item) {
 		});
 		item.priceId = price.id;	// Saving the stripe Price obj id to DB
 		await item.save();
-		console.log("Returning from createStripeEntry");
 	}
 	catch(err) {
 		console.log("ERROR: In createStripeEntry. err = ", err.message);

@@ -1,13 +1,17 @@
 const express = require('express');
-const {validate} = require('express-validation');
 const bodyParser = require('body-parser');
-const { sell } = require('../validations/item.validation');
-const {sellGET, sellPOST} = require('../controller/item.controller');
-const {verifyJWT} = require('../middlewares/auth');
-const { STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET } = require('../config/vars');
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
 const  { Item } = require('../models/index');
+const upload = require('../middlewares/upload');
+const {verifyJWT} = require('../middlewares/auth');
+const {sellGET, sellPOST} = require('../controller/item.controller');
 const { handlePurchaseFulfillment } = require('../controller/item.controller');
+const { 
+	STRIPE_SECRET_KEY, 
+	STRIPE_PUBLISHABLE_KEY, 
+	STRIPE_WEBHOOK_SECRET, 
+	MAX_PRODUCT_IMAGES_ALLOWED 
+} = require('../config/vars');
+const stripe = require('stripe')(STRIPE_SECRET_KEY);
 
 const router = express.Router();
 
@@ -16,11 +20,14 @@ const router = express.Router();
  * Routes for posting an item to sell
  */
 router.get('/sell', verifyJWT(), sellGET);
-router.post('/sell', verifyJWT(), validate(sell), sellPOST);
+router.post('/sell', 
+			verifyJWT(),
+			upload.array('upload_imgs', MAX_PRODUCT_IMAGES_ALLOWED), 
+			sellPOST);
 
 
 /**
- * Route for checkout page
+ * Route for the product checkout page
  */
 router.get('/checkout/:itemId', verifyJWT(), async (req, res) => {
 	const item = await Item.findById(req.params.itemId);

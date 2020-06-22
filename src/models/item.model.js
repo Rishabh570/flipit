@@ -36,6 +36,10 @@ const itemSchema = new mongoose.Schema(
 		type: String,
 		index: true
 	},
+	pictures: {
+		type: Array,
+		required: true
+	},
 	buyerId: {
 		type: String,
 		index: { background: true }

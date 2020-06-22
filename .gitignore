@@ -3,3 +3,6 @@ node_modules/
 
 # Stripe
 stripe_backup_code.txt
+
+# Uploads
+uploads/

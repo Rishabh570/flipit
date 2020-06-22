@@ -6,7 +6,7 @@
 	
 	<br>
 
-	<form name="sell" method="POST" action="/v1/item/sell">
+	<form name="sell" method="POST" action="/v1/item/sell" enctype="multipart/form-data">
 		<table>
 			<tr>
 				<td>Name: </td>
@@ -20,6 +20,11 @@
 				<td>Condition: </td>
 				<td><input type="number" name="condition" min="1" max="5"></td>
 			</tr>
+			<tr>
+				<td>Add product images: </td>
+				<td><input type="file" id="upload_imgs" name="upload_imgs" multiple /></td>
+			</tr>
+			
 
 			<tr>
 			<td colspan="2"><input type="submit" value="Save" ></td>
