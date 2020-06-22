@@ -42,9 +42,9 @@ exports.handlePurchaseFulfillment = async (data) => {
 		item.buyerId = buyer.id;	// Setting the buyer of the item
 		await item.save();
 	
-		// Send mail to buyer and seller
-		await sendEmail(confirmationForSeller(seller, item, buyer));
-		await sendEmail(confirmationForBuyer(buyer, item, seller));
+		// Send mail to buyer and seller (This is handled by stripe now, not tested on live yet.)
+		// await sendEmail(confirmationForSeller(seller, item, buyer));
+		// await sendEmail(confirmationForBuyer(buyer, item, seller));
 	}
 	catch(err) {
 		console.log("Error in handlePurchaseFulfillment, err = ", err.message);

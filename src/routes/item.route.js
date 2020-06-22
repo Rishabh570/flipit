@@ -5,11 +5,12 @@ const upload = require('../middlewares/upload');
 const {verifyJWT} = require('../middlewares/auth');
 const {sellGET, sellPOST} = require('../controller/item.controller');
 const { handlePurchaseFulfillment } = require('../controller/item.controller');
-const { 
+const {
 	STRIPE_SECRET_KEY, 
 	STRIPE_PUBLISHABLE_KEY, 
 	STRIPE_WEBHOOK_SECRET, 
-	MAX_PRODUCT_IMAGES_ALLOWED 
+	MAX_PRODUCT_IMAGES_ALLOWED,
+	BASE_URL
 } = require('../config/vars');
 const stripe = require('stripe')(STRIPE_SECRET_KEY);
 
@@ -27,6 +28,25 @@ router.post('/sell',
 
 
 /**
+ * Checkout successful page
+ */
+router.get('/checkout/success', verifyJWT(), async (req, res) => {
+	const {session_id} = req.query;
+	if(session_id === undefined || session_id === null) {
+		return res.redirect('/v1');
+	}
+	stripe.checkout.sessions.retrieve(session_id,
+	(err, checkout_session) => {
+		if(err) return res.redirect('/v1');
+		if(checkout_session.customer_email === req.user.email) {
+			return res.render('checkout-success', {user: req.user});
+		}
+		return res.redirect('/v1');
+	});
+});
+
+
+/**
  * Route for the product checkout page
  */
 router.get('/checkout/:itemId', verifyJWT(), async (req, res) => {
@@ -36,25 +56,12 @@ router.get('/checkout/:itemId', verifyJWT(), async (req, res) => {
 
 
 /**
- * Retrieves the price Id (registered with stripe) for a 
- * particular product (registered with stripe). This is needed
- * for a successful checkout procedure.
+ * Retrieves the stripe public key
  */
-router.get('/retrieve-price/:priceId', verifyJWT(), async (req, res) => {
-	const {priceId} =  req.params ;
-	try {
-		const price = await stripe.prices.retrieve(priceId);
-	
-		res.send({
-			publicKey: STRIPE_PUBLISHABLE_KEY,
-			unitAmount: price.unit_amount,
-			currency: price.currency,
-		});
-	}
-	catch(err) {
-		console.log("Error in /retrieve-prices/:priceId, err = ", err.message);
-		throw err;
-	}
+router.get('/get-stripe-pubkey', verifyJWT(), (req, res) => {
+	res.send({
+		publicKey: STRIPE_PUBLISHABLE_KEY,
+	});
 });
 
 
@@ -64,7 +71,7 @@ router.get('/retrieve-price/:priceId', verifyJWT(), async (req, res) => {
  * for any item.
  */
 router.post('/create-checkout-session', verifyJWT(), async (req, res) => {
-	const {priceId} = req.body;
+	const {priceId, itemId} = req.body;
 	try {
 		const session = await stripe.checkout.sessions.create({
 			customer_email: req.user.email,
@@ -75,10 +82,22 @@ router.post('/create-checkout-session', verifyJWT(), async (req, res) => {
 				quantity: 1,
 				price: priceId,
 			}],
-	
-			// ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
-			success_url: `https://localhost:3000/v1/status`,	// TODO: redirect to home and notify payment succeeded
-			cancel_url: `https://localhost:3000/v1`,			// TODO: redirect to item checkout page and notify payment failed
+
+			payment_intent_data: {
+				receipt_email: req.user.email
+			},
+
+
+			/**
+			 * Redirect to success page and notify payment succeeded, 
+			 * CHECKOUT_SESSION_ID is populated by stripe
+			 */
+			success_url: `${BASE_URL}/v1/item/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+			
+			/**
+			 * Redirect to item checkout page if user clicks away/cancels checkout
+			 */
+			cancel_url: `${BASE_URL}/v1/item/checkout/${itemId}`,
 		});
 		
 		res.send({

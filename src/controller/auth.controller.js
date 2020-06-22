@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment-timezone');
 const { User, RefreshToken } = require('../models/index');
 const {sendEmail, forgotPasswordEmail} = require('../utils/email.utils');
-
+const {
+	BASE_URL
+} = require('../config/vars');
 
 /**
  * Register user controller.
@@ -186,7 +188,7 @@ exports.forgotPasswordPOST = async (req, res, next) => {
 		// Generate a password reset link and mail it to user
 		const { name } = user;
 		const resetPassToken = user.resetToken();
-		const passResetLink = `https://localhost:3000/v1/auth/password/reset/${resetPassToken}`;
+		const passResetLink = `${BASE_URL}/v1/auth/password/reset/${resetPassToken}`;
 
 		// TODO: Notify user that a link to reset password is sent to the mail ID.
 		res.redirect('/v1/auth/login');

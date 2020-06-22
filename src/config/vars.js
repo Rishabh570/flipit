@@ -5,6 +5,7 @@ const env = process.env; // this has ".env" keys & values
 
 module.exports = {
 	env: env.NODE_ENV,
+	BASE_URL: env.BASE_URL,
 	port: env.PORT,
 	JWT_SECRET: env.JWT_SECRET,
 	JWT_EXPIRATION_MINUTES: env.JWT_EXPIRATION_MINUTES,

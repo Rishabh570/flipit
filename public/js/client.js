@@ -1,21 +1,21 @@
 /* Handle any errors returns from Checkout  */
-let handleResult = function (result) {
-	console.log('In handleResult, result = ', result);
+const handleResult = function (result) {
 	if (result.error) {
-		let displayError = document.getElementById('error-message');
+		const displayError = document.getElementById('error-message');
 		displayError.textContent = result.error.message;
 	}
 };
-  
+
 // Create a Checkout Session
-let createCheckoutSession = (priceId) => {
+const createCheckoutSession = (priceId, item_id) => {
 	return fetch('/v1/item/create-checkout-session', {
 		method: 'POST',
 	  	headers: {
 			'Content-Type': 'application/json',
 	  	},
 	  	body: JSON.stringify({
-			priceId: priceId
+			itemId: item_id,
+			priceId: priceId,
 	  	}),
 	})
 	.then(result => {
@@ -27,22 +27,21 @@ let createCheckoutSession = (priceId) => {
 };
   
 
-let containerEle = document.getElementsByClassName('container')[0];
-let priceId = containerEle.getAttribute('id');
-const url = `/v1/item/retrieve-price/${priceId}`;
+const containerEle = document.getElementsByClassName('container')[0];
+const priceId = containerEle.getAttribute('id');
+const itemId = document.getElementById('item_id').value;
 
 /* Get your Stripe publishable key to initialize Stripe.js */
-fetch(url)
+fetch('/v1/item/get-stripe-pubkey')
 .then(result => {
 	return result.json();
 })
 .then(json => {
-	window.config = json;
-  	let stripe = Stripe(config.publicKey);
+	let stripe = Stripe(json.publicKey);
 	  
 	// Setup event handler to create a Checkout Session on submit
   	document.querySelector('#submit').addEventListener('click', function (evt) {
-		createCheckoutSession(priceId)
+		createCheckoutSession(priceId, itemId)
 		.then(data => {
 			stripe.redirectToCheckout({
 				sessionId: data.sessionId,

@@ -7,7 +7,7 @@ const passport = require('passport');
 const handleJWT = (req, res, next) => (err, user, info) => {
 	const error = err || info;
 	try {
-		if(error | !user) throw error;
+		if(error || !user) throw error;
 		req.logIn(user, function(err) {
 			if (err) { return next(err); }
 		
