@@ -1,7 +1,7 @@
 // import .env variables
 require('dotenv-safe').config();
 
-const env = process.env; // this has ".env" keys & values
+const { env } = process; // this has ".env" keys & values
 
 module.exports = {
 	env: env.NODE_ENV,
@@ -14,6 +14,7 @@ module.exports = {
 	GOOGLE_CLIENT_SECRET: env.GOOGLE_CLIENT_SECRET,
 	FACEBOOK_APP_ID: env.FACEBOOK_APP_ID,
 	FACEBOOK_APP_SECRET: env.FACEBOOK_APP_SECRET,
+	COOKIE_TTL: env.COOKIE_TTL,
 	COOKIE_SECRET: env.COOKIE_SECRET,
 	SENDGRID_USERNAME: env.SENDGRID_USERNAME,
 	SENDGRID_API_KEY: env.SENDGRID_API_KEY,
@@ -21,11 +22,11 @@ module.exports = {
 	EMAIL_FROM_SUPPORT: env.EMAIL_FROM_SUPPORT,
 	UPLOAD_LIMIT: 5, // MB
 	mongo: {
-		uri: env.NODE_ENV === 'test' ? env.MONGO_URI_TESTS : env.MONGO_URI
+		uri: env.NODE_ENV === 'test' ? env.MONGO_URI_TESTS : env.MONGO_URI,
 	},
 	logs: env.NODE_ENV === 'production' ? 'combined' : 'dev',
 	STRIPE_SECRET_KEY: env.STRIPE_SECRET_KEY,
 	STRIPE_PUBLISHABLE_KEY: env.STRIPE_PUBLISHABLE_KEY,
 	STRIPE_WEBHOOK_SECRET: env.STRIPE_WEBHOOK_SECRET,
-	MAX_PRODUCT_IMAGES_ALLOWED: env.MAX_PRODUCT_IMAGES_ALLOWED
-}
+	MAX_PRODUCT_IMAGES_ALLOWED: env.MAX_PRODUCT_IMAGES_ALLOWED,
+};

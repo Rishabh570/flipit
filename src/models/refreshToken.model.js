@@ -9,24 +9,22 @@ const refreshTokenSchema = new mongoose.Schema({
 	token: {
 		type: String,
 		required: true,
-		index: true
+		index: true,
 	},
 	userId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
-		required: true
+		required: true,
 	},
 	userEmail: {
 		type: 'String',
 		ref: 'User',
-		required: true
+		required: true,
 	},
-	expires: { 
-		type: Date 
-	}
+	expires: {
+		type: Date,
+	},
 });
-
-
 
 refreshTokenSchema.statics = {
 	/**
@@ -37,21 +35,19 @@ refreshTokenSchema.statics = {
 		const userEmail = user.email;
 		const token = `${userId}.${crypto.randomBytes(40).toString('hex')}`;
 		const expires = moment()
-						.add(30, 'days')	// 30 days expiration of refresh token
-						.toDate();
+			.add(30, 'days') // 30 days expiration of refresh token
+			.toDate();
 		const tokenObject = new RefreshToken({
 			token,
 			userId,
 			userEmail,
-			expires
+			expires,
 		});
-		
+
 		tokenObject.save();
 		return tokenObject;
-	}
+	},
 };
-
-
 
 /**
  * @typedef RefreshToken

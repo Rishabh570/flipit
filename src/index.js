@@ -16,10 +16,8 @@ const options = {
 // Create server
 const server = spdy.createServer(options, app);
 
-
 server.listen(port, () => {
 	console.info(`--- 🌟  Started (${env}) at https://localhost:${port}`);
 });
-
 
 module.exports = app;

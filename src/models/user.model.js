@@ -1,49 +1,51 @@
-
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const bcrypt = require('bcrypt');
 const moment = require('moment-timezone');
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET, JWT_EXPIRATION_MINUTES, RESET_TOKEN_EXPIRATION_MINUTES } = require('../config/vars');
-
+const {
+	JWT_SECRET,
+	JWT_EXPIRATION_MINUTES,
+	RESET_TOKEN_EXPIRATION_MINUTES,
+} = require('../config/vars');
 
 /**
  * User Schema
  */
 const userSchema = new mongoose.Schema(
-{
-    email: {
-		type: String,
-		match: /^\S+@\S+\.\S+$/,
-		required: true,
-		unique: true,
-		trim: true,
-		lowercase: true,
-		index: { unique: true, background: true }
-    },
-    password: {
-		type: String,
-		required: true,
-		minlength: 6,
-		maxlength: 128
+	{
+		email: {
+			type: String,
+			match: /^\S+@\S+\.\S+$/,
+			required: true,
+			unique: true,
+			trim: true,
+			lowercase: true,
+			index: { unique: true, background: true },
+		},
+		password: {
+			type: String,
+			required: true,
+			minlength: 6,
+			maxlength: 128,
+		},
+		name: {
+			type: String,
+			maxlength: 128,
+			trim: true,
+		},
+		services: {
+			google: String,
+			facebook: String,
+		},
+		picture: {
+			type: String,
+			trim: true,
+		},
 	},
-    name: {
-		type: String,
-		maxlength: 128,
-		trim: true
-    },
-    services: {
-		google: String,
-		facebook: String
-    },
-    picture: {
-		type: String,
-		trim: true
-    }
-},
-{
-    timestamps: true
-}
+	{
+		timestamps: true,
+	}
 );
 
 /**
@@ -57,15 +59,12 @@ userSchema.pre('save', async function save(next) {
 			const hash = await bcrypt.hash(this.password, rounds);
 			this.password = hash;
 		}
-		
+
 		return next(); // normal save
-	} 
-	catch (error) {
+	} catch (error) {
 		return next(error);
 	}
 });
-
-
 
 /**
  * Methods
@@ -74,10 +73,10 @@ userSchema.method({
 	token() {
 		const playtheload = {
 			exp: moment()
-				.add(JWT_EXPIRATION_MINUTES, 'minutes')	// expires in 1 week but stays in cookie for 30 days
+				.add(JWT_EXPIRATION_MINUTES, 'minutes') // expires in 1 week but stays in cookie for 30 days
 				.unix(),
 			iat: moment().unix(),
-			sub: this._id
+			sub: this._id,
 		};
 		return jwt.sign(playtheload, JWT_SECRET);
 	},
@@ -89,10 +88,10 @@ userSchema.method({
 	resetToken() {
 		const playtheload = {
 			exp: moment()
-				.add(RESET_TOKEN_EXPIRATION_MINUTES, 'minutes') 	// expires in 10 min
+				.add(RESET_TOKEN_EXPIRATION_MINUTES, 'minutes') // expires in 10 min
 				.unix(),
 			iat: moment().unix(),
-			sub: this._id
+			sub: this._id,
 		};
 		return jwt.sign(playtheload, JWT_SECRET);
 	},
@@ -100,10 +99,7 @@ userSchema.method({
 	async passwordMatches(password) {
 		return bcrypt.compare(password, this.password);
 	},
-
 });
-
-
 
 /**
  * Statics
@@ -118,16 +114,16 @@ userSchema.statics = {
 	async findAndGenerateToken(options) {
 		const { email, refreshObject, password } = options;
 		if (!email) {
-			throw new Error("An email is required to generate a token");
+			throw new Error('An email is required to generate a token');
 		}
 
 		const user = await this.findOne({ email }).exec();
 		const err = {
 			status: httpStatus.UNAUTHORIZED,
-			isPublic: true
+			isPublic: true,
 		};
 
-		if(!user) {
+		if (!user) {
 			err.message = 'Incorrect Email';
 			throw new Error(err);
 		}
@@ -137,16 +133,18 @@ userSchema.statics = {
 				return { user, accessToken: user.token() };
 			}
 			err.message = 'Incorrect password';
-		}
-		else if (refreshObject && refreshObject.userEmail === email) {
-			if (moment(refreshObject.expires).isBefore((new Date().getTime())/1000)) {
+		} else if (refreshObject && refreshObject.userEmail === email) {
+			if (
+				moment(refreshObject.expires).isBefore(
+					new Date().getTime() / 1000
+				)
+			) {
 				err.message = 'Invalid refresh token.';
 			} else {
-				console.log("refresh token...");
+				console.log('refresh token...');
 				return { user, accessToken: user.token() };
 			}
-		} 
-		else {
+		} else {
 			err.message = 'Some error occured :(';
 		}
 		throw new Error(err);
@@ -159,8 +157,8 @@ userSchema.statics = {
 	 */
 	checkDuplicateEmail(error) {
 		if (error.name === 'MongoError' && error.code === 11000) {
-			console.log("In duplicate email error");
-			throw new Error("A user with same email already exists!");
+			console.log('In duplicate email error');
+			throw new Error('A user with same email already exists!');
 		}
 		return error;
 	},
@@ -170,8 +168,10 @@ userSchema.statics = {
 	 * Creates a new entry in DB if it doesn't exist
 	 */
 	async oAuthLogin(service, id, email, displayName, picture) {
-		console.log("In User model oAuthLogin...");
-		const user = await this.findOne({ $or: [{ [`services.${service}`]: id }, { email }] });
+		console.log('In User model oAuthLogin...');
+		const user = await this.findOne({
+			$or: [{ [`services.${service}`]: id }, { email }],
+		});
 		if (user) {
 			user.services[service] = id;
 			if (!user.name) {
@@ -189,12 +189,10 @@ userSchema.statics = {
 			email,
 			password,
 			name: displayName,
-			picture
+			picture,
 		});
 	},
-
 };
-
 
 /**
  * @typedef User
