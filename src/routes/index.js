@@ -10,7 +10,7 @@ const router = express.Router();
  * GET v1/status (temporary route)
  */
 router.route('/status').get(verifyJWT(), (req, res) => {
-	res.render('status', { user: req.user, account: req.account });
+	res.render('status', { user: req.user });
 });
 
 /**

@@ -1,6 +1,15 @@
+const httpStatus = require('http-status');
 const { Item, User } = require('../models/index');
+const AppError = require('../utils/error.utils');
 const { createStripeEntry } = require('../utils/item.utils');
-const { MAX_PRODUCT_IMAGES_ALLOWED } = require('../config/vars');
+const {
+	BASE_URL,
+	STRIPE_SECRET_KEY,
+	STRIPE_WEBHOOK_SECRET,
+	STRIPE_PUBLISHABLE_KEY,
+	MAX_PRODUCT_IMAGES_ALLOWED,
+} = require('../config/vars');
+const stripe = require('stripe')(STRIPE_SECRET_KEY);
 // const {
 // 	sendEmail,
 // 	confirmationForBuyer,
@@ -11,31 +20,41 @@ const { MAX_PRODUCT_IMAGES_ALLOWED } = require('../config/vars');
  * Sell item controller
  */
 exports.sellGET = (req, res) => {
-	res.render('sell', { user: req.user });
+	const { user } = req;
+	res.render('sell', { user });
 };
 
-exports.sellPOST = async (req, res) => {
+exports.sellPOST = async (req, res, next) => {
 	try {
 		req.body.sellerId = req.user.id;
 		if (req.files.length === 0) {
-			throw Error('Please add product images!');
+			throw new AppError(
+				'Please add product images',
+				httpStatus.BAD_REQUEST,
+				true
+			);
 		} else if (req.files.length > MAX_PRODUCT_IMAGES_ALLOWED) {
-			throw Error(
-				`You can only upload maximum of ${MAX_PRODUCT_IMAGES_ALLOWED} images of the product.`
+			throw new AppError(
+				`You can only upload maximum of ${MAX_PRODUCT_IMAGES_ALLOWED} images of the product.`,
+				httpStatus.BAD_REQUEST,
+				true
 			);
 		}
 		const pictures_array = req.files.map((picture) => picture.filename);
 		req.body.pictures = pictures_array; // Store only names of the pictures in DB, actual blob will be saved in S3
+
 		const item = await new Item(req.body).save();
-		await createStripeEntry(item); // Try to put this task in the background when handling concurrency
+		await createStripeEntry(item);
+		req.flash('notification', 'Item posted successfully 🙂');
 		res.redirect('/v1');
-	} catch (err) {
-		console.log('Error in sellPOST controller, err = ', err.message);
-		throw err;
+	} catch (error) {
+		next(error);
+		req.flash('notification', error.message);
+		res.redirect('/v1/item/sell');
 	}
 };
 
-exports.handlePurchaseFulfillment = async (data) => {
+const handlePurchaseFulfillment = async (data) => {
 	try {
 		const item = await Item.findOne({ priceId: data.metadata.priceId });
 		const buyer = await User.findOne({ email: data.customer_email });
@@ -49,7 +68,159 @@ exports.handlePurchaseFulfillment = async (data) => {
 		// await sendEmail(confirmationForSeller(seller, item, buyer));
 		// await sendEmail(confirmationForBuyer(buyer, item, seller));
 	} catch (err) {
-		console.log('Error in handlePurchaseFulfillment, err = ', err.message);
-		throw err;
+		throw new AppError(
+			'Something went wrong in purchase fulfillment!',
+			httpStatus['500'],
+			false
+		);
 	}
+};
+exports.handlePurchaseFulfillment = handlePurchaseFulfillment; // Inline export
+
+/**
+ * Checkout item
+ */
+exports.checkoutItem = async (req, res, next) => {
+	const { user } = req;
+	try {
+		const item = await Item.findById(req.params.itemId);
+		res.render('checkout', { user, item });
+	} catch (error) {
+		const finalErr = new AppError(
+			"Cannot find the item you're looking for :(",
+			httpStatus['404'],
+			true
+		);
+		next(finalErr);
+		req.flash('notification', finalErr.message);
+		res.redirect('/v1');
+	}
+};
+
+/**
+ * Checkout success
+ */
+exports.checkoutSuccess = async (req, res, next) => {
+	const { session_id } = req.query;
+	if (session_id === undefined || session_id === null) {
+		return res.redirect('/v1');
+	}
+	stripe.checkout.sessions.retrieve(session_id, (err, checkout_session) => {
+		if (err) {
+			const finalErr = new AppError(
+				'Invalid checkout session!',
+				httpStatus.BAD_REQUEST,
+				true
+			);
+			next(finalErr);
+			req.flash('notification', finalErr.message);
+			return res.redirect('/v1');
+		}
+		if (checkout_session.customer_email === req.user.email) {
+			return res.render('checkout-success', { user: req.user });
+		}
+		return res.redirect('/v1');
+	});
+};
+
+/**
+ * Returns stripe publishable key
+ */
+exports.stripePubKey = (req, res) => {
+	res.send({
+		publicKey: STRIPE_PUBLISHABLE_KEY,
+	});
+};
+
+/**
+ * Creates checkout session
+ */
+exports.createCheckoutSession = async (req, res, next) => {
+	const { priceId, itemId } = req.body;
+	try {
+		const session = await stripe.checkout.sessions.create({
+			customer_email: req.user.email,
+			metadata: { priceId },
+			payment_method_types: ['card'],
+			mode: 'payment',
+			line_items: [
+				{
+					quantity: 1,
+					price: priceId,
+				},
+			],
+
+			payment_intent_data: {
+				receipt_email: req.user.email,
+			},
+
+			/**
+			 * Redirect to success page and notify payment succeeded,
+			 * CHECKOUT_SESSION_ID is populated by stripe
+			 */
+			success_url: `${BASE_URL}/v1/item/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+
+			/**
+			 * Redirect to item checkout page if user clicks away/cancels checkout
+			 */
+			cancel_url: `${BASE_URL}/v1/item/checkout/${itemId}`,
+		});
+
+		res.send({
+			sessionId: session.id,
+		});
+	} catch (error) {
+		next(
+			new AppError(
+				'Something went wrong while creating checkout session',
+				httpStatus['500'],
+				false
+			)
+		);
+		res.redirect(`${BASE_URL}/v1/item/checkout/${itemId}`);
+	}
+};
+
+/**
+ * This webhook listens stripe events
+ */
+exports.webhook = async (req, res, next) => {
+	let data;
+	let eventType;
+
+	if (STRIPE_WEBHOOK_SECRET) {
+		let event;
+		const signature = req.headers['stripe-signature'];
+
+		try {
+			event = stripe.webhooks.constructEvent(
+				req.body,
+				signature,
+				STRIPE_WEBHOOK_SECRET
+			);
+		} catch (error) {
+			next(
+				new AppError(
+					'⚠️  Webhook signature verification failed.',
+					httpStatus.BAD_REQUEST,
+					true
+				)
+			);
+			return res.sendStatus(400);
+		}
+		data = event.data;
+		eventType = event.type;
+	} else {
+		// If secret is not configured in .env,
+		// retrieve the event data directly from the request body.
+		data = req.body.data;
+		eventType = req.body.type;
+	}
+
+	if (eventType === 'checkout.session.completed') {
+		console.log('🔔  Payment received!');
+		handlePurchaseFulfillment(data.object);
+	}
+
+	res.sendStatus(200);
 };

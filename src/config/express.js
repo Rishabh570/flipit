@@ -1,19 +1,38 @@
-const express = require('express');
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const compress = require('compression');
-const methodOverride = require('method-override');
+const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
+const morgan = require('morgan');
+const express = require('express');
 const passport = require('passport');
-const cookieSession = require('cookie-session');
+const flash = require('express-flash');
+const Sentry = require('@sentry/node');
+const compress = require('compression');
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const path = require('path');
+const cookieSession = require('cookie-session');
+const methodOverride = require('method-override');
+
 const routes = require('../routes/index');
-const { logs, UPLOAD_LIMIT, COOKIE_SECRET, COOKIE_TTL } = require('./vars');
 const strategies = require('./passport');
+const {
+	logs,
+	UPLOAD_LIMIT,
+	COOKIE_SECRET,
+	COOKIE_TTL,
+	SENTRY_DSN,
+} = require('./vars');
+const { errorHandler, stagingError } = require('../middlewares/error');
 
 const app = express();
+
+// Initialize sentry
+Sentry.init({ dsn: SENTRY_DSN });
+app.use(
+	Sentry.Handlers.requestHandler({
+		serverName: false,
+		user: ['email'],
+	})
+);
 
 // request logging. dev: console | production: file
 app.use(morgan(logs));
@@ -59,7 +78,7 @@ app.set('views', path.join(__dirname, '../views'));
 app.use(express.static(path.join(__dirname, '../../public')));
 
 // Setting up sessions (These are stored on the client)
-// TODO: v2 can introduce a separate storage for sessions using express-session
+// V2 can introduce a separate storage for sessions using express-session
 // DON'T SET COOKIE_KEY IF SECRET IS THERE (REQ.USER WILL BE UNDEFINED OTHERWISE)
 // PASS THE SAME SECRET TO COOKIE PARSER AS WELL!
 app.use(
@@ -71,6 +90,9 @@ app.use(
 	})
 );
 
+// Enable express-flash
+app.use(flash());
+
 // Enable passport authentication, session and plug strategies
 app.use(passport.initialize());
 app.use(passport.session());
@@ -81,6 +103,21 @@ passport.use('facebook', strategies.facebook);
 // Mount API v1 routes
 app.use('/v1', routes);
 app.use('/*', (req, res) => res.send("You're lost!"));
+
+// Error handlers
+app.use(
+	Sentry.Handlers.errorHandler({
+		shouldHandleError(error) {
+			if (error.statusCode >= 4) {
+				return true;
+			}
+			return false;
+		},
+	})
+);
+
+app.use(stagingError);
+app.use(errorHandler);
 
 // EXPORTS
 module.exports = app;

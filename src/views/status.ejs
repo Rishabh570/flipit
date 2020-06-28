@@ -1,6 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+	<title>Status</title>
+</head>
+
+<body>
+	
 <% if (!user) { %>
 	<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
 <% } else { %>
+
+	<% if (messages.notification) { %>
+		<script>
+			Toastify({
+				text: '<%= messages.notification %>',
+				backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+				className: "info",
+			}).showToast();
+		</script>
+	<% } %>
+	
+	
 	<h1>Hello, <%= user.name %>.</h1>
 	<p>THIS IS A PROTECTED ROUTE!</p>
 	<br>
@@ -23,3 +48,7 @@
 	
 
 <% } %>
+</body>
+</html>
+
+

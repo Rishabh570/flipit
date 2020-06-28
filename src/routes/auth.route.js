@@ -21,33 +21,30 @@ const router = express.Router();
 /**
  * Register routes
  */
-router.get('/register', verifyAnonymous(), authController.registerGET);
 router
 	.route('/register')
+	.get(verifyAnonymous(), authController.registerGET)
 	.post(verifyAnonymous(), validate(register), authController.registerPOST);
 
 /**
  * Login routes
  */
-router.get('/login', verifyAnonymous(), authController.loginGET);
-router.post(
-	'/login',
-	verifyAnonymous(),
-	validate(login),
-	authController.loginPOST
-);
+router
+	.route('/login')
+	.get(verifyAnonymous(), authController.loginGET)
+	.post(verifyAnonymous(), validate(login), authController.loginPOST);
 
 /**
  * Logout route
  */
-router.get('/logout', verifyJWT(), authController.logout);
+router.route('/logout').get(verifyJWT(), authController.logout);
 
 /**
  * Set Password routes
  */
-router.route('/password/set').get(verifyJWT(), authController.setPasswordGET);
 router
 	.route('/password/set')
+	.get(verifyJWT(), authController.setPasswordGET)
 	.post(verifyJWT(), validate(setPassword), authController.setPasswordPOST);
 
 /**
@@ -55,9 +52,7 @@ router
  */
 router
 	.route('/password/change')
-	.get(verifyJWT(), authController.changePasswordGET);
-router
-	.route('/password/change')
+	.get(verifyJWT(), authController.changePasswordGET)
 	.post(
 		verifyJWT(),
 		validate(changePassword),
@@ -69,9 +64,7 @@ router
  */
 router
 	.route('/password/reset/:token')
-	.get(verifyAnonymous(), authController.resetPasswordGET);
-router
-	.route('/password/reset/:token')
+	.get(verifyAnonymous(), authController.resetPasswordGET)
 	.post(
 		verifyAnonymous(),
 		validate(resetPassword),
@@ -83,9 +76,7 @@ router
  */
 router
 	.route('/password/forgot')
-	.get(verifyAnonymous(), authController.forgotPasswordGET);
-router
-	.route('/password/forgot')
+	.get(verifyAnonymous(), authController.forgotPasswordGET)
 	.post(
 		verifyAnonymous(),
 		validate(forgotPassword),
@@ -95,62 +86,59 @@ router
 /**
  * Google Auth Routes
  */
-router.get(
-	'/google/callback',
-	oAuthLogin('google', {
-		failureRedirect: '/login',
-	}),
-	authController.oAuth
-);
+router
+	.route('/google/callback')
+	.get(
+		oAuthLogin('google', { failureRedirect: '/login' }),
+		authController.oAuth
+	);
 
-router.get('/google', oAuthLogin('google', { scope: ['profile', 'email'] }));
+router
+	.route('/google')
+	.get(oAuthLogin('google', { scope: ['profile', 'email'] }));
 
-router.get(
-	'/connect/google/callback',
-	passport.authorize('google', {
-		failureRedirect: '/v1/auth/login',
-	}),
-	authController.oAuth
-);
+router
+	.route('/connect/google/callback')
+	.get(
+		passport.authorize('google', { failureRedirect: '/v1/auth/login' }),
+		authController.oAuth
+	);
 
-router.get(
-	'/connect/google',
-	passport.authorize('google', { scope: ['profile', 'email'] })
-);
+router
+	.route('/connect/google')
+	.get(passport.authorize('google', { scope: ['profile', 'email'] }));
 
-router.get('/disconnect/google', verifyJWT(), authController.disconnectGoogle);
+router
+	.route('/disconnect/google')
+	.get(verifyJWT(), authController.disconnectGoogle);
 
 /**
  * Facebook auth routes
  */
 
-router.get(
-	'/facebook/callback',
-	oAuthLogin('facebook', {
-		failureRedirect: '/v1/auth/login',
-	}),
-	authController.oAuth
-);
+router
+	.route('/facebook/callback')
+	.get(
+		oAuthLogin('facebook', { failureRedirect: '/v1/auth/login' }),
+		authController.oAuth
+	);
 
-router.get('/facebook', oAuthLogin('facebook', { scope: ['email'] }));
+router.route('/facebook').get(oAuthLogin('facebook', { scope: ['email'] }));
 
-router.get(
-	'/connect/facebook/callback',
-	passport.authorize('facebook', {
-		failureRedirect: '/v1/auth/login',
-	}),
-	authController.oAuth
-);
+router
+	.route('/connect/facebook/callback')
+	.get(
+		passport.authorize('facebook', { failureRedirect: '/v1/auth/login' }),
+		authController.oAuth
+	);
 
-router.get(
-	'/connect/facebook',
-	passport.authorize('facebook', { scope: ['email'] })
-);
+router
+	.route('/connect/facebook')
+	.get(passport.authorize('facebook', { scope: ['email'] }));
 
-router.get(
-	'/disconnect/facebook',
-	verifyJWT(),
-	authController.disconnectFacebook
-);
+router
+	.route('/disconnect/facebook')
+	.get(verifyJWT(), authController.disconnectFacebook);
 
+// EXPORTS
 module.exports = router;

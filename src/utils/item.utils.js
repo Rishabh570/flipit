@@ -1,3 +1,5 @@
+const httpStatus = require('http-status');
+const AppError = require('../utils/error.utils');
 const { STRIPE_SECRET_KEY } = require('../config/vars');
 const stripe = require('stripe')(STRIPE_SECRET_KEY);
 
@@ -13,9 +15,12 @@ async function createStripeEntry(item) {
 		});
 		item.priceId = price.id; // Saving the stripe Price obj id to DB
 		await item.save();
-	} catch (err) {
-		console.log('ERROR: In createStripeEntry. err = ', err.message);
-		throw err;
+	} catch (error) {
+		throw new AppError(
+			'Something went wrong in creating stripe entry',
+			httpStatus['500'],
+			false
+		);
 	}
 }
 

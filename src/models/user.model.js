@@ -3,6 +3,7 @@ const httpStatus = require('http-status');
 const bcrypt = require('bcrypt');
 const moment = require('moment-timezone');
 const jwt = require('jsonwebtoken');
+const AppError = require('../utils/error.utils');
 const {
 	JWT_SECRET,
 	JWT_EXPIRATION_MINUTES,
@@ -113,54 +114,64 @@ userSchema.statics = {
 	 */
 	async findAndGenerateToken(options) {
 		const { email, refreshObject, password } = options;
-		if (!email) {
-			throw new Error('An email is required to generate a token');
-		}
 
 		const user = await this.findOne({ email }).exec();
-		const err = {
-			status: httpStatus.UNAUTHORIZED,
-			isPublic: true,
-		};
-
 		if (!user) {
-			err.message = 'Incorrect Email';
-			throw new Error(err);
+			throw new AppError(
+				'Incorrect email!',
+				httpStatus.UNAUTHORIZED,
+				true
+			);
 		}
 
 		if (password) {
 			if (await user.passwordMatches(password)) {
 				return { user, accessToken: user.token() };
 			}
-			err.message = 'Incorrect password';
+			throw new AppError(
+				'Incorrect password',
+				httpStatus.UNAUTHORIZED,
+				true
+			);
 		} else if (refreshObject && refreshObject.userEmail === email) {
 			if (
 				moment(refreshObject.expires).isBefore(
 					new Date().getTime() / 1000
 				)
 			) {
-				err.message = 'Invalid refresh token.';
+				throw new AppError(
+					'Invalid refresh token.',
+					httpStatus.UNAUTHORIZED,
+					true
+				);
 			} else {
-				console.log('refresh token...');
 				return { user, accessToken: user.token() };
 			}
-		} else {
-			err.message = 'Some error occured :(';
 		}
-		throw new Error(err);
+		throw new AppError(
+			'Something went wrong while logging in!',
+			httpStatus.UNAUTHORIZED,
+			false
+		);
 	},
 
 	/**
-	 * TODO: To be done with error handler work.
 	 * Return new validation error
 	 * if error is a mongoose duplicate key error
 	 */
 	checkDuplicateEmail(error) {
 		if (error.name === 'MongoError' && error.code === 11000) {
-			console.log('In duplicate email error');
-			throw new Error('A user with same email already exists!');
+			return new AppError(
+				'A user with same email already exists!',
+				httpStatus.BAD_REQUEST,
+				true
+			);
 		}
-		return error;
+		return new AppError(
+			'Something went wrong during registration!',
+			httpStatus.UNPROCESSABLE_ENTITY,
+			false
+		);
 	},
 
 	/**
@@ -168,7 +179,6 @@ userSchema.statics = {
 	 * Creates a new entry in DB if it doesn't exist
 	 */
 	async oAuthLogin(service, id, email, displayName, picture) {
-		console.log('In User model oAuthLogin...');
 		const user = await this.findOne({
 			$or: [{ [`services.${service}`]: id }, { email }],
 		});

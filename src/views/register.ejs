@@ -1,7 +1,19 @@
 <head>
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 	<title>Register</title>
 </head>
 <body>
+
+	<% if (messages.notification) { %>
+		<script>
+			Toastify({
+				text: '<%= messages.notification %>',
+				backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+				className: "info",
+			}).showToast();
+		</script>
+	<% } %>	
 
 	<form name="register" method="POST" action="/v1/auth/register">
     <table>
