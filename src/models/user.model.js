@@ -7,7 +7,7 @@ const AppError = require('../utils/error.utils');
 const {
 	JWT_SECRET,
 	JWT_EXPIRATION_MINUTES,
-	RESET_TOKEN_EXPIRATION_MINUTES,
+	RESET_TOKEN_EXPIRATION_MINUTES
 } = require('../config/vars');
 
 /**
@@ -22,30 +22,30 @@ const userSchema = new mongoose.Schema(
 			unique: true,
 			trim: true,
 			lowercase: true,
-			index: { unique: true, background: true },
+			index: { unique: true, background: true }
 		},
 		password: {
 			type: String,
 			required: true,
 			minlength: 6,
-			maxlength: 128,
+			maxlength: 128
 		},
 		name: {
 			type: String,
 			maxlength: 128,
-			trim: true,
+			trim: true
 		},
 		services: {
 			google: String,
-			facebook: String,
+			facebook: String
 		},
 		picture: {
 			type: String,
-			trim: true,
-		},
+			trim: true
+		}
 	},
 	{
-		timestamps: true,
+		timestamps: true
 	}
 );
 
@@ -77,7 +77,7 @@ userSchema.method({
 				.add(JWT_EXPIRATION_MINUTES, 'minutes') // expires in 1 week but stays in cookie for 30 days
 				.unix(),
 			iat: moment().unix(),
-			sub: this._id,
+			sub: this._id
 		};
 		return jwt.sign(playtheload, JWT_SECRET);
 	},
@@ -92,14 +92,14 @@ userSchema.method({
 				.add(RESET_TOKEN_EXPIRATION_MINUTES, 'minutes') // expires in 10 min
 				.unix(),
 			iat: moment().unix(),
-			sub: this._id,
+			sub: this._id
 		};
 		return jwt.sign(playtheload, JWT_SECRET);
 	},
 
 	async passwordMatches(password) {
 		return bcrypt.compare(password, this.password);
-	},
+	}
 });
 
 /**
@@ -167,11 +167,7 @@ userSchema.statics = {
 				true
 			);
 		}
-		return new AppError(
-			'Something went wrong during registration!',
-			httpStatus.UNPROCESSABLE_ENTITY,
-			false
-		);
+		return error;
 	},
 
 	/**
@@ -180,7 +176,7 @@ userSchema.statics = {
 	 */
 	async oAuthLogin(service, id, email, displayName, picture) {
 		const user = await this.findOne({
-			$or: [{ [`services.${service}`]: id }, { email }],
+			$or: [{ [`services.${service}`]: id }, { email }]
 		});
 		if (user) {
 			user.services[service] = id;
@@ -199,9 +195,9 @@ userSchema.statics = {
 			email,
 			password,
 			name: displayName,
-			picture,
+			picture
 		});
-	},
+	}
 };
 
 /**

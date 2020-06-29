@@ -1,21 +1,12 @@
 const express = require('express');
 const passport = require('passport');
-const { validate } = require('express-validation');
 const authController = require('../controller/auth.controller');
 const {
 	oAuthLogin,
 	verifyJWT,
-	verifyAnonymous,
+	verifyAnonymous
 } = require('../middlewares/auth');
-const {
-	login,
-	register,
-	setPassword,
-	changePassword,
-	forgotPassword,
-	resetPassword,
-} = require('../validations/auth.validation');
-
+const { validate } = require('../validations/auth.validation');
 const router = express.Router();
 
 /**
@@ -24,7 +15,11 @@ const router = express.Router();
 router
 	.route('/register')
 	.get(verifyAnonymous(), authController.registerGET)
-	.post(verifyAnonymous(), validate(register), authController.registerPOST);
+	.post(
+		verifyAnonymous(),
+		validate('registerPOST'),
+		authController.registerPOST
+	);
 
 /**
  * Login routes
@@ -32,7 +27,7 @@ router
 router
 	.route('/login')
 	.get(verifyAnonymous(), authController.loginGET)
-	.post(verifyAnonymous(), validate(login), authController.loginPOST);
+	.post(verifyAnonymous(), validate('loginPOST'), authController.loginPOST);
 
 /**
  * Logout route
@@ -45,7 +40,11 @@ router.route('/logout').get(verifyJWT(), authController.logout);
 router
 	.route('/password/set')
 	.get(verifyJWT(), authController.setPasswordGET)
-	.post(verifyJWT(), validate(setPassword), authController.setPasswordPOST);
+	.post(
+		verifyJWT(),
+		validate('setPasswordPOST'),
+		authController.setPasswordPOST
+	);
 
 /**
  * Change Password routes
@@ -55,7 +54,7 @@ router
 	.get(verifyJWT(), authController.changePasswordGET)
 	.post(
 		verifyJWT(),
-		validate(changePassword),
+		validate('changePasswordPOST'),
 		authController.changePasswordPOST
 	);
 
@@ -67,7 +66,7 @@ router
 	.get(verifyAnonymous(), authController.resetPasswordGET)
 	.post(
 		verifyAnonymous(),
-		validate(resetPassword),
+		validate('resetPasswordPOST'),
 		authController.resetPasswordPOST
 	);
 
@@ -79,7 +78,7 @@ router
 	.get(verifyAnonymous(), authController.forgotPasswordGET)
 	.post(
 		verifyAnonymous(),
-		validate(forgotPassword),
+		validate('forgotPasswordPOST'),
 		authController.forgotPasswordPOST
 	);
 

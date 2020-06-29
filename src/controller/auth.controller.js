@@ -1,10 +1,24 @@
 const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
-const moment = require('moment-timezone');
+const { validationResult } = require('express-validator');
 const { User, RefreshToken } = require('../models/index');
 const { sendEmail, forgotPasswordEmail } = require('../utils/email.utils');
-const { BASE_URL } = require('../config/vars');
+const { BASE_URL, JWT_SECRET } = require('../config/vars');
 const AppError = require('../utils/error.utils');
+
+/**
+ * Validation utility
+ */
+const handleValidation = (req) => {
+	const validationErrors = validationResult(req);
+	if (!validationErrors.isEmpty()) {
+		throw new AppError(
+			'Please enter valid details!',
+			httpStatus.BAD_REQUEST,
+			true
+		);
+	}
+};
 
 /**
  * Register user controller.
@@ -15,6 +29,9 @@ exports.registerGET = (req, res) => {
 
 exports.registerPOST = async (req, res, next) => {
 	try {
+		// Check for validation errors first
+		handleValidation(req);
+
 		req.body.name = req.body.email.split('@')[0];
 		await new User(req.body).save();
 		req.flash('notification', 'Successfully registered, please login 🙂');
@@ -36,6 +53,9 @@ exports.loginGET = (req, res) => {
 
 exports.loginPOST = async (req, res, next) => {
 	try {
+		// Check for validation errors first
+		handleValidation(req);
+
 		const { user, accessToken } = await User.findAndGenerateToken(req.body);
 		await RefreshToken.generate(user); // Creates and stores a refresh token in user db
 
@@ -72,6 +92,9 @@ exports.setPasswordGET = async (req, res) => {
 exports.setPasswordPOST = async (req, res, next) => {
 	const { password, confirmPassword } = req.body;
 	try {
+		// Check for validation errors first
+		handleValidation(req);
+
 		if (password !== confirmPassword) {
 			throw new AppError(
 				"⚠️ Passwords don't match, please try again.",
@@ -116,6 +139,9 @@ exports.changePasswordPOST = async (req, res, next) => {
 	const { currentPassword, newPassword, confirmNewPassword } = req.body;
 	const user = req.user;
 	try {
+		// Check for validation errors first
+		handleValidation(req);
+
 		if (await user.passwordMatches(currentPassword)) {
 			if (newPassword !== confirmNewPassword) {
 				throw new AppError(
@@ -148,19 +174,22 @@ exports.changePasswordPOST = async (req, res, next) => {
  */
 exports.resetPasswordGET = (req, res, next) => {
 	const { token } = req.params;
-	const payload = jwt.decode(token);
-	if (moment(payload.exp).isBefore(new Date().getTime() / 1000)) {
-		const finalErr = new AppError(
-			'The reset password link has expired 😟',
-			httpStatus.UNAUTHORIZED,
-			true
-		);
-		next(finalErr);
-		req.flash('notification', finalErr.message);
+	try {
+		jwt.verify(token, JWT_SECRET, (err, payload) => {
+			if (err || payload === null) {
+				throw new AppError(
+					'The reset password link has either expired or is invalid 😟',
+					httpStatus.BAD_REQUEST,
+					true
+				);
+			}
+			const UrlPost = `/v1/auth/password/reset/${token}`;
+			res.render('reset-password', { url: UrlPost });
+		});
+	} catch (error) {
+		next(error);
+		req.flash('notification', error.message);
 		res.redirect('/v1/auth/login');
-	} else {
-		const UrlPost = `/v1/auth/password/reset/${token}`;
-		res.render('reset-password', { url: UrlPost });
 	}
 };
 
@@ -168,45 +197,44 @@ exports.resetPasswordPOST = async (req, res, next) => {
 	const { token } = req.params;
 	const { password, confirmPassword } = req.body;
 	try {
-		const payload = jwt.decode(token);
-		if (moment(payload.exp).isBefore(new Date().getTime() / 1000)) {
-			const finalErr = new AppError(
-				'The reset password link has expired!',
-				httpStatus.UNAUTHORIZED,
-				true
-			);
-			req.flash('notification', finalErr.message);
-			res.redirect('/v1/auth/login');
-			throw finalErr;
-		} else if (password !== confirmPassword) {
-			const finalErr = new AppError(
-				"Passwords don't match",
-				httpStatus.UNAUTHORIZED,
-				true
-			);
-			req.flash('notification', finalErr.message);
-			res.redirect(`/v1/auth/password/reset/${token}`);
-			throw finalErr;
-		} else {
-			const user = await User.findById(payload.sub);
-			if (!user) {
-				const finalErr = new AppError(
-					'User not found!',
-					httpStatus.NOT_FOUND,
+		// Check for validation errors first
+		handleValidation(req);
+
+		jwt.verify(token, JWT_SECRET, async (err, payload) => {
+			if (err || payload === null) {
+				throw new AppError(
+					'The reset password link has either expired or is invalid 😟',
+					httpStatus.BAD_REQUEST,
 					true
 				);
-				req.flash('notification', finalErr.message);
-				res.redirect('/v1/auth/login');
-				throw finalErr;
 			}
 
-			user.password = password;
-			await user.save();
-			req.flash('notification', 'Password reset successful 🙂');
-			res.redirect('/v1/auth/login');
-		}
+			if (password !== confirmPassword) {
+				throw new AppError(
+					"Passwords don't match",
+					httpStatus.UNAUTHORIZED,
+					true
+				);
+			} else {
+				const user = await User.findById(payload.sub);
+				if (!user) {
+					throw new AppError(
+						'No matching user found!',
+						httpStatus.NOT_FOUND,
+						true
+					);
+				}
+
+				user.password = password;
+				await user.save();
+				req.flash('notification', 'Password reset successful 🙂');
+				res.redirect('/v1/auth/login');
+			}
+		});
 	} catch (error) {
 		next(error);
+		req.flash('notification', error.message);
+		res.redirect(`/v1/auth/password/reset/${token}`);
 	}
 };
 
@@ -218,16 +246,16 @@ exports.forgotPasswordGET = (req, res) => res.render('forgot-password');
 exports.forgotPasswordPOST = async (req, res, next) => {
 	const { email } = req.body;
 	try {
+		// Check for validation errors first
+		handleValidation(req);
+
 		const user = await User.findOne({ email });
 		if (!user) {
-			const finalErr = new AppError(
+			throw new AppError(
 				'User with this email does not exist!',
 				httpStatus.NOT_FOUND,
 				true
 			);
-			req.flash('notification', finalErr.message);
-			res.redirect('/v1/auth/password/forgot');
-			throw finalErr;
 		}
 
 		// Generate a password reset link and mail it to user
@@ -243,6 +271,8 @@ exports.forgotPasswordPOST = async (req, res, next) => {
 		await sendEmail(forgotPasswordEmail({ name, email, passResetLink }));
 	} catch (error) {
 		next(error);
+		req.flash('notification', error.message);
+		res.redirect('/v1/auth/login');
 	}
 };
 
