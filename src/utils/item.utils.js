@@ -18,7 +18,7 @@ async function createStripeEntry(item) {
 	} catch (error) {
 		throw new AppError(
 			'Something went wrong in creating stripe entry',
-			httpStatus['500'],
+			httpStatus.INTERNAL_SERVER_ERROR,
 			false
 		);
 	}

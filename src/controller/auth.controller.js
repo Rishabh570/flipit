@@ -192,7 +192,7 @@ exports.resetPasswordPOST = async (req, res, next) => {
 			if (!user) {
 				const finalErr = new AppError(
 					'User not found!',
-					httpStatus['404'],
+					httpStatus.NOT_FOUND,
 					true
 				);
 				req.flash('notification', finalErr.message);
@@ -222,7 +222,7 @@ exports.forgotPasswordPOST = async (req, res, next) => {
 		if (!user) {
 			const finalErr = new AppError(
 				'User with this email does not exist!',
-				httpStatus['404'],
+				httpStatus.NOT_FOUND,
 				true
 			);
 			req.flash('notification', finalErr.message);
@@ -262,7 +262,7 @@ exports.oAuth = async (req, res, next) => {
 	} catch (error) {
 		const finalErr = new AppError(
 			'Something went wrong during social login!',
-			httpStatus['500'],
+			httpStatus.INTERNAL_SERVER_ERROR,
 			false
 		);
 		req.flash('notification', finalErr.message);
@@ -284,7 +284,7 @@ exports.disconnectGoogle = async (req, res, next) => {
 	} catch (error) {
 		const finalErr = new AppError(
 			'Something went wrong during the unlinking of Google account!',
-			httpStatus['500'],
+			httpStatus.INTERNAL_SERVER_ERROR,
 			false
 		);
 		next(finalErr);
@@ -306,7 +306,7 @@ exports.disconnectFacebook = async (req, res, next) => {
 	} catch (error) {
 		const finalErr = new AppError(
 			'Something went wrong during the unlinking of Facebook account!',
-			httpStatus['500'],
+			httpStatus.INTERNAL_SERVER_ERROR,
 			false
 		);
 		next(finalErr);

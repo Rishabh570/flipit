@@ -70,7 +70,7 @@ const handlePurchaseFulfillment = async (data) => {
 	} catch (err) {
 		throw new AppError(
 			'Something went wrong in purchase fulfillment!',
-			httpStatus['500'],
+			httpStatus.INTERNAL_SERVER_ERROR,
 			false
 		);
 	}
@@ -88,7 +88,7 @@ exports.checkoutItem = async (req, res, next) => {
 	} catch (error) {
 		const finalErr = new AppError(
 			"Cannot find the item you're looking for :(",
-			httpStatus['404'],
+			httpStatus.NOT_FOUND,
 			true
 		);
 		next(finalErr);
@@ -173,7 +173,7 @@ exports.createCheckoutSession = async (req, res, next) => {
 		next(
 			new AppError(
 				'Something went wrong while creating checkout session',
-				httpStatus['500'],
+				httpStatus.INTERNAL_SERVER_ERROR,
 				false
 			)
 		);

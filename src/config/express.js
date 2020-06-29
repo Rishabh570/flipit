@@ -1,5 +1,6 @@
 const path = require('path');
 const cors = require('cors');
+const csrf = require('csurf');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const express = require('express');
@@ -22,17 +23,10 @@ const {
 	SENTRY_DSN,
 } = require('./vars');
 const { errorHandler, stagingError } = require('../middlewares/error');
-
 const app = express();
 
 // Initialize sentry
 Sentry.init({ dsn: SENTRY_DSN });
-app.use(
-	Sentry.Handlers.requestHandler({
-		serverName: false,
-		user: ['email'],
-	})
-);
 
 // request logging. dev: console | production: file
 app.use(morgan(logs));
@@ -40,11 +34,10 @@ app.use(morgan(logs));
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
-// Setting up cookie parser
-app.use(cookieParser(COOKIE_SECRET));
-
-// parse body params and attach them to req.body
-// Using raw for ONLY /v1/item/webhook (in item routes)
+/**
+ * Parse body params and attach them to req.body
+ * Using raw for ONLY /v1/item/webhook (in item routes)
+ */
 app.use((req, res, next) => {
 	if (req.originalUrl === '/v1/item/webhook') next();
 	else bodyParser.json({ limit: `${UPLOAD_LIMIT}mb` })(req, res, next);
@@ -58,6 +51,19 @@ app.use((req, res, next) => {
 			res,
 			next
 		);
+});
+
+// Setting up cookie parser
+app.use(cookieParser(COOKIE_SECRET));
+
+/**
+ * Enable CSRF protection and add a single global csrfToken
+ * to res.locals so that all the views can access its value
+ */
+app.use(csrf({ cookie: true }));
+app.use((req, res, next) => {
+	res.locals.csrfToken = req.csrfToken();
+	next();
 });
 
 // gzip compression
@@ -105,17 +111,17 @@ app.use('/v1', routes);
 app.use('/*', (req, res) => res.send("You're lost!"));
 
 // Error handlers
-app.use(
-	Sentry.Handlers.errorHandler({
-		shouldHandleError(error) {
-			if (error.statusCode >= 4) {
-				return true;
-			}
-			return false;
-		},
-	})
-);
+process.on('unhandledRejection', (err) => {
+	console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+	console.log(err.name, err.message);
+	// process.exit(1);
+});
 
+process.on('uncaughtException', (err) => {
+	console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+	console.log(err.name, err.message);
+	// process.exit(1);
+});
 app.use(stagingError);
 app.use(errorHandler);
 

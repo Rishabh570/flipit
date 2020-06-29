@@ -19,7 +19,7 @@ exports.homeGET = async (req, res, next) => {
 	} catch (error) {
 		const finalErr = new AppError(
 			'Something went wrong while fetching data!',
-			httpStatus['500'],
+			httpStatus.INTERNAL_SERVER_ERROR,
 			false
 		);
 		next(finalErr);

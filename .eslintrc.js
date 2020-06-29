@@ -13,7 +13,6 @@ module.exports = {
 	extends: ['eslint:recommended', 'plugin:prettier/recommended'],
 	rules: {
 		'prettier/prettier': 'error',
-		'no-empty-function': 2,
 		'global-require': 2,
 	},
 };

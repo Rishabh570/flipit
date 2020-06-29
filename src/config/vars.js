@@ -2,6 +2,7 @@
 require('dotenv-safe').config();
 
 const { env } = process; // this has ".env" keys & values
+const MULTER_UPLOAD_DEST = `${__dirname}/../../uploads`;
 
 module.exports = {
 	env: env.NODE_ENV,
@@ -20,6 +21,7 @@ module.exports = {
 	SENDGRID_API_KEY: env.SENDGRID_API_KEY,
 	EMAIL_TEMPLATE_BASE: env.EMAIL_TEMPLATE_BASE,
 	EMAIL_FROM_SUPPORT: env.EMAIL_FROM_SUPPORT,
+	MULTER_UPLOAD_DEST: MULTER_UPLOAD_DEST,
 	UPLOAD_LIMIT: 5, // MB
 	mongo: {
 		uri: env.NODE_ENV === 'test' ? env.MONGO_URI_TESTS : env.MONGO_URI,

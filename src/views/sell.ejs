@@ -6,7 +6,7 @@
 	
 	<br>
 
-	<form name="sell" method="POST" action="/v1/item/sell" enctype="multipart/form-data">
+	<form name="sell" method="POST" action="/v1/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data">
 		<table>
 			<tr>
 				<td>Name: </td>
@@ -24,8 +24,6 @@
 				<td>Add product images: </td>
 				<td><input type="file" id="upload_imgs" name="upload_imgs" multiple /></td>
 			</tr>
-			
-
 			<tr>
 			<td colspan="2"><input type="submit" value="Save" ></td>
 			</tr>

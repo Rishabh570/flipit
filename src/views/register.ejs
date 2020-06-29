@@ -16,19 +16,20 @@
 	<% } %>	
 
 	<form name="register" method="POST" action="/v1/auth/register">
-    <table>
-        <tr>
-        <td>Email</td>
-        <td><input type="email" name="email" ></td>
-        </tr>
-        <tr>
-        <td>Password</td>
-        <td><input type="password" name="password" ></td>
-        </tr>
-        <tr>
-        <td colspan="2"><input type="submit" value="Save" ></td>
-        </tr>
-    </table>
+		<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+		<table>
+			<tr>
+			<td>Email</td>
+			<td><input type="email" name="email" ></td>
+			</tr>
+			<tr>
+			<td>Password</td>
+			<td><input type="password" name="password" ></td>
+			</tr>
+			<tr>
+			<td colspan="2"><input type="submit" value="Save" ></td>
+			</tr>
+		</table>
 	</form>  
 	
 

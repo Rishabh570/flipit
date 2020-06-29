@@ -150,7 +150,7 @@ userSchema.statics = {
 		}
 		throw new AppError(
 			'Something went wrong while logging in!',
-			httpStatus.UNAUTHORIZED,
+			httpStatus.INTERNAL_SERVER_ERROR,
 			false
 		);
 	},
