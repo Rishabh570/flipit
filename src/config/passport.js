@@ -10,7 +10,7 @@ const {
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
 	FACEBOOK_APP_ID,
-	FACEBOOK_APP_SECRET,
+	FACEBOOK_APP_SECRET
 } = require('./vars');
 
 const time_multiplier = 1000;
@@ -53,14 +53,14 @@ const cookieExtractor = (req) => {
 const jwtOptions = {
 	secretOrKey: JWT_SECRET,
 	jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-	ignoreExpiration: true, // Passes the payload to verify callback function even if token is expired
+	ignoreExpiration: true // Passes the payload to verify callback function even if token is expired
 };
 
 const googleOptions = {
 	clientID: GOOGLE_CLIENT_ID,
 	clientSecret: GOOGLE_CLIENT_SECRET,
 	callbackURL: '/v1/auth/google/callback',
-	passReqToCallback: true,
+	passReqToCallback: true
 };
 
 const facebookOptions = {
@@ -68,7 +68,7 @@ const facebookOptions = {
 	clientSecret: FACEBOOK_APP_SECRET,
 	callbackURL: '/v1/auth/facebook/callback',
 	profileFields: ['id', 'displayName', 'photos', 'email'],
-	passReqToCallback: true,
+	passReqToCallback: true
 	// enableProof: true,
 };
 
@@ -83,12 +83,12 @@ const jwt = async (payload, done) => {
 			moment(payload.exp).isBefore(new Date().getTime() / time_multiplier)
 		) {
 			const refreshObject = await RefreshToken.findOneAndRemove({
-				userEmail: userObj.email,
+				userEmail: userObj.email
 			});
 
 			const { user, accessToken } = await User.findAndGenerateToken({
 				email: userObj.email,
-				refreshObject,
+				refreshObject
 			});
 			await RefreshToken.generate(user); // Save new refresh token obj to DB
 
@@ -113,10 +113,8 @@ const googleAuth = async (req, accessToken, refreshToken, profile, done) => {
 		if (req.user) {
 			const { user } = req;
 			const userObj = await User.findById(user.id);
-			if (userObj.services === undefined) {
-				userObj.services = {};
-			}
-			userObj.services.google = profile.id;
+			userObj.google.profileId = profile.id;
+			userObj.google.email = profile._json.email;
 			await userObj.save();
 			done(null, userObj);
 		} else {
@@ -140,10 +138,8 @@ const facebookAuth = async (req, accessToken, refreshToken, profile, done) => {
 		if (req.user) {
 			const { user } = req;
 			const userObj = await User.findById(user.id);
-			if (userObj.services === undefined) {
-				userObj.services = {};
-			}
-			userObj.services.facebook = profile.id;
+			userObj.facebook.profileId = profile.id;
+			userObj.facebook.email = profile.emails[0].value;
 			await userObj.save();
 			done(null, userObj);
 		} else {

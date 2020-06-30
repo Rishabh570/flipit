@@ -308,7 +308,7 @@ exports.disconnectGoogle = async (req, res, next) => {
 	const { user } = req;
 	try {
 		const userObj = await User.findById(user.id);
-		userObj.services.google = undefined;
+		userObj.google = { profileId: null, email: null };
 		await userObj.save();
 		res.redirect('/v1/status');
 	} catch (error) {
@@ -330,7 +330,7 @@ exports.disconnectFacebook = async (req, res, next) => {
 	const { user } = req;
 	try {
 		const userObj = await User.findById(user.id);
-		userObj.services.facebook = undefined;
+		userObj.facebook = { profileId: null, email: null };
 		await userObj.save();
 		res.redirect('/v1/status');
 	} catch (error) {

@@ -35,9 +35,13 @@ const userSchema = new mongoose.Schema(
 			maxlength: 128,
 			trim: true
 		},
-		services: {
-			google: String,
-			facebook: String
+		google: {
+			profileId: String,
+			email: String
+		},
+		facebook: {
+			profileId: String,
+			email: String
 		},
 		picture: {
 			type: String,
@@ -115,7 +119,13 @@ userSchema.statics = {
 	async findAndGenerateToken(options) {
 		const { email, refreshObject, password } = options;
 
-		const user = await this.findOne({ email }).exec();
+		const user = await this.findOne({
+			$or: [
+				{ email },
+				{ 'google.email': email },
+				{ 'facebook.email': email }
+			]
+		}).exec();
 		if (!user) {
 			throw new AppError(
 				'Incorrect email!',
@@ -176,10 +186,15 @@ userSchema.statics = {
 	 */
 	async oAuthLogin(service, id, email, displayName, picture) {
 		const user = await this.findOne({
-			$or: [{ [`services.${service}`]: id }, { email }]
+			$or: [
+				{ [`${service}.profileId`]: id },
+				{ [`${service}.email`]: email }
+			]
 		});
+
 		if (user) {
-			user.services[service] = id;
+			user.service.profileId = id;
+			user.service.email = email;
 			if (!user.name) {
 				user.name = displayName;
 			}
@@ -188,10 +203,11 @@ userSchema.statics = {
 			}
 			return user.save();
 		}
+		// Default password for a new user's oauth login is his/her email.
 		const password = email;
 
 		return this.create({
-			services: { [service]: id },
+			service: { profileId: id, email: email },
 			email,
 			password,
 			name: displayName,

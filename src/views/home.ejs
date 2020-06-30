@@ -44,13 +44,13 @@
 		<% } %>
 	
 	
-		<% if (!user.services.google) { %>
+		<% if (!user.google.profileId) { %>
 			<p>Connect your google account <a href="/v1/auth/connect/google">Connect Google!</a></p>
 		<% } else { %>
 			<p>Disconnect your google account <a href="/v1/auth/disconnect/google">Disconnect Google!</a></p>
 		<% } %>
 		
-		<% if (!user.services.facebook) { %>
+		<% if (!user.facebook.profileId) { %>
 			<p>Connect your facebook account <a href="/v1/auth/connect/facebook">Connect Facebook!</a></p>
 		<% } else { %>
 			<p>Disconnect your facebook account <a href="/v1/auth/disconnect/facebook">Disconnect Facebook!</a></p>
