@@ -7,7 +7,7 @@ const AppError = require('../utils/error.utils');
 const {
 	JWT_SECRET,
 	JWT_EXPIRATION_MINUTES,
-	RESET_TOKEN_EXPIRATION_MINUTES
+	RESET_TOKEN_EXPIRATION_MINUTES,
 } = require('../config/vars');
 
 /**
@@ -22,34 +22,34 @@ const userSchema = new mongoose.Schema(
 			unique: true,
 			trim: true,
 			lowercase: true,
-			index: { unique: true, background: true }
+			index: { unique: true, background: true },
 		},
 		password: {
 			type: String,
 			required: true,
 			minlength: 6,
-			maxlength: 64
+			maxlength: 64,
 		},
 		name: {
 			type: String,
 			maxlength: 128,
-			trim: true
+			trim: true,
 		},
 		google: {
 			profileId: String,
-			email: String
+			email: String,
 		},
 		facebook: {
 			profileId: String,
-			email: String
+			email: String,
 		},
 		picture: {
 			type: String,
-			trim: true
-		}
+			trim: true,
+		},
 	},
 	{
-		timestamps: true
+		timestamps: true,
 	}
 );
 
@@ -81,7 +81,7 @@ userSchema.method({
 				.add(JWT_EXPIRATION_MINUTES, 'minutes') // expires in 1 week but stays in cookie for 30 days
 				.unix(),
 			iat: moment().unix(),
-			sub: this._id
+			sub: this._id,
 		};
 		return jwt.sign(playtheload, JWT_SECRET);
 	},
@@ -96,14 +96,14 @@ userSchema.method({
 				.add(RESET_TOKEN_EXPIRATION_MINUTES, 'minutes') // expires in 10 min
 				.unix(),
 			iat: moment().unix(),
-			sub: this._id
+			sub: this._id,
 		};
 		return jwt.sign(playtheload, JWT_SECRET);
 	},
 
 	async passwordMatches(password) {
 		return bcrypt.compare(password, this.password);
-	}
+	},
 });
 
 /**
@@ -123,8 +123,8 @@ userSchema.statics = {
 			$or: [
 				{ email },
 				{ 'google.email': email },
-				{ 'facebook.email': email }
-			]
+				{ 'facebook.email': email },
+			],
 		}).exec();
 		if (!user) {
 			throw new AppError(
@@ -188,8 +188,8 @@ userSchema.statics = {
 		const user = await this.findOne({
 			$or: [
 				{ [`${service}.profileId`]: id },
-				{ [`${service}.email`]: email }
-			]
+				{ [`${service}.email`]: email },
+			],
 		});
 
 		if (user) {
@@ -206,9 +206,9 @@ userSchema.statics = {
 			email,
 			password,
 			name: displayName,
-			picture
+			picture,
 		});
-	}
+	},
 };
 
 /**

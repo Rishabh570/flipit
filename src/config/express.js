@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const csrf = require('csurf');
@@ -16,6 +17,7 @@ const methodOverride = require('method-override');
 const routes = require('../routes/index');
 const strategies = require('./passport');
 const {
+	env,
 	logs,
 	UPLOAD_LIMIT,
 	COOKIE_SECRET,
@@ -29,14 +31,24 @@ const app = express();
 Sentry.init({ dsn: SENTRY_DSN });
 
 // request logging. dev: console | production: file
-app.use(morgan(logs));
+app.use((req, res, next) => {
+	if (env === 'production') {
+		const accessLogStream = fs.createWriteStream(
+			path.join(__dirname, '../../access.log'),
+			{ flags: 'a' } // append mode
+		);
+		morgan(logs, { stream: accessLogStream })(req, res, next);
+	} else {
+		morgan(logs)(req, res, next);
+	}
+});
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
 /**
  * Parse body params and attach them to req.body
- * Using raw for ONLY /v1/item/webhook (in item routes)
+ * Using raw for ONLY /v1/item/webhook (override in specific routes)
  */
 app.use((req, res, next) => {
 	if (req.originalUrl === '/v1/item/webhook') next();
@@ -93,6 +105,8 @@ app.use(
 		name: 'cook-sess',
 		maxAge: COOKIE_TTL, // cookies will be removed after 30 days
 		secure: true,
+		httpOnly: true,
+		sameSite: 'strict',
 	})
 );
 
@@ -114,13 +128,13 @@ app.use('/*', (req, res) => res.send("You're lost!"));
 process.on('unhandledRejection', (err) => {
 	console.log('UNHANDLED REJECTION! 💥 Shutting down...');
 	console.log(err.name, err.message);
-	// process.exit(1);
+	process.exit(1);
 });
 
 process.on('uncaughtException', (err) => {
 	console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
 	console.log(err.name, err.message);
-	// process.exit(1);
+	process.exit(1);
 });
 app.use(stagingError);
 app.use(errorHandler);

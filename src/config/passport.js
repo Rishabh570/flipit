@@ -10,7 +10,7 @@ const {
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
 	FACEBOOK_APP_ID,
-	FACEBOOK_APP_SECRET
+	FACEBOOK_APP_SECRET,
 } = require('./vars');
 
 const time_multiplier = 1000;
@@ -43,7 +43,11 @@ passport.deserializeUser(async (id, done) => {
 const checkEmailAvailability = async (email) => {
 	// Check if this email is already used in some other account
 	const duplicateEmailObj = await User.findOne({
-		$or: [{ email }, { 'google.email': email }, { 'facebook.email': email }]
+		$or: [
+			{ email },
+			{ 'google.email': email },
+			{ 'facebook.email': email },
+		],
 	}).exec();
 
 	if (duplicateEmailObj) return false;
@@ -66,14 +70,14 @@ const cookieExtractor = (req) => {
 const jwtOptions = {
 	secretOrKey: JWT_SECRET,
 	jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-	ignoreExpiration: true // Passes the payload to verify callback function even if token is expired
+	ignoreExpiration: true, // Passes the payload to verify callback function even if token is expired
 };
 
 const googleOptions = {
 	clientID: GOOGLE_CLIENT_ID,
 	clientSecret: GOOGLE_CLIENT_SECRET,
 	callbackURL: '/v1/auth/google/callback',
-	passReqToCallback: true
+	passReqToCallback: true,
 };
 
 const facebookOptions = {
@@ -81,7 +85,7 @@ const facebookOptions = {
 	clientSecret: FACEBOOK_APP_SECRET,
 	callbackURL: '/v1/auth/facebook/callback',
 	profileFields: ['id', 'displayName', 'photos', 'email'],
-	passReqToCallback: true
+	passReqToCallback: true,
 	// enableProof: true,
 };
 
@@ -96,12 +100,12 @@ const jwt = async (payload, done) => {
 			moment(payload.exp).isBefore(new Date().getTime() / time_multiplier)
 		) {
 			const refreshObject = await RefreshToken.findOneAndRemove({
-				userEmail: userObj.email
+				userEmail: userObj.email,
 			});
 
 			const { user, accessToken } = await User.findAndGenerateToken({
 				email: userObj.email,
-				refreshObject
+				refreshObject,
 			});
 			await RefreshToken.generate(user); // Save new refresh token obj to DB
 
@@ -138,7 +142,7 @@ const googleAuth = async (req, accessToken, refreshToken, profile, done) => {
 			// Link this google account to the logged in user
 			userObj.google = {
 				profileId: profile.id,
-				email: profile._json.email
+				email: profile._json.email,
 			};
 			await userObj.save();
 			done(null, userObj);
@@ -175,7 +179,7 @@ const facebookAuth = async (req, accessToken, refreshToken, profile, done) => {
 			// Link this facebook account to the logged in user
 			userObj.facebook = {
 				profileId: profile.id,
-				email: profile.emails[0].value
+				email: profile.emails[0].value,
 			};
 			await userObj.save();
 			done(null, userObj);

@@ -4,7 +4,7 @@ const authController = require('../controller/auth.controller');
 const {
 	oAuthLogin,
 	verifyJWT,
-	verifyAnonymous
+	verifyAnonymous,
 } = require('../middlewares/auth');
 const { validate } = require('../validations/auth.validation');
 const router = express.Router();
