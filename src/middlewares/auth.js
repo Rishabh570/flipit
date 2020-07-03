@@ -1,4 +1,5 @@
 const passport = require('passport');
+// const { User } = require('../models/index');
 
 /**
  * JWT callback handler
@@ -47,3 +48,11 @@ exports.verifyAnonymous = () => (req, res, next) => {
 		next();
 	}
 };
+
+// exports.isOnboardingDone = () => async (req, res, next) => {
+// 	if(req && req.user && await req.user.passwordMatches(req.user.email)) {
+// 		res.redirect('/v1/auth/password/set');
+// 	} else {
+// 		next();
+// 	}
+// }

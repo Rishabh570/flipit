@@ -287,60 +287,62 @@ exports.oAuth = async (req, res, next) => {
 		await RefreshToken.generate(user);
 
 		res.cookie('token', accessToken); // Put the access token in the cookie
-		req.flash('notification', 'Successfully logged in 🙂');
-		res.redirect('/v1/status');
+		next();
 	} catch (error) {
-		const finalErr = new AppError(
-			'Something went wrong during social login!',
-			httpStatus.INTERNAL_SERVER_ERROR,
-			false
-		);
-		req.flash('notification', finalErr.message);
+		next(error);
+		req.flash('notification', error.message);
 		res.redirect('/v1/auth/login');
-		next(finalErr);
 	}
 };
 
 /**
  * Disconnects the linked Google account
  */
-exports.disconnectGoogle = async (req, res, next) => {
-	const { user } = req;
-	try {
-		const userObj = await User.findById(user.id);
-		userObj.google = { profileId: null, email: null };
-		await userObj.save();
-		res.redirect('/v1/status');
-	} catch (error) {
-		const finalErr = new AppError(
-			'Something went wrong during the unlinking of Google account!',
-			httpStatus.INTERNAL_SERVER_ERROR,
-			false
-		);
-		next(finalErr);
-		req.flash('notification', finalErr.message);
-		res.redirect('/v1/status');
-	}
-};
+// exports.disconnectGoogle = async (req, res, next) => {
+// 	const { user } = req;
+// 	try {
+// 		const userObj = await User.findById(user.id);
+// 		userObj.google = { profileId: null, email: null };
+// 		await userObj.save();
+// 		res.redirect('/v1/status');
+// 	} catch (error) {
+// 		const finalErr = new AppError(
+// 			'Something went wrong during the unlinking of Google account!',
+// 			httpStatus.INTERNAL_SERVER_ERROR,
+// 			false
+// 		);
+// 		next(finalErr);
+// 		req.flash('notification', finalErr.message);
+// 		res.redirect('/v1/status');
+// 	}
+// };
 
 /**
  * Disconnects the linked Facebook account
  */
-exports.disconnectFacebook = async (req, res, next) => {
-	const { user } = req;
-	try {
-		const userObj = await User.findById(user.id);
-		userObj.facebook = { profileId: null, email: null };
-		await userObj.save();
-		res.redirect('/v1/status');
-	} catch (error) {
-		const finalErr = new AppError(
-			'Something went wrong during the unlinking of Facebook account!',
-			httpStatus.INTERNAL_SERVER_ERROR,
-			false
-		);
-		next(finalErr);
-		req.flash('notification', finalErr.message);
-		res.redirect('/v1/status');
-	}
+// exports.disconnectFacebook = async (req, res, next) => {
+// 	const { user } = req;
+// 	try {
+// 		const userObj = await User.findById(user.id);
+// 		userObj.facebook = { profileId: null, email: null };
+// 		await userObj.save();
+// 		res.redirect('/v1/status');
+// 	} catch (error) {
+// 		const finalErr = new AppError(
+// 			'Something went wrong during the unlinking of Facebook account!',
+// 			httpStatus.INTERNAL_SERVER_ERROR,
+// 			false
+// 		);
+// 		next(finalErr);
+// 		req.flash('notification', finalErr.message);
+// 		res.redirect('/v1/status');
+// 	}
+// };
+
+/**
+ * Redirects to home page (currently /v1/status)
+ */
+exports.redirectLoggedIn = (req, res) => {
+	req.flash('notification', 'Successfully logged in 🙂');
+	res.redirect('/v1/status');
 };

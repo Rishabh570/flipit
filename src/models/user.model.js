@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 			minlength: 6,
-			maxlength: 128
+			maxlength: 64
 		},
 		name: {
 			type: String,
@@ -193,21 +193,16 @@ userSchema.statics = {
 		});
 
 		if (user) {
-			user.service.profileId = id;
-			user.service.email = email;
-			if (!user.name) {
-				user.name = displayName;
-			}
-			if (!user.picture) {
-				user.picture = picture;
-			}
+			user.service = { profileId: id, email };
+			if (!user.name) user.name = displayName;
+			if (!user.picture) user.picture = picture;
 			return user.save();
 		}
 		// Default password for a new user's oauth login is his/her email.
 		const password = email;
 
 		return this.create({
-			service: { profileId: id, email: email },
+			[`${service}`]: { profileId: id, email: email },
 			email,
 			password,
 			name: displayName,

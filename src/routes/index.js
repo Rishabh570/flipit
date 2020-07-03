@@ -3,7 +3,6 @@ const { verifyJWT } = require('../middlewares/auth');
 const authRoutes = require('./auth.route');
 const itemRoutes = require('./item.route');
 const homeController = require('../controller/home.controller');
-
 const router = express.Router();
 
 /**
@@ -16,9 +15,9 @@ router.route('/status').get(verifyJWT(), (req, res) => {
 /**
  * Other routes
  */
+router.use('/auth', authRoutes);
 router.use('/item', itemRoutes);
 router.get('/user', (req, res) => res.send(req.user));
-router.use('/auth', authRoutes);
 router.get('/', verifyJWT(), homeController.homeGET);
 
 module.exports = router;

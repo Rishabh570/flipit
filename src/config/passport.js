@@ -38,7 +38,20 @@ passport.deserializeUser(async (id, done) => {
 });
 
 /**
- * Passport strategies
+ * Utility functions
+ */
+const checkEmailAvailability = async (email) => {
+	// Check if this email is already used in some other account
+	const duplicateEmailObj = await User.findOne({
+		$or: [{ email }, { 'google.email': email }, { 'facebook.email': email }]
+	}).exec();
+
+	if (duplicateEmailObj) return false;
+	return true;
+};
+
+/**
+ * Passport strategy options
  */
 
 // Custom extractor for JWT
@@ -111,10 +124,22 @@ const jwt = async (payload, done) => {
 const googleAuth = async (req, accessToken, refreshToken, profile, done) => {
 	try {
 		if (req.user) {
+			const isEmailAvailable = await checkEmailAvailability(
+				profile._json.email
+			);
+			if (!isEmailAvailable) {
+				req.flash('notification', 'This email is already in use!');
+				return done(null, false);
+			}
+
 			const { user } = req;
 			const userObj = await User.findById(user.id);
-			userObj.google.profileId = profile.id;
-			userObj.google.email = profile._json.email;
+
+			// Link this google account to the logged in user
+			userObj.google = {
+				profileId: profile.id,
+				email: profile._json.email
+			};
 			await userObj.save();
 			done(null, userObj);
 		} else {
@@ -127,19 +152,31 @@ const googleAuth = async (req, accessToken, refreshToken, profile, done) => {
 			);
 			done(null, user);
 		}
-	} catch (e) {
-		console.log('Error in google verify function!!!');
-		done(e);
+	} catch (err) {
+		console.log('Error in google verify function!!!, e = ', err);
+		done(err);
 	}
 };
 
 const facebookAuth = async (req, accessToken, refreshToken, profile, done) => {
 	try {
 		if (req.user) {
+			const isEmailAvailable = await checkEmailAvailability(
+				profile.emails[0].value
+			);
+			if (!isEmailAvailable) {
+				req.flash('notification', 'This email is already in use!');
+				return done(null, false);
+			}
+
 			const { user } = req;
 			const userObj = await User.findById(user.id);
-			userObj.facebook.profileId = profile.id;
-			userObj.facebook.email = profile.emails[0].value;
+
+			// Link this facebook account to the logged in user
+			userObj.facebook = {
+				profileId: profile.id,
+				email: profile.emails[0].value
+			};
 			await userObj.save();
 			done(null, userObj);
 		} else {
@@ -152,9 +189,9 @@ const facebookAuth = async (req, accessToken, refreshToken, profile, done) => {
 			);
 			done(null, user);
 		}
-	} catch (e) {
-		console.log('Error in fb auth verify callback!!!');
-		done(e);
+	} catch (err) {
+		console.log('Error in fb auth verify callback!!!, err = ', err);
+		done(err);
 	}
 };
 

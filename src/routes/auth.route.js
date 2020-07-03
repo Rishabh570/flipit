@@ -88,8 +88,9 @@ router
 router
 	.route('/google/callback')
 	.get(
-		oAuthLogin('google', { failureRedirect: '/login' }),
-		authController.oAuth
+		oAuthLogin('google', { failureRedirect: '/v1/auth/login' }),
+		authController.oAuth,
+		authController.redirectLoggedIn
 	);
 
 router
@@ -100,16 +101,17 @@ router
 	.route('/connect/google/callback')
 	.get(
 		passport.authorize('google', { failureRedirect: '/v1/auth/login' }),
-		authController.oAuth
+		authController.oAuth,
+		authController.redirectLoggedIn
 	);
 
 router
 	.route('/connect/google')
 	.get(passport.authorize('google', { scope: ['profile', 'email'] }));
 
-router
-	.route('/disconnect/google')
-	.get(verifyJWT(), authController.disconnectGoogle);
+// router
+// 	.route('/disconnect/google')
+// 	.get(verifyJWT(), authController.disconnectGoogle);
 
 /**
  * Facebook auth routes
@@ -119,7 +121,8 @@ router
 	.route('/facebook/callback')
 	.get(
 		oAuthLogin('facebook', { failureRedirect: '/v1/auth/login' }),
-		authController.oAuth
+		authController.oAuth,
+		authController.redirectLoggedIn
 	);
 
 router.route('/facebook').get(oAuthLogin('facebook', { scope: ['email'] }));
@@ -128,16 +131,17 @@ router
 	.route('/connect/facebook/callback')
 	.get(
 		passport.authorize('facebook', { failureRedirect: '/v1/auth/login' }),
-		authController.oAuth
+		authController.oAuth,
+		authController.redirectLoggedIn
 	);
 
 router
 	.route('/connect/facebook')
 	.get(passport.authorize('facebook', { scope: ['email'] }));
 
-router
-	.route('/disconnect/facebook')
-	.get(verifyJWT(), authController.disconnectFacebook);
+// router
+// 	.route('/disconnect/facebook')
+// 	.get(verifyJWT(), authController.disconnectFacebook);
 
 // EXPORTS
 module.exports = router;
