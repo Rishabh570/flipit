@@ -1,36 +1,61 @@
-<% if (!user) { %>
-	<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
-<% } else { %>
-	<h1>Hi, <%= user.name %>.</h1>
-	<p>Go ahead and post what you're flipping today 😉.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+	<title>Sell</title>
+</head>
+<body>
+	<% if (!user) { %>
+		<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
+	<% } else { %>
+		<h1>Hi, <%= user.name %>.</h1>
+		<p>Go ahead and post what you're flipping today 😉.</p>
+		
+		<br>
 	
-	<br>
-
-	<form name="sell" method="POST" action="/v1/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data">
-		<table>
-			<tr>
-				<td>Name: </td>
-				<td><input type="text" name="name"></td>
-			</tr>
-			<tr>
-				<td>Price: INR </td>
-				<td><input type="number" name="price" min="1"></td>
-			</tr>
-			<tr>
-				<td>Condition: </td>
-				<td><input type="number" name="condition" min="1" max="5"></td>
-			</tr>
-			<tr>
-				<td>Add product images: </td>
-				<td><input type="file" id="upload_imgs" name="upload_imgs" multiple /></td>
-			</tr>
-			<tr>
-			<td colspan="2"><input type="submit" value="Save" ></td>
-			</tr>
-
-		</table>
-	</form>
-
-
-
-<% } %>
+		<% if (messages.notification) { %>
+			<script>
+				Toastify({
+					text: '<%= messages.notification %>',
+					backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+					className: "info",
+				}).showToast();
+			</script>
+		<% } %>
+	
+	
+		<form name="sell" method="POST" action="/v1/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data">
+			<table>
+				<tr>
+					<td>Name: </td>
+					<td><input type="text" name="name"></td>
+				</tr>
+				<tr>
+					<td>Price: INR </td>
+					<td><input type="number" name="price" min="1"></td>
+				</tr>
+				<tr>
+					<td>Condition: </td>
+					<td><input type="number" name="condition" min="1" max="5"></td>
+				</tr>
+				<tr>
+					<td>Add product images: </td>
+					<td><input type="file" id="upload_imgs" name="upload_imgs" multiple /></td>
+				</tr>
+				<tr>
+				<td colspan="2"><input type="submit" value="Save" ></td>
+				</tr>
+	
+			</table>
+		</form>
+	
+	
+	
+	<% } %>
+	
+</body>
+</html>

@@ -12,26 +12,20 @@
   <body>
     <div class="sr-root">
       <div class="sr-main">
-        <header class="sr-header">
-          <div class="sr-header__logo"></div>
-		</header>
-		
-		<input type="hidden" id="item_id" value=<%= item.id %>>
-        <section class="container" id=<%= item.priceId %>>
-          <div>
-            <div class="pasha-image">
-              <img src="https://picsum.photos/280/320?random=4" width="140" height="160" />
-            </div>
-		  </div>
-		  
-		  
-          <p class="sr-legal-text"></p>
+        
+		<section class="container" id=<%= item.priceId %>>
+			<h1>Item name: <%= item.name %> </h1>
+			<h3>Condition: <%= item.condition %> </h3>
+			<h3>Quantity: 1</h3>
 
-          <button id="submit">Buy for <%= item.price %></button>
+			<input type="hidden" id="_csrf" name="_csrf" value="<%= locals.csrfToken %>">
+			<input type="hidden" id="item_id" value=<%= item.id %>>
+	
+			<button id="sub">Buy for <%= item.price %></button>
 		</section>
-		
-        <div id="error-message"></div>
-	  
+
+		<div class="error-message"></div>
+
 	  </div>
     </div>
   </body>

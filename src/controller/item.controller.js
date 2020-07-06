@@ -10,6 +10,7 @@ const {
 	MAX_PRODUCT_IMAGES_ALLOWED,
 } = require('../config/vars');
 const stripe = require('stripe')(STRIPE_SECRET_KEY);
+
 // const {
 // 	sendEmail,
 // 	confirmationForBuyer,
