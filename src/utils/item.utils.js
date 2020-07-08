@@ -1,3 +1,4 @@
+'use-strict';
 const httpStatus = require('http-status');
 const AppError = require('../utils/error.utils');
 const { STRIPE_SECRET_KEY } = require('../config/vars');

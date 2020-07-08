@@ -1,3 +1,4 @@
+'use-strict';
 const passport = require('passport');
 const moment = require('moment-timezone');
 const { ExtractJwt } = require('passport-jwt');

@@ -1,4 +1,6 @@
+'use-strict';
 const fs = require('fs');
+const hpp = require('hpp');
 const path = require('path');
 const cors = require('cors');
 const csrf = require('csurf');
@@ -6,7 +8,9 @@ const Redis = require('redis');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const express = require('express');
+const nocache = require('nocache');
 const passport = require('passport');
+const expectCt = require('expect-ct');
 const toobusy = require('toobusy-js');
 const flash = require('express-flash');
 const Sentry = require('@sentry/node');
@@ -34,6 +38,14 @@ const app = express();
 
 // Enforces HTTPS, redirect to HTTPS if using HTTP
 app.use(express_enforces_ssl());
+
+// Tells browsers to expect Certificate Transparency
+app.use(
+	expectCt({
+		maxAge: 30, // for 30 seconds
+		enforce: false,
+	})
+);
 
 // Initialize sentry
 Sentry.init({ dsn: SENTRY_DSN });
@@ -73,7 +85,7 @@ app.use(
  */
 app.use((req, res, next) => {
 	if (toobusy()) {
-		res.send(503, 'Server is too busy right now, sorry 🥺');
+		res.status(503).send('Server is too busy right now, sorry 🥺');
 	} else {
 		next();
 	}
@@ -97,6 +109,9 @@ app.use((req, res, next) => {
 		})(req, res, next);
 });
 
+// Protects from HTTP parameter pollution
+app.use(hpp());
+
 // Setting up cookie parser
 app.use(cookieParser(COOKIE_SECRET));
 
@@ -117,8 +132,9 @@ app.use(compress());
 // in places where the client doesn't support it
 app.use(methodOverride());
 
-// Hide X-Powered-By header
-app.disable('x-powered-by');
+// Hide the original X-Powered-By header,
+// Show a wrong value of header
+app.use(helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' }));
 
 // Tells browser to visit only HTTPS,
 // doesn't redirect HTTP to HTTPS though
@@ -150,8 +166,18 @@ app.use(
 // Sets "X-DNS-Prefetch-Control: off".
 app.use(helmet.dnsPrefetchControl());
 
+// Prevents anyone from putting this page in an iframe
+// unless it's on the same origin
+app.use(helmet.frameguard({ action: 'sameorigin' }));
+
 // Sets "X-Content-Type-Options: nosniff".
 app.use(helmet.noSniff());
+
+// Adds cache-control and pragma header for no cache
+app.use(nocache());
+
+// Prevents IE from executing downloaded files in site's context
+app.use(helmet.ieNoOpen());
 
 // Sets "Referrer-Policy: same-origin".
 app.use(helmet.referrerPolicy({ policy: 'same-origin' }));

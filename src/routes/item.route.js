@@ -1,3 +1,4 @@
+'use-strict';
 const express = require('express');
 const bodyParser = require('body-parser');
 const upload = require('../middlewares/upload');

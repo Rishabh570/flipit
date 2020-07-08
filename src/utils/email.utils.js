@@ -1,3 +1,4 @@
+'use-strict';
 const fs = require('fs');
 const ejs = require('ejs');
 const sgMail = require('@sendgrid/mail');

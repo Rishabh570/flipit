@@ -1,3 +1,4 @@
+'use-strict';
 const express = require('express');
 const { verifyJWT } = require('../middlewares/auth');
 const authRoutes = require('./auth.route');

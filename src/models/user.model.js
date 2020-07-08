@@ -1,3 +1,4 @@
+'use-strict';
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const bcrypt = require('bcrypt');

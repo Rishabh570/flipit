@@ -1,3 +1,4 @@
+'use-strict';
 const httpStatus = require('http-status');
 const { Item, User } = require('../models/index');
 const AppError = require('../utils/error.utils');

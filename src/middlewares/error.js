@@ -1,10 +1,9 @@
+'use-strict';
 const Sentry = require('@sentry/node');
 // const { env } = require('../config/vars');
 const AppError = require('../utils/error.utils');
 
 const errorHandler = (err, req, res, next) => {
-	console.log('>>>> In errorHandler, err = ', err);
-
 	/**
 	 * Non-operational errors are programming errors
 	 * Send these types of errors to sentry
@@ -17,8 +16,6 @@ const errorHandler = (err, req, res, next) => {
 exports.errorHandler = errorHandler;
 
 exports.stagingError = (err, req, res, next) => {
-	console.log('>>>> STAGING ERR, err = ', err);
-
 	// Not an AppError? Convert it.
 	if (err.name === 'ValidationError') {
 		const stagedErr = new AppError({

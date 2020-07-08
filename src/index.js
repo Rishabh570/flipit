@@ -1,3 +1,4 @@
+'use-strict';
 const fs = require('fs');
 const spdy = require('spdy'); // for HTTP2
 const { port, env } = require('./config/vars');

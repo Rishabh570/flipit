@@ -1,3 +1,4 @@
+'use-strict';
 const mongoose = require('mongoose');
 const { mongo, env } = require('./vars');
 const PROCESS_EXIT_FAIL = -1;
