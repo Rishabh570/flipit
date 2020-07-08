@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const csrf = require('csurf');
+const Redis = require('redis');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const express = require('express');
@@ -12,6 +13,8 @@ const Sentry = require('@sentry/node');
 const compress = require('compression');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const RedisStore = require('rate-limit-redis');
+const RateLimit = require('express-rate-limit');
 const cookieSession = require('cookie-session');
 const methodOverride = require('method-override');
 const express_enforces_ssl = require('express-enforces-ssl');
@@ -50,6 +53,19 @@ app.use((req, res, next) => {
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
+
+// Enable rate limiter, prevents from DDoS attack
+app.use(
+	RateLimit({
+		store: new RedisStore({
+			client: Redis.createClient(),
+		}),
+		windowMs: 10 * 60 * 1000, // 10 minutes
+		max: 100, // limit each IP to 100 requests per windowMs
+		headers: true,
+		message: 'You have exceeded the 100 requests in 10 minutes limit!',
+	})
+);
 
 /** Middleware which blocks requests when the server's too busy
  * Default lag threshold: 70 ms (90-100% CPU utilization on average)
