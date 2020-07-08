@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const express = require('express');
 const passport = require('passport');
+const toobusy = require('toobusy-js');
 const flash = require('express-flash');
 const Sentry = require('@sentry/node');
 const compress = require('compression');
@@ -49,6 +50,18 @@ app.use((req, res, next) => {
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
+
+/** Middleware which blocks requests when the server's too busy
+ * Default lag threshold: 70 ms (90-100% CPU utilization on average)
+ * Default check interval: 500 ms
+ */
+app.use((req, res, next) => {
+	if (toobusy()) {
+		res.send(503, 'Server is too busy right now, sorry 🥺');
+	} else {
+		next();
+	}
+});
 
 /**
  * Parse body params and attach them to req.body
