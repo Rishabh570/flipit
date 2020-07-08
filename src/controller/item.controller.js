@@ -42,7 +42,7 @@ exports.sellPOST = async (req, res, next) => {
 			);
 		}
 		const pictures_array = req.files.map((picture) => picture.filename);
-		req.body.pictures = pictures_array; // Store only names of the pictures in DB, actual blob will be saved in S3
+		req.body.pictures = pictures_array; // Storing the names in the DB for reference
 
 		const item = await new Item(req.body).save();
 		await createStripeEntry(item);

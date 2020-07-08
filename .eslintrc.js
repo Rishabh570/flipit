@@ -14,6 +14,6 @@ module.exports = {
 	rules: {
 		'prettier/prettier': 'error',
 		'global-require': 2,
-		'max-len': ['error', { code: 180 }],
+		'max-len': ['error', { code: 110 }],
 	},
 };

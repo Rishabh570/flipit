@@ -101,7 +101,6 @@ router
 	.route('/connect/google/callback')
 	.get(
 		passport.authorize('google', { failureRedirect: '/v1/auth/login' }),
-		authController.oAuth,
 		authController.redirectLoggedIn
 	);
 
@@ -131,7 +130,6 @@ router
 	.route('/connect/facebook/callback')
 	.get(
 		passport.authorize('facebook', { failureRedirect: '/v1/auth/login' }),
-		authController.oAuth,
 		authController.redirectLoggedIn
 	);
 

@@ -13,6 +13,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const methodOverride = require('method-override');
+const express_enforces_ssl = require('express-enforces-ssl');
 
 const routes = require('../routes/index');
 const strategies = require('./passport');
@@ -26,6 +27,9 @@ const {
 } = require('./vars');
 const { errorHandler, stagingError } = require('../middlewares/error');
 const app = express();
+
+// Enforces HTTPS, redirect to HTTPS if using HTTP
+app.use(express_enforces_ssl());
 
 // Initialize sentry
 Sentry.init({ dsn: SENTRY_DSN });
@@ -48,7 +52,7 @@ app.use(cors());
 
 /**
  * Parse body params and attach them to req.body
- * Using raw for ONLY /v1/item/webhook (override in specific routes)
+ * Using raw for ONLY /v1/item/webhook (override in specific route)
  */
 app.use((req, res, next) => {
 	if (req.originalUrl === '/v1/item/webhook') next();
@@ -58,11 +62,10 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
 	if (req.originalUrl === '/v1/item/webhook') next();
 	else
-		bodyParser.urlencoded({ extended: true, limit: `${UPLOAD_LIMIT}mb` })(
-			req,
-			res,
-			next
-		);
+		bodyParser.urlencoded({
+			extended: true,
+			limit: `${UPLOAD_LIMIT}mb`,
+		})(req, res, next);
 });
 
 // Setting up cookie parser
@@ -85,8 +88,44 @@ app.use(compress());
 // in places where the client doesn't support it
 app.use(methodOverride());
 
-// secure apps by setting various HTTP headers
-app.use(helmet());
+// Hide X-Powered-By header
+app.disable('x-powered-by');
+
+// Tells browser to visit only HTTPS,
+// doesn't redirect HTTP to HTTPS though
+app.use(
+	helmet.hsts({
+		maxAge: 5184000, // 60 days in sec
+		includeSubDomains: false,
+	})
+);
+
+// Sets "X-XSS-Protection: 1; mode=block".
+app.use(helmet.xssFilter());
+
+// Whitelisted Content Security Policy directives
+app.use(
+	helmet.contentSecurityPolicy({
+		directives: {
+			defaultSrc: ["'self'"],
+			styleSrc: ["'self'", 'cdn.jsdelivr.net'],
+			scriptSrc: [
+				"'self'",
+				'cdn.jsdelivr.net',
+				"'unsafe-inline'", // Unsafe-inline is temp, change to hash
+			],
+		},
+	})
+);
+
+// Sets "X-DNS-Prefetch-Control: off".
+app.use(helmet.dnsPrefetchControl());
+
+// Sets "X-Content-Type-Options: nosniff".
+app.use(helmet.noSniff());
+
+// Sets "Referrer-Policy: same-origin".
+app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -106,7 +145,10 @@ app.use(
 		maxAge: COOKIE_TTL, // cookies will be removed after 30 days
 		secure: true,
 		httpOnly: true,
-		sameSite: 'strict',
+
+		// 'strict' doesn't work when you have to redirect to google/fb page to enter credentials
+		// but when you're already logged in to google/fb, it works just fine.
+		sameSite: 'lax',
 	})
 );
 

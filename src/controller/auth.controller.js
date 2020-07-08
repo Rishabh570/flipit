@@ -172,10 +172,10 @@ exports.changePasswordPOST = async (req, res, next) => {
 /**
  * Reset Password controller.
  */
-exports.resetPasswordGET = (req, res, next) => {
+exports.resetPasswordGET = async (req, res, next) => {
 	const { token } = req.params;
 	try {
-		jwt.verify(token, JWT_SECRET, (err, payload) => {
+		await jwt.verify(token, JWT_SECRET, (err, payload) => {
 			if (err || payload === null) {
 				throw new AppError(
 					'The reset password link has either expired or is invalid 😟',
@@ -200,7 +200,7 @@ exports.resetPasswordPOST = async (req, res, next) => {
 		// Check for validation errors first
 		handleValidation(req);
 
-		jwt.verify(token, JWT_SECRET, async (err, payload) => {
+		await jwt.verify(token, JWT_SECRET, async (err, payload) => {
 			if (err || payload === null) {
 				throw new AppError(
 					'The reset password link has either expired or is invalid 😟',
