@@ -2,7 +2,7 @@ node_modules/
 .env
 
 # Logging
-access.log
+logs/app.log
 
 # Stripe
 stripe_backup_code.txt

@@ -1,5 +1,4 @@
 'use-strict';
-const fs = require('fs');
 const hpp = require('hpp');
 const path = require('path');
 const cors = require('cors');
@@ -25,8 +24,8 @@ const express_enforces_ssl = require('express-enforces-ssl');
 
 const routes = require('../routes/index');
 const strategies = require('./passport');
+const winston = require('../config/winston');
 const {
-	env,
 	logs,
 	UPLOAD_LIMIT,
 	COOKIE_SECRET,
@@ -51,17 +50,7 @@ app.use(
 Sentry.init({ dsn: SENTRY_DSN });
 
 // request logging. dev: console | production: file
-app.use((req, res, next) => {
-	if (env === 'production') {
-		const accessLogStream = fs.createWriteStream(
-			path.join(__dirname, '../../access.log'),
-			{ flags: 'a' } // append mode
-		);
-		morgan(logs, { stream: accessLogStream })(req, res, next);
-	} else {
-		morgan(logs)(req, res, next);
-	}
-});
+app.use(morgan(logs, { stream: winston.stream }));
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
