@@ -84,6 +84,12 @@ router
 	);
 
 /**
+ * Confirm action route
+ * Checks for password validity before doing supposedly super secure work
+ */
+router.route('/confirm-action').post(verifyJWT(), authController.confirmAction);
+
+/**
  * Google Auth Routes
  */
 router

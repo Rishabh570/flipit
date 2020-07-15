@@ -1,11 +1,10 @@
 'use-strict';
 const passport = require('passport');
-const moment = require('moment-timezone');
 const { ExtractJwt } = require('passport-jwt');
 const jwtStrategy = require('passport-jwt').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStategy = require('passport-google-oauth20').Strategy;
-const { User, RefreshToken } = require('../models/index');
+const { User } = require('../models/index');
 const {
 	JWT_SECRET,
 	GOOGLE_CLIENT_ID,
@@ -13,8 +12,6 @@ const {
 	FACEBOOK_APP_ID,
 	FACEBOOK_APP_SECRET,
 } = require('./vars');
-
-const time_multiplier = 1000;
 
 /**
  * It is invoked right when the any strategy
@@ -71,7 +68,7 @@ const cookieExtractor = (req) => {
 const jwtOptions = {
 	secretOrKey: JWT_SECRET,
 	jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-	ignoreExpiration: true, // Passes the payload to verify callback function even if token is expired
+	ignoreExpiration: false, // When true, Passes the payload to verify callback function regardless
 };
 
 const googleOptions = {
@@ -96,27 +93,6 @@ const facebookOptions = {
 const jwt = async (payload, done) => {
 	try {
 		const userObj = await User.findById(payload.sub);
-
-		if (
-			moment(payload.exp).isBefore(new Date().getTime() / time_multiplier)
-		) {
-			const refreshObject = await RefreshToken.findOneAndRemove({
-				userEmail: userObj.email,
-			});
-
-			const { user, accessToken } = await User.findAndGenerateToken({
-				email: userObj.email,
-				refreshObject,
-			});
-			await RefreshToken.generate(user); // Save new refresh token obj to DB
-
-			// Store the access token in user object TEMPORARILY.
-			// This is deleted right after we've updated its value in the cookie
-			user.access_token = accessToken;
-
-			return done(null, user);
-		}
-
 		return done(null, userObj);
 	} catch (error) {
 		return done(null, error);

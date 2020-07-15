@@ -3,7 +3,6 @@ const hpp = require('hpp');
 const path = require('path');
 const cors = require('cors');
 const csrf = require('csurf');
-const Redis = require('redis');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const express = require('express');
@@ -16,7 +15,7 @@ const Sentry = require('@sentry/node');
 const compress = require('compression');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const RedisStore = require('rate-limit-redis');
+const MongoStore = require('rate-limit-mongo');
 const RateLimit = require('express-rate-limit');
 const cookieSession = require('cookie-session');
 const methodOverride = require('method-override');
@@ -27,6 +26,7 @@ const strategies = require('./passport');
 const winston = require('../config/winston');
 const {
 	logs,
+	mongo,
 	UPLOAD_LIMIT,
 	COOKIE_SECRET,
 	COOKIE_TTL,
@@ -54,31 +54,6 @@ app.use(morgan(logs, { stream: winston.stream }));
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
-
-// Enable rate limiter, prevents from DDoS attack
-app.use(
-	RateLimit({
-		store: new RedisStore({
-			client: Redis.createClient(),
-		}),
-		windowMs: 10 * 60 * 1000, // 10 minutes
-		max: 100, // limit each IP to 100 requests per windowMs
-		headers: true,
-		message: 'You have exceeded the 100 requests in 10 minutes limit!',
-	})
-);
-
-/** Middleware which blocks requests when the server's too busy
- * Default lag threshold: 70 ms (90-100% CPU utilization on average)
- * Default check interval: 500 ms
- */
-app.use((req, res, next) => {
-	if (toobusy()) {
-		res.status(503).send('Server is too busy right now, sorry 🥺');
-	} else {
-		next();
-	}
-});
 
 /**
  * Parse body params and attach them to req.body
@@ -141,11 +116,19 @@ app.use(helmet.xssFilter());
 app.use(
 	helmet.contentSecurityPolicy({
 		directives: {
-			defaultSrc: ["'self'"],
-			styleSrc: ["'self'", 'cdn.jsdelivr.net'],
+			defaultSrc: ["'self'", 'js.stripe.com'],
+			styleSrc: [
+				"'self'",
+				'cdn.jsdelivr.net',
+				'stackpath.bootstrapcdn.com',
+			],
 			scriptSrc: [
 				"'self'",
 				'cdn.jsdelivr.net',
+				'js.stripe.com',
+				'ajax.googleapis.com',
+				'cdnjs.cloudflare.com',
+				'maxcdn.bootstrapcdn.com',
 				"'unsafe-inline'", // Unsafe-inline is temp, change to hash
 			],
 		},
@@ -185,7 +168,7 @@ app.use(express.static(path.join(__dirname, '../../public')));
 app.use(
 	cookieSession({
 		secret: COOKIE_SECRET,
-		name: 'cook-sess',
+		name: 'id',
 		maxAge: COOKIE_TTL, // cookies will be removed after 30 days
 		secure: true,
 		httpOnly: true,
@@ -205,6 +188,32 @@ app.use(passport.session());
 passport.use('jwt', strategies.jwt);
 passport.use('google', strategies.google);
 passport.use('facebook', strategies.facebook);
+
+// Enable rate limiter, prevents from DDoS attack
+app.use(
+	RateLimit({
+		store: new MongoStore({
+			uri: `${mongo.uri}`,
+			expireTimeMs: 10 * 60 * 1000, // 10 minutes
+		}),
+		windowMs: 10 * 60 * 1000, // 10 minutes
+		max: 500, // limit each IP to 200 requests per windowMs
+		headers: true,
+		message: 'You have exceeded the 500 requests in 10 minutes limit!',
+	})
+);
+
+/** Middleware which blocks requests when the server's too busy
+ * Default lag threshold: 70 ms (90-100% CPU utilization on average)
+ * Default check interval: 500 ms
+ */
+app.use((req, res, next) => {
+	if (toobusy()) {
+		res.status(503).send('Server is too busy right now, sorry 🥺');
+	} else {
+		next();
+	}
+});
 
 // Mount API v1 routes
 app.use('/v1', routes);

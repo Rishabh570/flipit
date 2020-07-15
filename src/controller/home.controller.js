@@ -25,6 +25,10 @@ exports.homeGET = async (req, res, next) => {
 		);
 		next(finalErr);
 		req.flash('notification', finalErr.message);
-		res.redirect('/v1');
+		res.redirect('/v1/listings');
 	}
+};
+
+exports.landingGET = async (req, res) => {
+	res.render('landing');
 };

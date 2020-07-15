@@ -47,9 +47,27 @@ exports.registerPOST = async (req, res, next) => {
 
 /**
  * Login controller.
+ * If access token is expired and present in cookie,
+ * re-generate a fresh access token and refresh token
  */
-exports.loginGET = (req, res) => {
-	res.render('login');
+exports.loginGET = async (req, res) => {
+	const { token } = req.cookies;
+	if (token === undefined || token === null) {
+		return res.render('login');
+	}
+	const payload = jwt.decode(token);
+	const refreshObject = await RefreshToken.findOneAndRemove({
+		userId: payload.sub,
+	});
+
+	const { user, accessToken } = await User.findAndGenerateToken({
+		email: refreshObject.userEmail,
+		refreshObject,
+	});
+
+	await RefreshToken.generate(user); // Save new refresh token obj to DB
+	res.cookie('token', accessToken); // Set the newly generated token in the cookie
+	res.redirect('/v1/status');
 };
 
 exports.loginPOST = async (req, res, next) => {
@@ -274,6 +292,19 @@ exports.forgotPasswordPOST = async (req, res, next) => {
 		next(error);
 		req.flash('notification', error.message);
 		res.redirect('/v1/auth/login');
+	}
+};
+
+exports.confirmAction = async (req, res, next) => {
+	const { user } = req;
+	const { password } = req.body;
+	try {
+		if (await user.passwordMatches(password)) {
+			return res.status(200).send('ok');
+		}
+		return res.status(httpStatus['BAD_REQUEST']).send('failed');
+	} catch (err) {
+		next(err);
 	}
 };
 

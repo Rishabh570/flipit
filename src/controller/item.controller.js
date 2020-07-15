@@ -48,7 +48,7 @@ exports.sellPOST = async (req, res, next) => {
 		const item = await new Item(req.body).save();
 		await createStripeEntry(item);
 		req.flash('notification', 'Item posted successfully 🙂');
-		res.redirect('/v1');
+		res.redirect('/v1/listings');
 	} catch (error) {
 		next(error);
 		req.flash('notification', error.message);
@@ -95,7 +95,7 @@ exports.checkoutItem = async (req, res, next) => {
 		);
 		next(finalErr);
 		req.flash('notification', finalErr.message);
-		res.redirect('/v1');
+		res.redirect('/v1/listings');
 	}
 };
 
@@ -105,7 +105,7 @@ exports.checkoutItem = async (req, res, next) => {
 exports.checkoutSuccess = async (req, res, next) => {
 	const { session_id } = req.query;
 	if (session_id === undefined || session_id === null) {
-		return res.redirect('/v1');
+		return res.redirect('/v1/listings');
 	}
 	stripe.checkout.sessions.retrieve(session_id, (err, checkout_session) => {
 		if (err) {
@@ -116,12 +116,12 @@ exports.checkoutSuccess = async (req, res, next) => {
 			);
 			next(finalErr);
 			req.flash('notification', finalErr.message);
-			return res.redirect('/v1');
+			return res.redirect('/v1/listings');
 		}
 		if (checkout_session.customer_email === req.user.email) {
 			return res.render('checkout-success', { user: req.user });
 		}
-		return res.redirect('/v1');
+		return res.redirect('/v1/listings');
 	});
 };
 

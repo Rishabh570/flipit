@@ -8,7 +8,13 @@ const passport = require('passport');
 const handleJWT = (req, res, next) => (err, user, info) => {
 	const error = err || info;
 	try {
+		if (!user) {
+			// Logout the user because access token is expired
+			req.session = null;
+			req.logout();
+		}
 		if (error || !user) throw error;
+
 		req.logIn(user, (err) => {
 			if (err) {
 				return next(err);
@@ -23,7 +29,7 @@ const handleJWT = (req, res, next) => (err, user, info) => {
 		});
 	} catch (e) {
 		console.log('ERROR IN JWT HANDLER = ', e.message);
-		res.redirect('/v1/auth/login');
+		return res.redirect('/v1');
 	}
 };
 

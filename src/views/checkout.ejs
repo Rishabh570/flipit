@@ -3,16 +3,42 @@
   <head>
     <meta charset="utf-8" />
     <title>Checkout Page</title>
-
-    <!-- Load Stripe.js on your website. -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<!-- Load Stripe.js on your website. -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
     <script src="/js/client.js" defer></script>
   </head>
 
   <body>
     <div class="sr-root">
-      <div class="sr-main">
-        
+		<div class="sr-main">
+		
+		<!-- MODAL STARTS -->
+		<div class="modal fade" id="myModal" data-backdrop="static">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Password Confirmation</h4>
+					</div>
+					<div class="modal-body">
+						<div id="confirm-buy-action">
+							<input type="hidden" id="confirm-action-csrf" name="_csrf" value="<%= locals.csrfToken %>">
+							<div class="form-group">
+								<label for="confirmActionPassword">Please enter your password to continue.</label>
+								<input type="password" class="form-control" id="confirmActionPassword">
+							</div>
+							<button id="sub" type="button" class="btn btn-outline-info">Submit</button>
+							<button id="confirmActionCancel" type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- MODAL ENDS -->
+		
 		<section class="container" id=<%= item.priceId %>>
 			<h1>Item name: <%= item.name %> </h1>
 			<h3>Condition: <%= item.condition %> </h3>
@@ -21,7 +47,8 @@
 			<input type="hidden" id="_csrf" name="_csrf" value="<%= locals.csrfToken %>">
 			<input type="hidden" id="item_id" value=<%= item.id %>>
 	
-			<button id="sub">Buy for <%= item.price %></button>
+			<!-- This also acts as modal button -->
+			<button id="modalToggleBtn" class="btn btn-success" data-toggle="modal" data-target="#myModal">Buy for <%= item.price %></button>
 		</section>
 
 		<div class="error-message"></div>
