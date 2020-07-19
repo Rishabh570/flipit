@@ -1,61 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 	<title>Sell</title>
+	<%- include ('./partials/head.ejs') %> 
+	<link rel="stylesheet" href="/css/sell.css">
+	<script>
+		$("#upload_imgs").on("change", function(e) {
+			console.log('files: ', files);
+			const files = e.target.nodeValue;
+			$(this).siblings(".upload_imgs").addClass("selected").html(files);
+		});
+	</script>
+	</script>
 </head>
 <body>
-	<% if (!user) { %>
-		<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
-	<% } else { %>
-		<h1>Hi, <%= user.name %>.</h1>
-		<p>Go ahead and post what you're flipping today 😉.</p>
+
+	<header>
+		<%- include ('./partials/header.ejs') %> 
+	</header>
+
+	<main>
+		<% if (!user) { %>
+			<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
+		<% } else { %>
+			
+			<!-- Shows notification -->
+			<% if (messages.notification) { %>
+				<script>
+					Toastify({
+						text: '<%= messages.notification %>',
+						backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+						className: "info",
+					}).showToast();
+				</script>
+			<% } %>
+			<!-- notification ends -->
+
+			<!-- JUMBOTRON STARTS -->
+			<div class="jumbotron jumbotron-fluid" id="banner">
+				<div class="container text-center">
+					<h1 class="display-5">Go ahead and post what you're flippin' today 🛒</h1>
+				</div>
+			</div>
+			<!-- JUMBOTRON ENDS -->
 		
-		<br>
-	
-		<% if (messages.notification) { %>
-			<script>
-				Toastify({
-					text: '<%= messages.notification %>',
-					backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-					className: "info",
-				}).showToast();
-			</script>
+			<!-- SELL FORM starts -->
+			<section class="container-fluid w-75 h-50 my-4">
+				<form name="sell" method="POST" action="/v1/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data" autocomplete="off" class="form" role="form">
+					<div class="form-group">
+						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+					</div>
+					<div class="form-group">
+						<label for="inputName1">Name</label> 
+						<input name="name" class="form-control" id="inputName1" placeholder="Name" required type="text">
+					</div>
+					<div class="form-group">
+						<label for="inputPrice2">Price</label> 
+						<input type="number" name="price" min="1" class="form-control" id="inputPrice2" placeholder="Price" required> 
+					</div>
+					<div class="form-group">
+						<label for="inputCondition3">Condition</label>
+						<input type="number" name="condition" min="1" max="5" id="inputCondition3" required>
+					</div>
+					<div class="form-group file-input">
+						<input type="file" class="custom-file-input" id="upload_imgs" name="upload_imgs" data-multiple-caption="{count} files selected" multiple required>
+						<label class="custom-file-label" for="upload_imgs">Choose Product Images</label>
+					</div>
+					<div class="form-group">
+						<button class="btn btn-danger" type="submit">Submit</button>
+					</div>
+				</form>
+			</section>
+			<!-- SELL FORM section ends -->
 		<% } %>
+	</main>
+
+	<footer>
+		<%- include ('./partials/footer.ejs') %> 
+	</footer>
 	
-	
-		<form name="sell" method="POST" action="/v1/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data">
-			<table>
-				<tr>
-					<td>Name: </td>
-					<td><input type="text" name="name" required></td>
-				</tr>
-				<tr>
-					<td>Price: INR </td>
-					<td><input type="number" name="price" min="1" required></td>
-				</tr>
-				<tr>
-					<td>Condition: </td>
-					<td><input type="number" name="condition" min="1" max="5" required></td>
-				</tr>
-				<tr>
-					<td>Add product images: </td>
-					<td><input type="file" id="upload_imgs" name="upload_imgs" multiple required/></td>
-				</tr>
-				<tr>
-				<td colspan="2"><input type="submit" value="Save" ></td>
-				</tr>
-	
-			</table>
-		</form>
-	
-	
-	
-	<% } %>
 	
 </body>
 </html>

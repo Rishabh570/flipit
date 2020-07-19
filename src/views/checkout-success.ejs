@@ -1,15 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Payment successful</title>
+	<%- include ('./partials/head.ejs') %>
 </head>
 <body>
-	<h1>Congratulations <%= user.name %> ! Your purchase was successful. 🎉🎉🎉</h1>
-	<p>Head back to the home page for finding out more good steals!!!</p>
-	<a href="/v1/">Home</a> 
+
+	<header>
+		<%- include ('./partials/header.ejs') %>
+	</header>
+
+	<main>
+		<!-- JUMBOTRON STARTS -->
+		<div class="jumbotron jumbotron-fluid" id="banner">
+			<div class="container text-center">
+				<!-- <h1 class="display-4">Hi <%= user.name %></h1> -->
+				<h1 class="display-4">Congratulations <%= user.name %>! Your purchase was successful. 🎉🎉🎉</h1>
+			</div>
+		</div>
+		<!-- JUMBOTRON ENDS -->
+		
+		<section class="container-fluid my-3 w-75">
+			<p class="lead text-center">Head back to the home page for finding out more good steals!!!</p>
+			<a class="btn btn-success d-block mx-auto w-25" href="/v1/listings">Home</a>
+		</section>
+	</main>
 	
+	<footer>
+		<%- include ('./partials/footer.ejs') %> 
+	</footer>
+
 </body>
 </html>

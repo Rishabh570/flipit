@@ -1,0 +1,63 @@
+<nav class="navbar navbar-expand-sm navbar-light bg-danger" role="navigation">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="/v1">
+			<img src="/images/flipit-logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+			Flipit
+		</a>
+
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav ml-auto">
+				<!-- li item 1 -->
+				<% if (user) { %>
+					<li class="nav-item dropdown mr-1">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Profile
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+							<a class="dropdown-item px-3" href="/v1/auth/password/change">
+								<img src="/images/change-password.svg" alt width="20" height="20">
+								Change Password
+							</a>
+							<a class="dropdown-item px-3" href="#">
+								<i class="fa fa-edit" aria-disabled="true"></i>
+								Edit Details
+							</a>
+							<a class="dropdown-item px-3" href="#">
+								<i class="fa fa-money px-0"></i>
+								Transactions
+							</a>
+						</div>
+					</li>
+				<% } else { %>
+					<li class="nav-item mr-1">
+						<a class="nav-link" href="/v1/auth/login">Sign In</a>
+					</li>
+				<% } %>
+				<!-- li item 1 ends -->
+
+				<!-- li item 2 -->
+				<li class="nav-item mr-1">
+					<% if (user) { %>
+						<a class="nav-link" href="/v1/item/sell">Sell</a> 
+					<% } else { %>
+						<a class="nav-link" href="/v1/auth/register">Sign Up</a> 
+					<% } %>
+				</li>
+				<!-- li item 2 ends -->
+
+				<!-- li item 3 -->
+				<% if (user) { %>
+					<li class="nav-item mr-1">
+						<a class="nav-link" href="/v1/auth/logout">Logout</a> 
+					</li>
+				<% } %>
+				<!-- li item 3 ends -->
+			</ul>
+		</div>
+	</div>
+</nav>
+

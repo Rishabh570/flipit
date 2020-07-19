@@ -1,61 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+	<%- include ('./partials/head.ejs') %>
 	<title>Home</title>
+	<link rel="stylesheet" href="/css/home.css">
 </head>
 <body>
-	
-	<% if (messages.notification) { %>
-		<script>
-			Toastify({
-				text: '<%= messages.notification %>',
-				backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-				className: "info",
-			}).showToast();
-		</script>
-	<% } %>	
+	<header>
+		<%- include ('./partials/header.ejs', {user}) %>
+	</header>
 
-	<% if (!user) { %>
-		<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
-	<% } else { %>
-		<h1>Hello, <%= user.name %>.</h1>
-		<p>Check out the listings available and find a steal!</p>
-		<br>
-	
-		<% if (items) { %>
-			<div class="item-div">
-				<% for( let i = 0; i < items.length; i++ ) { %>
-					<div class="items" id=<%= items[i].id %> >
-						<h3 class="items-head"><%= items[i].name %> </h3>
-						<p>Condition: <%= items[i].condition %> </p>
-						<h4>Price: <%= items[i].price %> </p>
-						<% URL = `/v1/item/checkout/${items[i].id}` %> 
-						<a href=<%= URL %>> Buy</a>
-					</div>
-				<% } %>
-			</div>
+	<main>
+		
+		<!-- SHOWS NOTIFICATION -->
+		<% if (messages.notification) { %>
+			<script>
+				Toastify({
+					text: '<%= messages.notification %>',
+					backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+					className: "info",
+				}).showToast();
+			</script>
+		<% } %>
+		
+		<% if (!user) { %>
+			<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
 		<% } else { %>
-			<h4>No items to display!!!</h4>
-		<% } %>
-	
-	
-		<% if (!user.google.profileId) { %>
-			<p>Connect your google account <a href="/v1/auth/connect/google">Connect Google!</a></p>
-		<% } %>
+			<!-- JUMBOTRON STARTS -->
+			<div class="jumbotron jumbotron-fluid" id="banner">
+				<div class="container text-center">
+				  <h1 class="display-4">Hi <%= user.name %> 👋</h1>
+				  <p class="lead">Check out the listings available and find a steal!</p>
+				</div>
+			</div>
+			<!-- JUMBOTRON ENDS -->
+			
+
+			<% if (items) { %>
+
+				<div class="cards">
+					<% for( let i = 0; i < items.length; i++ ) { %>
+						<div class="card" id=<%= items[i].id %>>
+							<img class="card-img" src="..." alt>
+							<div class="card-body">
+								<h5 class="card-title"><%= items[i].name %></h5>
+								<p class="card-text">Price: <%= items[i].price %></p>
+								<% URL = `/v1/item/checkout/${items[i].id}` %> 
+								<a href=<%= URL %> class="btn btn-success">More Info</a>
+							</div>
+						</div>
+					<% } %>
+				</div>
+			<% } else { %>
+				<h4>No items to display!!!</h4>
+			<% } %>
+
 		
-		<% if (!user.facebook.profileId) { %>
-			<p>Connect your facebook account <a href="/v1/auth/connect/facebook">Connect Facebook!</a></p>
 		<% } %>
-	
-		<br>
-		<a href="/v1/auth/logout">Logout</a>
-		
-	
-	<% } %>
+	</main>
+
+	<footer>
+		<%- include ('./partials/footer.ejs') %> 
+	</footer>
+
 </body>
 </html>

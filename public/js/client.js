@@ -1,11 +1,10 @@
-const containerEle = document.getElementsByClassName('container')[0];
-const priceId = containerEle.getAttribute('id');
-const itemId = document.getElementById('item_id').value;
-const csrfToken = document.getElementById('_csrf').value;
-const modalToggleBtn = document.getElementById('modalToggleBtn');
-const confirmActionCsrf = document.getElementById('confirm-action-csrf').value;
-const confirmActionCancel = document.getElementById('confirmActionCancel');
-const confirmActionPassword = document.getElementById('confirmActionPassword');
+const priceId = $(".item-name").attr("id");
+const itemId = $('#item_id').val();
+const csrfToken = $('#_csrf').val();
+const modalToggleBtn = $('#modalToggleBtn');
+const confirmActionCsrf = $('#confirm-action-csrf').val();
+const confirmActionCancel = $('#confirmActionCancel');
+const confirmActionPassword = $('#confirmActionPassword');
 let confirmActionPasswordValue = null;
 confirmActionPassword.addEventListener('change', (e) => {
 	confirmActionPasswordValue = e.target.value;
@@ -84,7 +83,6 @@ fetch('/v1/item/get-stripe-pubkey')
 			confirmAction(confirmActionPasswordValue, itemId, confirmActionCsrf)
 			.then(actionStatus => {
 				if(actionStatus.status === 200) {
-					console.log("check passed");
 					createCheckoutSession(priceId, itemId, csrfToken)
 					.then(data => {
 						stripe.redirectToCheckout({
@@ -93,7 +91,6 @@ fetch('/v1/item/get-stripe-pubkey')
 						.then(handleResult);
 					})
 					.catch(err => {
-						console.log("err while createCheckoutsession in client.js  ===  ", err);
 						throw err;
 					});
 				}

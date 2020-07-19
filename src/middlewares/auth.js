@@ -50,7 +50,7 @@ exports.oAuthLogin = (service, options = {}) =>
 // Checks if the user is not logged in
 exports.verifyAnonymous = () => (req, res, next) => {
 	if (req && req.user) {
-		res.redirect('/v1/status');
+		res.redirect('/v1/listings');
 	} else {
 		next();
 	}

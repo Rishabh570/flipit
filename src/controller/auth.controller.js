@@ -67,7 +67,7 @@ exports.loginGET = async (req, res) => {
 
 	await RefreshToken.generate(user); // Save new refresh token obj to DB
 	res.cookie('token', accessToken); // Set the newly generated token in the cookie
-	res.redirect('/v1/status');
+	res.redirect('/v1/listings');
 };
 
 exports.loginPOST = async (req, res, next) => {
@@ -80,7 +80,7 @@ exports.loginPOST = async (req, res, next) => {
 
 		res.cookie('token', accessToken); // Put the token in cookies
 		req.flash('notification', 'Successfully logged in 🙂');
-		res.redirect('/v1/status');
+		res.redirect('/v1/listings');
 	} catch (error) {
 		next(error);
 		req.flash('notification', error.message);
@@ -95,7 +95,7 @@ exports.logout = (req, res) => {
 	res.cookie('token', req.cookies.token, { maxAge: 0 });
 	req.session = null;
 	req.logout();
-	res.redirect('/v1/auth/login');
+	res.redirect('/v1');
 };
 
 /**
@@ -125,7 +125,7 @@ exports.setPasswordPOST = async (req, res, next) => {
 			currentUser.password = password;
 			await currentUser.save();
 			req.flash('notification', 'Password set successfully 🙂');
-			res.redirect('/v1/status');
+			res.redirect('/v1/listings');
 		}
 	} catch (error) {
 		next(error);
@@ -172,7 +172,7 @@ exports.changePasswordPOST = async (req, res, next) => {
 				user.password = newPassword;
 				await user.save();
 				req.flash('notification', 'Successfully changed password 🙂');
-				res.redirect('/v1/status');
+				res.redirect('/v1/listings');
 			}
 		} else {
 			throw new AppError(
@@ -336,7 +336,7 @@ exports.oAuth = async (req, res, next) => {
 // 		const userObj = await User.findById(user.id);
 // 		userObj.google = { profileId: null, email: null };
 // 		await userObj.save();
-// 		res.redirect('/v1/status');
+// 		res.redirect('/v1/listings');
 // 	} catch (error) {
 // 		const finalErr = new AppError(
 // 			'Something went wrong during the unlinking of Google account!',
@@ -345,7 +345,7 @@ exports.oAuth = async (req, res, next) => {
 // 		);
 // 		next(finalErr);
 // 		req.flash('notification', finalErr.message);
-// 		res.redirect('/v1/status');
+// 		res.redirect('/v1/listings');
 // 	}
 // };
 
@@ -358,7 +358,7 @@ exports.oAuth = async (req, res, next) => {
 // 		const userObj = await User.findById(user.id);
 // 		userObj.facebook = { profileId: null, email: null };
 // 		await userObj.save();
-// 		res.redirect('/v1/status');
+// 		res.redirect('/v1/listings');
 // 	} catch (error) {
 // 		const finalErr = new AppError(
 // 			'Something went wrong during the unlinking of Facebook account!',
@@ -367,14 +367,14 @@ exports.oAuth = async (req, res, next) => {
 // 		);
 // 		next(finalErr);
 // 		req.flash('notification', finalErr.message);
-// 		res.redirect('/v1/status');
+// 		res.redirect('/v1/listings');
 // 	}
 // };
 
 /**
- * Redirects to home page (currently /v1/status)
+ * Redirects to home page (currently /v1/listings)
  */
 exports.redirectLoggedIn = (req, res) => {
 	req.flash('notification', 'Successfully logged in 🙂');
-	res.redirect('/v1/status');
+	res.redirect('/v1/listings');
 };

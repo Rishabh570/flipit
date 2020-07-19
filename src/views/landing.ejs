@@ -1,16 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Flipit</title>
+	<%- include ('./partials/head.ejs') %> 
 </head>
 <body>
-	<h1>This is the landing page of Flipit 🙂</h1>
-	<p>(This is before login landing page)</p>
-	<br>
-	
-	<a href="/v1/auth/login">Login</a>
+
+	<header>
+		<%- include ('./partials/header.ejs', {user: undefined}) %> 
+	</header>
+
+	<main>
+		<section class="container-fluid my-3 w-75">
+			<h1 class="display-4 text-center">Flipit <span><img src="/images/flipit-logo.svg" alt width="64" height="64"></span> </h1>
+			<p class="text-center lead">"<i>The one stop solution for your flipping appetite.</i>"</p>
+			<br>
+			<a class="btn btn-primary btn-lg d-block mx-auto w-25 mb-3" href="/v1/auth/register">Sign Up</a>
+			<a class="btn btn-primary btn-lg d-block mx-auto w-25" href="/v1/auth/login">Sign In</a>
+
+		</section>
+
+	</main>
+
+	<footer>
+		<%- include ('./partials/footer.ejs') %> 
+	</footer>
+
 </body>
 </html>

@@ -116,7 +116,11 @@ app.use(helmet.xssFilter());
 app.use(
 	helmet.contentSecurityPolicy({
 		directives: {
-			defaultSrc: ["'self'", 'js.stripe.com'],
+			defaultSrc: [
+				"'self'",
+				'js.stripe.com',
+				'stackpath.bootstrapcdn.com',
+			],
 			styleSrc: [
 				"'self'",
 				'cdn.jsdelivr.net',
@@ -129,6 +133,7 @@ app.use(
 				'ajax.googleapis.com',
 				'cdnjs.cloudflare.com',
 				'maxcdn.bootstrapcdn.com',
+				'stackpath.bootstrapcdn.com',
 				"'unsafe-inline'", // Unsafe-inline is temp, change to hash
 			],
 		},
