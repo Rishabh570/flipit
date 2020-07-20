@@ -6,9 +6,9 @@ const confirmActionCsrf = $('#confirm-action-csrf').val();
 const confirmActionCancel = $('#confirmActionCancel');
 const confirmActionPassword = $('#confirmActionPassword');
 let confirmActionPasswordValue = null;
-confirmActionPassword.addEventListener('change', (e) => {
+confirmActionPassword.on('change', e => {
 	confirmActionPasswordValue = e.target.value;
-});
+})
 
 
 /* Handle any errors returns from Checkout  */
@@ -21,10 +21,9 @@ const handleResult = function (result) {
 
 // Clears the password confirmation input on close w/o submit
 
-confirmActionCancel.addEventListener('click', (e) => {
-	confirmActionPassword.value = "";
+confirmActionCancel.on('click', (e) => {
+	confirmActionPassword.val("");
 })
-
 
 
 // Create a Checkout Session
@@ -64,11 +63,10 @@ const confirmAction = (password, itemId, _csrf) => {
 	})
 	.then(result => {
 		modalToggleBtn.click();
-		confirmActionPassword.value = '';
+		confirmActionPassword.val("");
 		return result;
 	})
 }
-
 
 /* Get your Stripe publishable key to initialize Stripe.js */
 fetch('/v1/item/get-stripe-pubkey')

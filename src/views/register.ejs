@@ -30,7 +30,7 @@
 				</div>
 				
 				<div class="card-body">
-					<form autocomplete="off" class="form" role="form" method="POST" action="/v1/auth/Sign up | Flipit">
+					<form autocomplete="off" class="form" role="form" method="POST" action="/v1/auth/register">
 						<div class="form-group">
 							<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
 						</div>
@@ -41,7 +41,7 @@
 						<div class="form-group">
 							<label for="inputPassword3">Password</label> 
 							<input name="password" class="form-control" id="inputPassword3" placeholder="Password" required type="password"> 
-							<small class="form-text text-muted" id="passwordHelpBlock">Your password must be at least 8 characters long, contain letters and numbers, and must not contain spaces, or emoji.</small>
+							<small class="form-text text-muted" id="passwordHelpBlock">Your password must be at least 6 characters long.</small>
 						</div>
 						<div class="form-group">
 							<button class="btn btn-danger btn-lg" type="submit">Sign Up</button>

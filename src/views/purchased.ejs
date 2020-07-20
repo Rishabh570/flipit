@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Purchased Items</title>
+	<%- include ('./partials/head.ejs') %> 
+</head>
+<body>
+	<header>
+		<%- include ('./partials/header.ejs', {user}) %> 
+	</header>
+	
+	<main>
+		<section class="container-fluid my-4 w-75">
+			<h1 class="display-5 mb-4">Purchased Items 🛍️</h1>
+			<hr>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Name</th>
+						<th scope="col">Price</th>
+						<th scope="col">Date of Purchase</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% totalPrice = 0 %> 
+					<% for( let i=0; i<purchasedItems.length; i++ ) { %>
+						<tr>
+							<% num = i+1 %>
+							<% linkToItem = `/v1/item/checkout/${purchasedItems[i].id}` %>
+							
+							<th scope="row"><%= num %></th>
+							<td> <a href=<%= linkToItem%>> <%= purchasedItems[i].name %> </a></td>
+							<td><%= purchasedItems[i].price %></td>
+							<td><%= purchasedItems[i].updatedAt %> </td>
+
+							<% totalPrice += purchasedItems[i].price %> 
+						</tr>
+					<% } %>
+
+					<% if (purchasedItems.length > 0) { %>
+						<th scope="row"></th>
+						<td></td>
+						<td><strong>Total = <%= totalPrice %> </strong></td>
+						<td></td>
+					<% } %>
+				</tbody>
+			</table>
+
+
+		</section>
+	</main>
+
+	<footer>
+		<%- include ('./partials/footer.ejs') %> 
+	</footer>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>My listings</title>
+	<%- include ('./partials/head.ejs') %> 
+</head>
+<body>
+	<header>
+		<%- include ('./partials/header.ejs', {user}) %> 
+	</header>
+
+	<main>
+		<section class="container-fluid my-3 w-75">
+			<h1 class="display-5 mb-4">My Listings 📃</h1>
+			<hr>
+			
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Name</th>
+						<th scope="col">Price</th>
+						<th scope="col">Sold</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% for( let i=0; i<listings.length; i++ ) { %>
+						<tr>
+							<% num = i+1 %> 
+							<% status = listings[i].status === 0 ? "Yes" : "No" %> 
+							<% linkToItem = `/v1/item/checkout/${listings[i].id}` %> 
+							
+							<th scope="row"><%= num %></th>
+							<td> <a href=<%= linkToItem%>> <%= listings[i].name %> </a></td>
+							<td><%= listings[i].price %></td>
+							<td><%= status %> </td>
+						</tr>
+					<% } %>
+				</tbody>
+			</table>
+		</section>
+	</main>
+
+	<footer>
+		<%- include ('./partials/footer.ejs') %> 
+	</footer>
+	
+</body>
+</html>

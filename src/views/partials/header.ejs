@@ -15,20 +15,24 @@
 				<% if (user) { %>
 					<li class="nav-item dropdown mr-1">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Profile
+							<img class="rounded-circle" src="/images/avatar.svg" alt width="32" height="32">
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 							<a class="dropdown-item px-3" href="/v1/auth/password/change">
-								<img src="/images/change-password.svg" alt width="20" height="20">
+								<i class="fa fa-key" aria-hidden="true"></i>
 								Change Password
 							</a>
-							<a class="dropdown-item px-3" href="#">
+							<a class="dropdown-item px-3" href="/v1/profile">
 								<i class="fa fa-edit" aria-disabled="true"></i>
 								Edit Details
 							</a>
-							<a class="dropdown-item px-3" href="#">
+							<a href="/v1/item/me" class="dropdown-item px-3">
+								<i class="fa fa-list" aria-hidden="true"></i>
+								My listings
+							</a>
+							<a class="dropdown-item px-3" href="/v1/item/purchased">
 								<i class="fa fa-money px-0"></i>
-								Transactions
+								Purchases
 							</a>
 						</div>
 					</li>

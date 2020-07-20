@@ -10,6 +10,18 @@ const { MAX_PRODUCT_IMAGES_ALLOWED } = require('../config/vars');
 const router = express.Router();
 
 /**
+ * My listings route
+ * Shows listings posted by the logged in user
+ */
+router.route('/me').get(verifyJWT(), itemController.listings);
+
+/**
+ * Purchased items route
+ * Shows purchased items
+ */
+router.route('/purchased').get(verifyJWT(), itemController.purchased);
+
+/**
  * Routes for posting an item to sell
  */
 router

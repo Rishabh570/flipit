@@ -13,6 +13,11 @@ const itemSchema = new mongoose.Schema(
 			lowercase: true,
 			trim: true,
 		},
+		description: {
+			type: String,
+			required: true,
+			maxlength: 512,
+		},
 		price: {
 			type: Number,
 			required: true,

@@ -3,6 +3,7 @@ const express = require('express');
 const { verifyJWT, verifyAnonymous } = require('../middlewares/auth');
 const authRoutes = require('./auth.route');
 const itemRoutes = require('./item.route');
+const profileRoutes = require('./profile.route');
 const homeController = require('../controller/home.controller');
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.route('/status').get(verifyJWT(), (req, res) => {
  */
 router.use('/auth', authRoutes);
 router.use('/item', itemRoutes);
-router.get('/user', (req, res) => res.send(req.user));
+router.use('/profile', profileRoutes);
 router.get('/listings', verifyJWT(), homeController.homeGET);
 router.get('/', verifyAnonymous(), homeController.landingGET);
 

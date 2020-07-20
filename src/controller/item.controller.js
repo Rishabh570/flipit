@@ -19,6 +19,46 @@ const stripe = require('stripe')(STRIPE_SECRET_KEY);
 // } = require('../utils/email.utils');
 
 /**
+ * Shows the listings posted by the logged in user
+ */
+exports.listings = async (req, res, next) => {
+	const { user } = req;
+	try {
+		const listings = await Item.find({ sellerId: user.id });
+		res.render('my-listings', { user, listings });
+	} catch (err) {
+		const finalErr = new AppError(
+			'Something went wrong while fetching your listings',
+			httpStatus['500'],
+			false
+		);
+		next(finalErr);
+		req.flash('notification', finalErr.message);
+		res.redirect('/v1/profile');
+	}
+};
+
+/**
+ * Shows purchased items
+ */
+exports.purchased = async (req, res, next) => {
+	const { user } = req;
+	try {
+		const purchasedItems = await Item.find({ buyerId: user.id });
+		res.render('purchased', { user, purchasedItems });
+	} catch (err) {
+		const finalErr = new AppError(
+			'Something went wrong while fetching your listings',
+			httpStatus['500'],
+			false
+		);
+		next(finalErr);
+		req.flash('notification', finalErr.message);
+		res.redirect('/v1/profile');
+	}
+};
+
+/**
  * Sell item controller
  */
 exports.sellGET = (req, res) => {
