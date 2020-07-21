@@ -1,0 +1,24 @@
+body {
+	background-color: beige;
+}
+
+.carousel {
+	max-width: 25em;
+	border: 1em solid rgb(148, 236, 148);
+}
+
+.left-container {
+	display: flex;
+	flex-direction: column;
+	
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+}
+
+.buttons {
+	display: flex;
+	flex-direction: row;
+}

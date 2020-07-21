@@ -1,8 +1,12 @@
+body {
+	background-color: beige;
+}
+
 .cards {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	justify-content: space-evenly;
+	justify-content: flex-start;
 }
 
 .card {
@@ -13,7 +17,8 @@
 
 .card-img {
 	height: 10em;
-	width: 12em;
+	max-width: 15em;
+	min-width: 13em;
 	background-color: rgba(165, 42, 42, 0.116);
 	border-bottom: 1px solid rgb(181, 240, 232);
 }

@@ -1,4 +1,4 @@
-const priceId = $(".item-name").attr("id");
+const priceId = $(".main-box").attr("id");
 const itemId = $('#item_id').val();
 const csrfToken = $('#_csrf').val();
 const modalToggleBtn = $('#modalToggleBtn');
@@ -64,6 +64,21 @@ const confirmAction = (password, itemId, _csrf) => {
 	.then(result => {
 		modalToggleBtn.click();
 		confirmActionPassword.val("");
+		if(result.status == 200) {
+			Toastify({
+				text: 'Redirecting you to checkout, please wait ⏳',
+				backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+				className: "info",
+				duration: 6000,
+			}).showToast();
+		}
+		else {
+			Toastify({
+				text: 'Password is incorrect, please try again!',
+				backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+				className: "info",
+			}).showToast();
+		}
 		return result;
 	})
 }

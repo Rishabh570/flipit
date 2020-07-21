@@ -7,7 +7,10 @@ const router = express.Router();
 /**
  * Profile routes
  */
-router.route('/').get(verifyJWT(), profileController.profileGET);
+router
+	.route('/')
+	.get(verifyJWT(), profileController.profileGET)
+	.post(verifyJWT(), profileController.profilePOST);
 
 // EXPORTS
 module.exports = router;
