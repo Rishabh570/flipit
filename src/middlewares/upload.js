@@ -19,7 +19,11 @@ const storage = multer.diskStorage({
 		cb(null, MULTER_UPLOAD_DEST);
 	},
 	filename: (req, file, cb) => {
-		cb(null, crypto.randomBytes(24).toString('hex') + file.originalname);
+		cb(
+			null,
+			crypto.randomBytes(24).toString('hex') +
+				file.originalname.split(' ').join('-')
+		);
 	},
 });
 

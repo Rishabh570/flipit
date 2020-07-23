@@ -41,7 +41,8 @@
 				<div class="cards">
 					<% for( let i = 0; i < items.length; i++ ) { %>
 						<div class="card mx-auto my-2" id=<%= items[i].id %>>
-							<img class="card-img" src="..." alt>
+							<% imgUrl = `https://d1azyv1vbeu0vt.cloudfront.net/${items[i].pictures[0]}` %> 
+							<img class="card-img" src=<%= imgUrl %> alt>
 							<div class="card-body">
 								<h5 class="card-title"><%= items[i].name %></h5>
 								<p><%= items[i].description %> </p>

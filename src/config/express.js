@@ -120,6 +120,7 @@ app.use(
 				"'self'",
 				'js.stripe.com',
 				'stackpath.bootstrapcdn.com',
+				'd1azyv1vbeu0vt.cloudfront.net',
 			],
 			styleSrc: [
 				"'self'",

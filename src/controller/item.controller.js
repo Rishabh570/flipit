@@ -2,7 +2,11 @@
 const httpStatus = require('http-status');
 const { Item, User } = require('../models/index');
 const AppError = require('../utils/error.utils');
-const { createStripeEntry } = require('../utils/item.utils');
+const {
+	createStripeEntry,
+	uploadToS3,
+	getImagesFromS3,
+} = require('../utils/item.utils');
 const {
 	BASE_URL,
 	STRIPE_SECRET_KEY,
@@ -68,7 +72,18 @@ exports.sellGET = (req, res) => {
 
 exports.sellPOST = async (req, res, next) => {
 	try {
+		// Check for Item Condition field
+		if (req.body.condition === undefined) {
+			throw new AppError(
+				'Please add a rating',
+				httpStatus.BAD_REQUEST,
+				true
+			);
+		}
+		// Set sellerId to the user id
 		req.body.sellerId = req.user.id;
+
+		// Check for file upload
 		if (req.files.length === 0) {
 			throw new AppError(
 				'Please add product images',
@@ -84,6 +99,9 @@ exports.sellPOST = async (req, res, next) => {
 		}
 		const pictures_array = req.files.map((picture) => picture.filename);
 		req.body.pictures = pictures_array; // Storing the names in the DB for reference
+
+		// Upload the images to AWS S3
+		await uploadToS3(req.files);
 
 		const item = await new Item(req.body).save();
 		await createStripeEntry(item);
@@ -126,7 +144,8 @@ exports.checkoutItem = async (req, res, next) => {
 	const { user } = req;
 	try {
 		const item = await Item.findById(req.params.itemId);
-		res.render('checkout', { user, item });
+		const itemImagesPaths = getImagesFromS3(item.pictures);
+		res.render('checkout', { user, item, itemImagesPaths });
 	} catch (error) {
 		const finalErr = new AppError(
 			"Cannot find the item you're looking for :(",

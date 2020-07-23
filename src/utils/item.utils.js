@@ -1,7 +1,15 @@
 'use-strict';
+const fs = require('fs');
+const AWS = require('aws-sdk');
 const httpStatus = require('http-status');
 const AppError = require('../utils/error.utils');
-const { STRIPE_SECRET_KEY } = require('../config/vars');
+const {
+	AWS_BUCKET_NAME,
+	CLOUDFRONT_URL,
+	AWS_ACCESS_KEY_ID,
+	AWS_SECRET_ACCESS_KEY,
+	STRIPE_SECRET_KEY,
+} = require('../config/vars');
 const stripe = require('stripe')(STRIPE_SECRET_KEY);
 
 async function createStripeEntry(item) {
@@ -25,7 +33,61 @@ async function createStripeEntry(item) {
 	}
 }
 
+async function uploadToS3(files) {
+	const s3Bucket = new AWS.S3({
+		accessKeyId: AWS_ACCESS_KEY_ID,
+		secretAccessKey: AWS_SECRET_ACCESS_KEY,
+		Bucket: AWS_BUCKET_NAME,
+	});
+
+	files.map((picture) => {
+		fs.readFile(`${picture.path}`, (err, fileContent) => {
+			if (err) {
+				throw new AppError(
+					'Something went wrong 😞',
+					httpStatus['500'],
+					false
+				);
+			}
+			const params = {
+				Bucket: AWS_BUCKET_NAME,
+				Key: picture.filename,
+				Body: fileContent,
+				/**
+				 * Without this, s3 saves it as an binary octet stream
+				 * and forces to download instead of showing the image
+				 */
+				ContentType: 'image/png',
+			};
+
+			s3Bucket.upload(params, (err) => {
+				if (err) {
+					throw new AppError(
+						'Something went wrong 😞',
+						httpStatus['500'],
+						false
+					);
+				}
+			});
+		});
+	});
+}
+
+/**
+ * We use AWS Cloudfront to access images from S3
+ * NOTE: You can't access the images by directly visiting the s3 hosted URL
+ */
+function getImagesFromS3(files) {
+	const images = [];
+	files.map((picture) => {
+		images.push(`${CLOUDFRONT_URL}/${picture}`);
+	});
+	return images;
+}
+
 // EXPORTS
 module.exports = {
+	uploadToS3,
 	createStripeEntry,
+	getImagesFromS3,
 };
