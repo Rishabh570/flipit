@@ -12,3 +12,7 @@ uploads/
 
 # Design
 design/
+
+# AWS keypair
+flipit-keypair.pem
+
