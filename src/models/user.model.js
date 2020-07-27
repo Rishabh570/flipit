@@ -201,12 +201,13 @@ userSchema.statics = {
 		}
 		// Default password for a new user's oauth login is his/her email.
 		const password = email;
+		const name = displayName.split(' ').join('-');
 
 		return this.create({
 			[`${service}`]: { profileId: id, email: email },
 			email,
 			password,
-			name: displayName,
+			name,
 			picture,
 		});
 	},
