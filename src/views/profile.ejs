@@ -26,8 +26,7 @@
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
 				</div>
 				<div class="form-group">
-					<% fullname = user.name.split("-").join(" ") %> 
-					<input class="form-control" type="text" name="name" value=<%= fullname %>>
+					<input class="form-control" type="text" name="name" value="<%= user.name %>">
 				</div>
 				<div class="form-group">
 					<input class="form-control" type="email" name="email" value=<%= user.email %> readonly>
