@@ -74,14 +74,14 @@ const jwtOptions = {
 const googleOptions = {
 	clientID: GOOGLE_CLIENT_ID,
 	clientSecret: GOOGLE_CLIENT_SECRET,
-	callbackURL: '/v1/auth/google/callback',
+	callbackURL: '/auth/google/callback',
 	passReqToCallback: true,
 };
 
 const facebookOptions = {
 	clientID: FACEBOOK_APP_ID,
 	clientSecret: FACEBOOK_APP_SECRET,
-	callbackURL: '/v1/auth/facebook/callback',
+	callbackURL: '/auth/facebook/callback',
 	profileFields: ['id', 'displayName', 'photos', 'email'],
 	passReqToCallback: true,
 	// enableProof: true,

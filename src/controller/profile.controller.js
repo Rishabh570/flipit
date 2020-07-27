@@ -17,7 +17,7 @@ exports.profilePOST = async (req, res, next) => {
 		const userObj = await User.findById(user.id);
 		userObj.name = name;
 		await userObj.save();
-		res.redirect('/v1/profile');
+		res.redirect('/profile');
 	} catch (err) {
 		const finalErr = new AppError(
 			'Something went wrong while updating profile',
@@ -26,6 +26,6 @@ exports.profilePOST = async (req, res, next) => {
 		);
 		next(finalErr);
 		req.flash('notification', finalErr.message);
-		res.redirect('/v1/profile');
+		res.redirect('/profile');
 	}
 };

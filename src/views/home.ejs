@@ -24,7 +24,7 @@
 		<% } %>
 		
 		<% if (!user) { %>
-			<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
+			<p>Welcome! Please <a href="/auth/login">log in</a>.</p>
 		<% } else { %>
 			<!-- JUMBOTRON STARTS -->
 			<div class="jumbotron jumbotron-fluid" id="banner">
@@ -47,7 +47,7 @@
 								<h5 class="card-title"><%= items[i].name %></h5>
 								<p><%= items[i].description %> </p>
 								<p class="card-text">Price: <%= items[i].price %></p>
-								<% URL = `/v1/item/checkout/${items[i].id}` %> 
+								<% URL = `/item/checkout/${items[i].id}` %> 
 								<a href=<%= URL %> class="btn btn-success">More Info</a>
 							</div>
 						</div>

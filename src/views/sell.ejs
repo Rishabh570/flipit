@@ -48,7 +48,7 @@
 
 	<main>
 		<% if (!user) { %>
-			<p>Welcome! Please <a href="/v1/auth/login">log in</a>.</p>
+			<p>Welcome! Please <a href="/auth/login">log in</a>.</p>
 		<% } else { %>
 			
 			<!-- Shows notification -->
@@ -73,7 +73,7 @@
 		
 			<!-- SELL FORM starts -->
 			<section class="container-fluid w-75 h-50 my-4">
-				<form name="sell" method="POST" action="/v1/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data" autocomplete="off" class="form" role="form">
+				<form name="sell" method="POST" action="/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data" autocomplete="off" class="form" role="form">
 					<div class="form-group">
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
 					</div>

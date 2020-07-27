@@ -28,7 +28,7 @@
 						<tr>
 							<% num = i+1 %> 
 							<% status = listings[i].status === 0 ? "Yes" : "No" %> 
-							<% linkToItem = `/v1/item/checkout/${listings[i].id}` %> 
+							<% linkToItem = `/item/checkout/${listings[i].id}` %> 
 							
 							<th scope="row"><%= num %></th>
 							<td> <a href=<%= linkToItem%>> <%= listings[i].name %> </a></td>

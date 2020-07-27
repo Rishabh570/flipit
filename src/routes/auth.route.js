@@ -95,7 +95,7 @@ router.route('/confirm-action').post(verifyJWT(), authController.confirmAction);
 router
 	.route('/google/callback')
 	.get(
-		oAuthLogin('google', { failureRedirect: '/v1/auth/login' }),
+		oAuthLogin('google', { failureRedirect: '/auth/login' }),
 		authController.oAuth,
 		authController.redirectLoggedIn
 	);
@@ -107,7 +107,7 @@ router
 router
 	.route('/connect/google/callback')
 	.get(
-		passport.authorize('google', { failureRedirect: '/v1/auth/login' }),
+		passport.authorize('google', { failureRedirect: '/auth/login' }),
 		authController.redirectLoggedIn
 	);
 
@@ -126,7 +126,7 @@ router
 router
 	.route('/facebook/callback')
 	.get(
-		oAuthLogin('facebook', { failureRedirect: '/v1/auth/login' }),
+		oAuthLogin('facebook', { failureRedirect: '/auth/login' }),
 		authController.oAuth,
 		authController.redirectLoggedIn
 	);
@@ -136,7 +136,7 @@ router.route('/facebook').get(oAuthLogin('facebook', { scope: ['email'] }));
 router
 	.route('/connect/facebook/callback')
 	.get(
-		passport.authorize('facebook', { failureRedirect: '/v1/auth/login' }),
+		passport.authorize('facebook', { failureRedirect: '/auth/login' }),
 		authController.redirectLoggedIn
 	);
 

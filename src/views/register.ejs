@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<title>Sign up | Flipit</title>
-	<%- include ('./partials/head.ejs') %> 
+	<%- include ('./partials/head.ejs') %>
 </head>
 <body>
 
@@ -30,7 +30,7 @@
 				</div>
 				
 				<div class="card-body">
-					<form autocomplete="off" class="form" role="form" method="POST" action="/v1/auth/register">
+					<form autocomplete="off" class="form" role="form" method="POST" action="/auth/register">
 						<div class="form-group">
 							<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
 						</div>
@@ -52,17 +52,16 @@
 					</div>
 
 					<div id="social-signup my-3 text-center">
-						<a href="/v1/auth/google">Sign Up with Google</a>
+						<a href="/auth/google">Sign Up with Google</a>
 						<br>
-						<a href="/v1/auth/facebook">Sign Up with Facebook</a>
+						<a href="/auth/facebook">Sign Up with Facebook</a>
 					</div>
 
 				</div>
 			</div>
 			<div class="text-center">
-				<small>Already have an account? <a href="/v1/auth/login"> <strong>Sign in</strong></a></small>
+				<small>Already have an account? <a href="/auth/login"> <strong>Sign in</strong></a></small>
 			</div>
-			<!-- register -->
 		</section>
 	</main>
 

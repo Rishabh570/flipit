@@ -28,7 +28,7 @@
 					<% for( let i=0; i<purchasedItems.length; i++ ) { %>
 						<tr>
 							<% num = i+1 %>
-							<% linkToItem = `/v1/item/checkout/${purchasedItems[i].id}` %>
+							<% linkToItem = `/item/checkout/${purchasedItems[i].id}` %>
 							
 							<th scope="row"><%= num %></th>
 							<td> <a href=<%= linkToItem%>> <%= purchasedItems[i].name %> </a></td>

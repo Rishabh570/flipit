@@ -16,11 +16,11 @@ const {
 } = require('../config/vars');
 const stripe = require('stripe')(STRIPE_SECRET_KEY);
 
-// const {
-// 	sendEmail,
-// 	confirmationForBuyer,
-// 	confirmationForSeller,
-// } = require('../utils/email.utils');
+const {
+	sendEmail,
+	confirmationForBuyer,
+	confirmationForSeller,
+} = require('../utils/email.utils');
 
 /**
  * Shows the listings posted by the logged in user
@@ -38,7 +38,7 @@ exports.listings = async (req, res, next) => {
 		);
 		next(finalErr);
 		req.flash('notification', finalErr.message);
-		res.redirect('/v1/profile');
+		res.redirect('/profile');
 	}
 };
 
@@ -58,7 +58,7 @@ exports.purchased = async (req, res, next) => {
 		);
 		next(finalErr);
 		req.flash('notification', finalErr.message);
-		res.redirect('/v1/profile');
+		res.redirect('/profile');
 	}
 };
 
@@ -106,11 +106,11 @@ exports.sellPOST = async (req, res, next) => {
 		const item = await new Item(req.body).save();
 		await createStripeEntry(item);
 		req.flash('notification', 'Item posted successfully 🙂');
-		res.redirect('/v1/listings');
+		res.redirect('/listings');
 	} catch (error) {
 		next(error);
 		req.flash('notification', error.message);
-		res.redirect('/v1/item/sell');
+		res.redirect('/item/sell');
 	}
 };
 
@@ -118,15 +118,15 @@ const handlePurchaseFulfillment = async (data) => {
 	try {
 		const item = await Item.findOne({ priceId: data.metadata.priceId });
 		const buyer = await User.findOne({ email: data.customer_email });
-		// const seller = await User.findById(item.sellerId);
+		const seller = await User.findById(item.sellerId);
 
 		item.status = 0; // Shows that the item is sold
 		item.buyerId = buyer.id; // Setting the buyer of the item
 		await item.save();
 
 		// Send mail to buyer and seller (This is handled by stripe now, not tested on live yet.)
-		// await sendEmail(confirmationForSeller(seller, item, buyer));
-		// await sendEmail(confirmationForBuyer(buyer, item, seller));
+		await sendEmail(confirmationForSeller(seller, item, buyer));
+		await sendEmail(confirmationForBuyer(buyer, item, seller));
 	} catch (err) {
 		throw new AppError(
 			'Something went wrong in purchase fulfillment!',
@@ -154,7 +154,7 @@ exports.checkoutItem = async (req, res, next) => {
 		);
 		next(finalErr);
 		req.flash('notification', finalErr.message);
-		res.redirect('/v1/listings');
+		res.redirect('/listings');
 	}
 };
 
@@ -164,7 +164,7 @@ exports.checkoutItem = async (req, res, next) => {
 exports.checkoutSuccess = async (req, res, next) => {
 	const { session_id } = req.query;
 	if (session_id === undefined || session_id === null) {
-		return res.redirect('/v1/listings');
+		return res.redirect('/listings');
 	}
 	stripe.checkout.sessions.retrieve(session_id, (err, checkout_session) => {
 		if (err) {
@@ -175,12 +175,12 @@ exports.checkoutSuccess = async (req, res, next) => {
 			);
 			next(finalErr);
 			req.flash('notification', finalErr.message);
-			return res.redirect('/v1/listings');
+			return res.redirect('/listings');
 		}
 		if (checkout_session.customer_email === req.user.email) {
 			return res.render('checkout-success', { user: req.user });
 		}
-		return res.redirect('/v1/listings');
+		return res.redirect('/listings');
 	});
 };
 
@@ -219,12 +219,12 @@ exports.createCheckoutSession = async (req, res, next) => {
 			 * Redirect to success page and notify payment succeeded,
 			 * CHECKOUT_SESSION_ID is populated by stripe
 			 */
-			success_url: `${BASE_URL}/v1/item/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+			success_url: `${BASE_URL}/item/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
 
 			/**
 			 * Redirect to item checkout page if user clicks away/cancels checkout
 			 */
-			cancel_url: `${BASE_URL}/v1/item/checkout/${itemId}`,
+			cancel_url: `${BASE_URL}/item/checkout/${itemId}`,
 		});
 
 		res.send({
@@ -238,7 +238,7 @@ exports.createCheckoutSession = async (req, res, next) => {
 				false
 			)
 		);
-		res.redirect(`${BASE_URL}/v1/item/checkout/${itemId}`);
+		res.redirect(`${BASE_URL}/item/checkout/${itemId}`);
 	}
 };
 
@@ -279,7 +279,6 @@ exports.webhook = async (req, res, next) => {
 	}
 
 	if (eventType === 'checkout.session.completed') {
-		console.log('🔔  Payment received!');
 		handlePurchaseFulfillment(data.object);
 	}
 

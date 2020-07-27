@@ -79,18 +79,10 @@ function sendEmail(emailContent) {
 			sgMail.setApiKey(SENDGRID_API_KEY);
 
 			sgMail.send(emailContent, (err, data) => {
-				if (err) {
-					console.log(
-						'ERROR: some err occured while sending mail :('
-					);
-					reject(err);
-				} else {
-					console.log('MAIL SENT!!');
-					resolve(data);
-				}
+				if (err) reject(err);
+				else resolve(data);
 			});
 		} catch (err) {
-			console.log('SEND EMAIL ERROR = ', err.message);
 			reject(err);
 		}
 	});

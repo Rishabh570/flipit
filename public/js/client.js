@@ -28,7 +28,7 @@ confirmActionCancel.on('click', (e) => {
 
 // Create a Checkout Session
 const createCheckoutSession = (priceId, itemId, _csrf) => {
-	return fetch('/v1/item/create-checkout-session', {
+	return fetch('/item/create-checkout-session', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const createCheckoutSession = (priceId, itemId, _csrf) => {
 
 // Get action confirmation
 const confirmAction = (password, itemId, _csrf) => {
-	return fetch('/v1/auth/confirm-action', {
+	return fetch('/auth/confirm-action', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ const confirmAction = (password, itemId, _csrf) => {
 }
 
 /* Get your Stripe publishable key to initialize Stripe.js */
-fetch('/v1/item/get-stripe-pubkey')
+fetch('/item/get-stripe-pubkey')
 	.then((result) => {
 		return result.json();
 	})

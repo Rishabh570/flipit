@@ -57,15 +57,15 @@ app.use(cors());
 
 /**
  * Parse body params and attach them to req.body
- * Using raw for ONLY /v1/item/webhook (override in specific route)
+ * Using raw for ONLY /item/webhook (override in specific route)
  */
 app.use((req, res, next) => {
-	if (req.originalUrl === '/v1/item/webhook') next();
+	if (req.originalUrl === '/item/webhook') next();
 	else bodyParser.json({ limit: `${UPLOAD_LIMIT}mb` })(req, res, next);
 });
 
 app.use((req, res, next) => {
-	if (req.originalUrl === '/v1/item/webhook') next();
+	if (req.originalUrl === '/item/webhook') next();
 	else
 		bodyParser.urlencoded({
 			extended: true,
@@ -221,9 +221,8 @@ app.use((req, res, next) => {
 	}
 });
 
-// Mount API v1 routes
-app.use('/v1', routes);
-app.use('/*', (req, res) => res.send("You're lost!"));
+// Mount API routes
+app.use('/', routes);
 
 // Error handlers
 process.on('unhandledRejection', (err) => {

@@ -21,7 +21,7 @@
 
 			<!-- PROFILE FORM STARTS -->
 			<p class="lead w-50 mx-auto">Edit details</p>
-			<form autocomplete="off" class="form w-50 mx-auto" role="form" method="POST" action="/v1/profile">
+			<form autocomplete="off" class="form w-50 mx-auto" role="form" method="POST" action="/profile">
 				<div class="form-group">
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
 				</div>
@@ -42,10 +42,10 @@
 			<div class="social-accounts w-50 mx-auto my-4">
 				<p class="lead">Connect social accounts</p>
 				<% if (!user.facebook.profileId) { %>
-					<a class="btn" href="/v1/auth/connect/facebook"> <img src="/images/facebook.svg" alt width="32" height="32"> </a>
+					<a class="btn" href="/auth/connect/facebook"> <img src="/images/facebook.svg" alt width="32" height="32"> </a>
 				<% } %>
 				<% if (!user.google.profileId) { %>
-					<a class="btn" href="/v1/auth/connect/google"> <img src="/images/google.svg" alt width="32" height="32"> </a>
+					<a class="btn" href="/auth/connect/google"> <img src="/images/google.svg" alt width="32" height="32"> </a>
 				<% } %>
 			</div>
 			<!-- SOCIAL ACCOUNTS ENDS -->

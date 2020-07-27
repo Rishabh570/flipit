@@ -29,7 +29,7 @@ const handleJWT = (req, res, next) => (err, user, info) => {
 		});
 	} catch (e) {
 		console.log('ERROR IN JWT HANDLER = ', e.message);
-		return res.redirect('/v1');
+		return res.redirect('/');
 	}
 };
 
@@ -50,7 +50,7 @@ exports.oAuthLogin = (service, options = {}) =>
 // Checks if the user is not logged in
 exports.verifyAnonymous = () => (req, res, next) => {
 	if (req && req.user) {
-		res.redirect('/v1/listings');
+		res.redirect('/listings');
 	} else {
 		next();
 	}
@@ -58,7 +58,7 @@ exports.verifyAnonymous = () => (req, res, next) => {
 
 // exports.isOnboardingDone = () => async (req, res, next) => {
 // 	if(req && req.user && await req.user.passwordMatches(req.user.email)) {
-// 		res.redirect('/v1/auth/password/set');
+// 		res.redirect('/auth/password/set');
 // 	} else {
 // 		next();
 // 	}

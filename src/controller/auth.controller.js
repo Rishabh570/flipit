@@ -36,12 +36,12 @@ exports.registerPOST = async (req, res, next) => {
 		req.body.name = req.body.email.split('@')[0];
 		await new User(req.body).save();
 		req.flash('notification', 'Successfully registered, please login 🙂');
-		res.redirect('/v1/auth/login');
+		res.redirect('/auth/login');
 	} catch (error) {
 		const finalErr = User.checkDuplicateEmail(error);
 		next(finalErr);
 		req.flash('notification', finalErr.message);
-		res.redirect('/v1/auth/register');
+		res.redirect('/auth/register');
 	}
 };
 
@@ -67,7 +67,7 @@ exports.loginGET = async (req, res) => {
 
 	await RefreshToken.generate(user); // Save new refresh token obj to DB
 	res.cookie('token', accessToken); // Set the newly generated token in the cookie
-	res.redirect('/v1/listings');
+	res.redirect('/listings');
 };
 
 exports.loginPOST = async (req, res, next) => {
@@ -80,11 +80,11 @@ exports.loginPOST = async (req, res, next) => {
 
 		res.cookie('token', accessToken); // Put the token in cookies
 		req.flash('notification', 'Successfully logged in 🙂');
-		res.redirect('/v1/listings');
+		res.redirect('/listings');
 	} catch (error) {
 		next(error);
 		req.flash('notification', error.message);
-		res.redirect('/v1/auth/login');
+		res.redirect('/auth/login');
 	}
 };
 
@@ -95,7 +95,7 @@ exports.logout = (req, res) => {
 	res.cookie('token', req.cookies.token, { maxAge: 0 });
 	req.session = null;
 	req.logout();
-	res.redirect('/v1');
+	res.redirect('/');
 };
 
 /**
@@ -125,12 +125,12 @@ exports.setPasswordPOST = async (req, res, next) => {
 			currentUser.password = password;
 			await currentUser.save();
 			req.flash('notification', 'Password set successfully 🙂');
-			res.redirect('/v1/listings');
+			res.redirect('/listings');
 		}
 	} catch (error) {
 		next(error);
 		req.flash('notification', error.message);
-		res.redirect('/v1/auth/password/set');
+		res.redirect('/auth/password/set');
 	}
 };
 
@@ -148,7 +148,7 @@ exports.changePasswordGET = async (req, res) => {
 			'notification',
 			'No password set, please set a new password.'
 		);
-		res.redirect('/v1/auth/password/set');
+		res.redirect('/auth/password/set');
 	} else {
 		res.render('change-password', { user });
 	}
@@ -172,7 +172,7 @@ exports.changePasswordPOST = async (req, res, next) => {
 				user.password = newPassword;
 				await user.save();
 				req.flash('notification', 'Successfully changed password 🙂');
-				res.redirect('/v1/listings');
+				res.redirect('/listings');
 			}
 		} else {
 			throw new AppError(
@@ -184,7 +184,7 @@ exports.changePasswordPOST = async (req, res, next) => {
 	} catch (error) {
 		next(error);
 		req.flash('notification', error.message);
-		res.redirect('/v1/auth/password/change');
+		res.redirect('/auth/password/change');
 	}
 };
 
@@ -202,13 +202,13 @@ exports.resetPasswordGET = async (req, res, next) => {
 					true
 				);
 			}
-			const UrlPost = `/v1/auth/password/reset/${token}`;
+			const UrlPost = `/auth/password/reset/${token}`;
 			res.render('reset-password', { url: UrlPost });
 		});
 	} catch (error) {
 		next(error);
 		req.flash('notification', error.message);
-		res.redirect('/v1/auth/login');
+		res.redirect('/auth/login');
 	}
 };
 
@@ -247,13 +247,13 @@ exports.resetPasswordPOST = async (req, res, next) => {
 				user.password = password;
 				await user.save();
 				req.flash('notification', 'Password reset successful 🙂');
-				res.redirect('/v1/auth/login');
+				res.redirect('/auth/login');
 			}
 		});
 	} catch (error) {
 		next(error);
 		req.flash('notification', error.message);
-		res.redirect(`/v1/auth/password/reset/${token}`);
+		res.redirect(`/auth/password/reset/${token}`);
 	}
 };
 
@@ -280,18 +280,18 @@ exports.forgotPasswordPOST = async (req, res, next) => {
 		// Generate a password reset link and mail it to user
 		const { name } = user;
 		const resetPassToken = user.resetToken();
-		const passResetLink = `${BASE_URL}/v1/auth/password/reset/${resetPassToken}`;
+		const passResetLink = `${BASE_URL}/auth/password/reset/${resetPassToken}`;
 
 		req.flash(
 			'notification',
 			'Password reset link has been sent to your registered email 🙂'
 		);
-		res.redirect('/v1/auth/login');
+		res.redirect('/auth/login');
 		await sendEmail(forgotPasswordEmail({ name, email, passResetLink }));
 	} catch (error) {
 		next(error);
 		req.flash('notification', error.message);
-		res.redirect('/v1/auth/login');
+		res.redirect('/auth/login');
 	}
 };
 
@@ -323,7 +323,7 @@ exports.oAuth = async (req, res, next) => {
 	} catch (error) {
 		next(error);
 		req.flash('notification', error.message);
-		res.redirect('/v1/auth/login');
+		res.redirect('/auth/login');
 	}
 };
 
@@ -336,7 +336,7 @@ exports.oAuth = async (req, res, next) => {
 // 		const userObj = await User.findById(user.id);
 // 		userObj.google = { profileId: null, email: null };
 // 		await userObj.save();
-// 		res.redirect('/v1/listings');
+// 		res.redirect('/listings');
 // 	} catch (error) {
 // 		const finalErr = new AppError(
 // 			'Something went wrong during the unlinking of Google account!',
@@ -345,7 +345,7 @@ exports.oAuth = async (req, res, next) => {
 // 		);
 // 		next(finalErr);
 // 		req.flash('notification', finalErr.message);
-// 		res.redirect('/v1/listings');
+// 		res.redirect('/listings');
 // 	}
 // };
 
@@ -358,7 +358,7 @@ exports.oAuth = async (req, res, next) => {
 // 		const userObj = await User.findById(user.id);
 // 		userObj.facebook = { profileId: null, email: null };
 // 		await userObj.save();
-// 		res.redirect('/v1/listings');
+// 		res.redirect('/listings');
 // 	} catch (error) {
 // 		const finalErr = new AppError(
 // 			'Something went wrong during the unlinking of Facebook account!',
@@ -367,14 +367,14 @@ exports.oAuth = async (req, res, next) => {
 // 		);
 // 		next(finalErr);
 // 		req.flash('notification', finalErr.message);
-// 		res.redirect('/v1/listings');
+// 		res.redirect('/listings');
 // 	}
 // };
 
 /**
- * Redirects to home page (currently /v1/listings)
+ * Redirects to home page (currently /listings)
  */
 exports.redirectLoggedIn = (req, res) => {
 	req.flash('notification', 'Successfully logged in 🙂');
-	res.redirect('/v1/listings');
+	res.redirect('/listings');
 };
