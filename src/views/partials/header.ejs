@@ -1,7 +1,8 @@
-<nav class="navbar navbar-expand-sm navbar-light bg-danger" role="navigation">
+<link rel="stylesheet" href="/css/header.css">
+<nav class="navbar navbar-expand-sm navbar-light bg-light" role="navigation">
 	<div class="container-fluid">
-		<a class="navbar-brand" href="/">
-			<img src="/images/flipit-logo.svg" width="30" height="30" class="d-inline-block align-top" alt>
+		<a class="navbar-brand texts" href="/">
+			<img src="/images/flipit-logo-latest.svg" width="30" height="30" class="d-inline-block align-top" alt>
 			Flipit
 		</a>
 
@@ -18,19 +19,19 @@
 							<img class="rounded-circle" src="/images/avatar.svg" alt width="32" height="32">
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-							<a class="dropdown-item px-3" href="/profile">
+							<a class="dropdown-item texts px-3" href="/profile">
 								<i class="fa fa-edit" aria-disabled="true"></i>
 								Profile
 							</a>
-							<a class="dropdown-item px-3" href="/auth/password/change">
+							<a class="dropdown-item texts px-3" href="/auth/password/change">
 								<i class="fa fa-key" aria-hidden="true"></i>
 								Change Password
 							</a>
-							<a href="/item/me" class="dropdown-item px-3">
+							<a href="/item/me" class="dropdown-item texts px-3">
 								<i class="fa fa-list" aria-hidden="true"></i>
 								My listings
 							</a>
-							<a class="dropdown-item px-3" href="/item/purchased">
+							<a class="dropdown-item texts px-3" href="/item/purchased">
 								<i class="fa fa-money px-0"></i>
 								Purchases
 							</a>
@@ -38,7 +39,7 @@
 					</li>
 				<% } else { %>
 					<li class="nav-item mr-1">
-						<a class="nav-link" href="/auth/login">Sign In</a>
+						<a class="nav-link texts" href="/auth/login">Sign In</a>
 					</li>
 				<% } %>
 				<!-- li item 1 ends -->
@@ -46,9 +47,9 @@
 				<!-- li item 2 -->
 				<li class="nav-item mr-1">
 					<% if (user) { %>
-						<a class="nav-link" href="/item/sell">Sell</a> 
+						<a class="nav-link texts" href="/item/sell">Sell</a> 
 					<% } else { %>
-						<a class="nav-link" href="/auth/register">Sign Up</a> 
+						<a class="nav-link texts" href="/auth/register">Sign Up</a> 
 					<% } %>
 				</li>
 				<!-- li item 2 ends -->
@@ -56,7 +57,7 @@
 				<!-- li item 3 -->
 				<% if (user) { %>
 					<li class="nav-item mr-1">
-						<a class="nav-link" href="/auth/logout">Logout</a> 
+						<a class="nav-link texts" href="/auth/logout">Logout</a> 
 					</li>
 				<% } %>
 				<!-- li item 3 ends -->

@@ -121,11 +121,15 @@ app.use(
 				'js.stripe.com',
 				'stackpath.bootstrapcdn.com',
 				'd1azyv1vbeu0vt.cloudfront.net',
+				'upload.wikimedia.org',
+				'raw.githubusercontent.com',
+				'fonts.googleapis.com',
 			],
 			styleSrc: [
 				"'self'",
 				'cdn.jsdelivr.net',
 				'stackpath.bootstrapcdn.com',
+				'fonts.googleapis.com',
 			],
 			scriptSrc: [
 				"'self'",

@@ -3,6 +3,9 @@
 <head>
 	<title>Flipit</title>
 	<%- include ('./partials/head.ejs') %> 
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@1,200&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/css/landing.css">
 </head>
 <body>
 
@@ -11,12 +14,18 @@
 	</header>
 
 	<main>
-		<section class="container-fluid my-3 w-75">
-			<h1 class="display-4 text-center">Flipit <span><img src="/images/flipit-logo.svg" alt width="64" height="64"></span> </h1>
-			<p class="text-center lead">"<i>The one stop solution for your flipping appetite.</i>"</p>
-			<br>
-			<a class="btn btn-primary btn-lg d-block mx-auto w-25 mb-3" href="/auth/register">Sign Up</a>
-			<a class="btn btn-primary btn-lg d-block mx-auto w-25" href="/auth/login">Sign In</a>
+		<section class="container-fluid landing mt-5">
+			<div class="left-landing">
+				<h1 id="brand-name" class="display-1 text-center">Flipit</h1>
+				<p id="brand-desc" class="text-center">"The one stop solution for your flipping appetite."</p>
+				<div id="auth-buttons">
+					<a class="btn btn-info btn-lg mb-3" href="/auth/register">Sign Up</a>
+					<a class="btn btn-info btn-lg" href="/auth/login">Sign In</a>
+				</div>
+			</div>
+			<div class="right-landing">
+				<img id="brand-logo" src="/images/flipit-logo-latest.svg" width="350" height="350" alt>
+			</div>
 
 		</section>
 

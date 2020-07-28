@@ -3,7 +3,9 @@
 <head>
 	<title>Sign in | Flipit</title>
 	<%- include ('./partials/head.ejs') %> 
+	<link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/css/login.css">
+
 </head>
 <body>
 	
@@ -23,11 +25,11 @@
 			</script>
 		<% } %>
 		
-		<section class="container-fluid my-4 w-50 h-50">
+		<section class="container-fluid main-content my-4">
 
 			<div class="card card-outline-secondary">
 				<div class="card-header text-center">
-					<h3 class="mb-0">Sign In</h3>
+					<p class="lead mb-0" id="heading">Log in to Flipit</p>
 				</div>
 
 				<div class="card-body">
@@ -36,28 +38,25 @@
 							<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
 						</div>
 						<div class="form-group">
-							<label for="inputEmail3">Email</label> 
-							<input name="email" class="form-control" id="inputEmail3" placeholder="Email" required type="email">
+							<input name="email" class="form-control" id="inputEmail3" placeholder="Enter email" required type="email">
 						</div>
 						<div class="form-group">
+							<input name="password" class="form-control" id="inputPassword3" placeholder="Enter password" required type="password"> 
 							<div class="password-input">
-								<label for="inputPassword3">Password</label> 
 								<small class="align-right"><a href="/auth/password/forgot"><strong>Forgot password?</strong></a></small>
 							</div>
-							<input name="password" class="form-control" id="inputPassword3" placeholder="Password" required type="password"> 
 						</div>
 						<div class="form-group">
-							<button class="btn btn-danger btn-lg" type="submit">Sign In</button>
+							<button class="btn btn-info w-100" type="submit">Sign In</button>
 						</div>
 					</form>
-					<div class="text-center">
-						<small class="mt-3">OR</small>
-					</div>
+					<div class="text-center or">OR</div>
 
-					<div id="social-signup my-3 text-center">
-						<a href="/auth/google">Sign In with Google</a>
-						<br>
-						<a href="/auth/facebook">Sign In with Facebook</a>
+					<div id="social-login my-3 text-center">
+						<div class="login-box">
+							<a href="/auth/facebook" class="social-button" id="facebook-connect"> <span><img src="https://raw.githubusercontent.com/eswarasai/social-login/master/img/facebook.svg?sanitize=true" width="30px" height="30px" alt=""> Login with Facebook</span></a>
+							<a href="/auth/google" class="social-button" id="google-connect"> <span><img src="https://raw.githubusercontent.com/eswarasai/social-login/master/img/google-plus.png" width="30px" height="30px" alt> Login with Google</span></a>
+						</div>
 					</div>
 
 				</div>

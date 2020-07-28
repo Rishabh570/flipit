@@ -1,0 +1,67 @@
+body {
+	background-color: beige;
+}
+
+.landing {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+}
+
+.btn {
+	background-color: rgb(54, 151, 155);
+	color: rgb(245, 240, 240);
+}
+
+.left-landing,
+.right-landing {
+	width: 40%;
+}
+
+#auth-buttons {
+	display: flex;
+	flex-direction: column;
+	width: 12em;
+	margin: 0 auto;
+}
+
+#brand-name {
+	font-family: 'Playfair Display', serif;
+}
+
+#brand-desc {
+	font-family: 'Raleway', sans-serif;
+}
+
+
+/* MEDIA QUERIES */
+
+@media screen and (max-width: 800px) {
+	.right-landing {
+		display: none;
+	}
+
+	.left-landing {
+		width: auto;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.landing {
+		flex-direction: column;
+		justify-content: space-around;
+	}
+
+	.left-landing {
+		width: auto;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.right-landing {
+		width: 50%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+}

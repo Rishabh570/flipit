@@ -3,7 +3,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const upload = require('../middlewares/upload');
 const { verifyJWT } = require('../middlewares/auth');
-const { sellGET, sellPOST } = require('../controller/item.controller');
 const itemController = require('../controller/item.controller');
 const { MAX_PRODUCT_IMAGES_ALLOWED } = require('../config/vars');
 
@@ -26,11 +25,11 @@ router.route('/purchased').get(verifyJWT(), itemController.purchased);
  */
 router
 	.route('/sell')
-	.get(verifyJWT(), sellGET)
+	.get(verifyJWT(), itemController.sellGET)
 	.post(
 		verifyJWT(),
 		upload.array('upload_imgs', MAX_PRODUCT_IMAGES_ALLOWED),
-		sellPOST
+		itemController.sellPOST
 	);
 
 /**
