@@ -130,6 +130,7 @@ app.use(
 				'upload.wikimedia.org',
 				'raw.githubusercontent.com',
 				'fonts.googleapis.com',
+				'lh3.googleusercontent.com',
 			],
 			styleSrc: [
 				"'self'",
