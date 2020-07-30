@@ -131,6 +131,7 @@ app.use(
 				'raw.githubusercontent.com',
 				'fonts.googleapis.com',
 				'lh3.googleusercontent.com',
+				'platform-lookaside.fbsbx.com',
 			],
 			styleSrc: [
 				"'self'",
