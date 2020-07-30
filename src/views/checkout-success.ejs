@@ -3,28 +3,58 @@
 <head>
 	<title>Payment successful</title>
 	<%- include ('./partials/head.ejs') %>
+	<link rel="stylesheet" href="/css/checkout-success.css">
 </head>
 <body>
 
 	<header>
 		<%- include ('./partials/header.ejs') %>
 	</header>
+	
+	<!-- JUMBOTRON STARTS -->
+	<div class="jumbotron jumbotron-fluid" id="banner">
+		<div class="container text-center">
+			<h1 id="heading">Congratulations <%= user.name %>! Your purchase was successful. 🎉🎉🎉</h1>
+		</div>
+	</div>
+	<!-- JUMBOTRON ENDS -->
 
 	<main>
-		<!-- JUMBOTRON STARTS -->
-		<div class="jumbotron jumbotron-fluid" id="banner">
-			<div class="container text-center">
-				<!-- <h1 class="display-4">Hi <%= user.name %></h1> -->
-				<h1 class="display-4">Congratulations <%= user.name %>! Your purchase was successful. 🎉🎉🎉</h1>
+		<section class="main-content container-fluid my-3">
+			<p class="text-center">Order confirmation mail has been sent to <span id="mail-confirmation"><%= checkout_session.customer_email %></span>. Please read the mail for further proceedings.</p>
+
+			<table class="table table-bordered table-hover order-info">
+				<thead class="thead-light">
+					<th class="text-center" scope="col">Order details</th>
+					<th class="text-center" scope="col">Amount (INR)</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="text-center">Discount</td>
+						<td class="text-center"><%= checkout_session.total_details.amount_discount %></td>
+					</tr>
+					<tr>
+						<td class="text-center">Tax</td>
+						<td class="text-center"><%= checkout_session.total_details.amount_tax %> </td>
+					</tr>
+					<tr>
+						<td class="text-center">Subtotal</td>
+						<td class="text-center"><%= checkout_session.amount_subtotal %> </td>
+					</tr>
+					<tr>
+						<td class="text-center">Total</td>
+						<td class="text-center"><%= checkout_session.amount_total %> </td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div id="upsell" class="my-5">
+				<p>Want more? Head back to the home page to find more amazing deals!!!</p>
+				<a class="btn btn-success" href="/listings">Home</a>
 			</div>
-		</div>
-		<!-- JUMBOTRON ENDS -->
-		
-		<section class="container-fluid my-3 w-75">
-			<p class="lead text-center">Order confirmation mail has been sent!</p>
-			<p class="lead text-center">Want more? Head back to the home page to find more amazing deals.</p>
-			<a class="btn btn-success d-block mx-auto w-25" href="/listings">Home</a>
+
 		</section>
+
 	</main>
 	
 	<footer>

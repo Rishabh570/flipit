@@ -3,6 +3,7 @@
 <head>
 	<title>My listings</title>
 	<%- include ('./partials/head.ejs') %> 
+	<link rel="stylesheet" href="/css/my-listings.css">
 </head>
 <body>
 	<header>
@@ -10,17 +11,16 @@
 	</header>
 
 	<main>
-		<section class="container-fluid my-3 w-75">
-			<h1 class="display-5 mb-4">My Listings 📃</h1>
-			<hr>
+		<section class="main-content container-fluid my-3">
+			<h1 class="heading my-4">My Listings 📃</h1>
 			
 			<table class="table">
 				<thead>
 					<tr>
-						<th scope="col">#</th>
-						<th scope="col">Name</th>
-						<th scope="col">Price</th>
-						<th scope="col">Sold</th>
+						<th class="heading" scope="col">#</th>
+						<th class="heading" scope="col">Name</th>
+						<th class="heading" scope="col">Price</th>
+						<th class="heading" scope="col">Sold</th>
 					</tr>
 				</thead>
 				<tbody>

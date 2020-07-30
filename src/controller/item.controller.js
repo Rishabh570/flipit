@@ -178,7 +178,10 @@ exports.checkoutSuccess = async (req, res, next) => {
 			return res.redirect('/listings');
 		}
 		if (checkout_session.customer_email === req.user.email) {
-			return res.render('checkout-success', { user: req.user });
+			return res.render('checkout-success', {
+				user: req.user,
+				checkout_session,
+			});
 		}
 		return res.redirect('/listings');
 	});

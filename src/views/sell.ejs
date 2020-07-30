@@ -28,16 +28,14 @@
 			// Tooltip on condition ratings input
 			$('.rating__label').mouseover((e) => {
 				const ratingVal = (e.target.id).split('-')[1];
-				if(ratingVal === '1') $('#ratings-feedback').html("<small>Used for a significant amount of time.</small>");
-				else if (ratingVal === '2') $('#ratings-feedback').html("<small>Slightly old, used for one month or so.</small>");
-				else if (ratingVal === '3') $('#ratings-feedback').html("<small>Looks barely old, in good condition.</small>");
-				else if (ratingVal === '4') $('#ratings-feedback').html("<small>Used just once, very good condition.</small>");
-				else if (ratingVal === '5') $('#ratings-feedback').html("<small>Never used, excellent condition.</small>");
+				if(ratingVal === '1') $('#ratings-feedback').html("<small>Used for a significant amount of time 🐢</small>");
+				else if (ratingVal === '2') $('#ratings-feedback').html("<small>Used for a little over one month 🗓️</small>");
+				else if (ratingVal === '3') $('#ratings-feedback').html("<small>Celebrating its one week anniversary 😃</small>");
+				else if (ratingVal === '4') $('#ratings-feedback').html("<small>Barely used it 📦</small>");
+				else if (ratingVal === '5') $('#ratings-feedback').html("<small>Haven't used it once 🎉</small>");
 			})
 
 		});
-
-
 	</script>
 </head>
 <body>
@@ -63,31 +61,22 @@
 			<% } %>
 			<!-- notification ends -->
 
-			<!-- JUMBOTRON STARTS -->
-			<div class="jumbotron jumbotron-fluid" id="banner">
-				<div class="container text-center">
-					<h1 class="display-5">Go ahead and post what you're flippin' today 🛒</h1>
-				</div>
-			</div>
-			<!-- JUMBOTRON ENDS -->
+			<h3 class="pt-4 text-center" id="heading">Go ahead and post what you're flippin' today 🛒</h3>
 		
 			<!-- SELL FORM starts -->
-			<section class="container-fluid w-75 h-50 my-4">
-				<form name="sell" method="POST" action="/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data" autocomplete="off" class="form" role="form">
+			<section class="main-content container-fluid my-4">
+				<form name="sell" method="POST" action="/item/sell/?_method=PUT&_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data" autocomplete="off" class="form" role="form">
 					<div class="form-group">
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
 					</div>
 					<div class="form-group">
-						<label for="inputName1">Name</label> 
-						<input name="name" class="form-control" id="inputName1" placeholder="Name" required type="text">
+						<input name="name" class="form-control" placeholder="Enter the item name" required type="text">
 					</div>
 					<div class="form-group">
-						<label for="inputDesc">Description</label> 
-						<input name="description" class="form-control" id="inputDesc" placeholder="Description" required type="text">
+						<textarea name="description" class="form-control" placeholder="Enter the item description" required type="text" rows="5" cols="30"></textarea>
 					</div>
 					<div class="form-group">
-						<label for="inputPrice2">Price</label> 
-						<input type="number" name="price" min="1" class="form-control" id="inputPrice2" placeholder="Price" required> 
+						<input type="number" name="price" min="1" class="form-control" placeholder="Enter the item price" required> 
 					</div>
 					<div class="smaller-inputs">
 						<div id="full-stars-example-two">
@@ -110,7 +99,7 @@
 
 						<div class="input-group">
 							<span class="input-group-btn">
-								<label class="btn btn-info btn-file" for="multiple_input_group">
+								<label class="btn btn-secondary btn-file" for="multiple_input_group">
 									<div class="input required"><input id="multiple_input_group" type="file" name="upload_imgs" multiple></div>
 									Upload Product Images
 								</label>
@@ -119,7 +108,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<button class="btn btn-danger" type="submit">Submit</button>
+						<button class="btn btn-danger btn-sm" type="submit">Submit</button>
 					</div>
 				</form>
 			</section>

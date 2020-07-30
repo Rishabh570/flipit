@@ -8,14 +8,28 @@ body {
 }
 
 .main-content {
-	width: 50%;
+	width: 60%;
 	margin: 0 auto;
+}
+
+.table-info {
+	width: 50%;
+}
+
+#mail-confirmation {
+	display: inline-block;
+	border-radius: 0.25em;
+	background-color: rgba(180, 180, 131, 0.884);
+}
+
+#mail-confirmation:hover {
+	cursor: pointer;
 }
 
 
 /* MEDIA QUERIES */
 @media screen and (max-width: 500px) {
 	.main-content {
-		width: 90%;
+		width: 100%;
 	}
 }

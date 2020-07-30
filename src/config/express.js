@@ -116,6 +116,12 @@ app.use(helmet.xssFilter());
 app.use(
 	helmet.contentSecurityPolicy({
 		directives: {
+			fontSrc: [
+				"'self'",
+				'fonts.googleapis.com',
+				'fonts.gstatic.com',
+				'stackpath.bootstrapcdn.com',
+			],
 			defaultSrc: [
 				"'self'",
 				'js.stripe.com',
