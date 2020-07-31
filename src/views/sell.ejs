@@ -65,10 +65,7 @@
 		
 			<!-- SELL FORM starts -->
 			<section class="main-content container-fluid my-4">
-				<form name="sell" method="POST" action="/item/sell/?_method=PUT&_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data" autocomplete="off" class="form" role="form">
-					<div class="form-group">
-						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
-					</div>
+				<form name="sell" method="POST" action="/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data" autocomplete="off" class="form" role="form">
 					<div class="form-group">
 						<input name="name" class="form-control" placeholder="Enter the item name" required type="text">
 					</div>
