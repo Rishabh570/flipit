@@ -125,19 +125,23 @@ app.use(
 			defaultSrc: [
 				"'self'",
 				'js.stripe.com',
-				'stackpath.bootstrapcdn.com',
-				'd1azyv1vbeu0vt.cloudfront.net',
+				'fonts.googleapis.com',
 				'upload.wikimedia.org',
 				'raw.githubusercontent.com',
-				'fonts.googleapis.com',
+				'stackpath.bootstrapcdn.com',
+			],
+			imgSrc: [
+				"'self' data:",
+				'http://i.stack.imgur.com',
 				'lh3.googleusercontent.com',
 				'platform-lookaside.fbsbx.com',
+				'd1azyv1vbeu0vt.cloudfront.net',
 			],
 			styleSrc: [
 				"'self'",
 				'cdn.jsdelivr.net',
-				'stackpath.bootstrapcdn.com',
 				'fonts.googleapis.com',
+				'stackpath.bootstrapcdn.com',
 			],
 			scriptSrc: [
 				"'self'",

@@ -12,5 +12,6 @@ router.use('/item', itemRoutes);
 router.use('/profile', profileRoutes);
 router.get('/listings', verifyJWT(), homeController.homeGET);
 router.get('/', verifyAnonymous(), homeController.landingGET);
+router.get('/*', (req, res) => res.send("You're lost!"));
 
 module.exports = router;

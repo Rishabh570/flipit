@@ -40,27 +40,9 @@ async function uploadToS3(files) {
 		Bucket: AWS_BUCKET_NAME,
 	});
 
-	files.map((picture) => {
-		fs.readFile(`${picture.path}`, (err, fileContent) => {
-			if (err) {
-				throw new AppError(
-					'Something went wrong 😞',
-					httpStatus['500'],
-					false
-				);
-			}
-			const params = {
-				Bucket: AWS_BUCKET_NAME,
-				Key: picture.filename,
-				Body: fileContent,
-				/**
-				 * Without this, s3 saves it as an binary octet stream
-				 * and forces to download instead of showing the image
-				 */
-				ContentType: 'image/png',
-			};
-
-			s3Bucket.upload(params, (err) => {
+	const promises = files.map((picture) => {
+		return new Promise((resolve) => {
+			fs.readFile(`${picture.path}`, (err, fileContent) => {
 				if (err) {
 					throw new AppError(
 						'Something went wrong 😞',
@@ -68,9 +50,37 @@ async function uploadToS3(files) {
 						false
 					);
 				}
+				const params = {
+					Bucket: AWS_BUCKET_NAME,
+					Key: picture.filename,
+					Body: fileContent,
+					/**
+					 * Without this, s3 saves it as an binary octet stream
+					 * and forces to download instead of showing the image
+					 */
+					ContentType: 'image/png',
+				};
+
+				s3Bucket.upload(params, (err) => {
+					if (err) {
+						throw new AppError(
+							'Something went wrong 😞',
+							httpStatus['500'],
+							false
+						);
+					}
+					fs.unlink(picture.path, (err) => {
+						if (err) console.log('err in unlinking');
+						else console.log('unlink done');
+					});
+					resolve(fileContent);
+				});
 			});
 		});
 	});
+
+	const imageUrl = await Promise.all(promises);
+	return imageUrl[0];
 }
 
 /**

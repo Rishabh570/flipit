@@ -29,17 +29,81 @@ body {
 	border-radius: 1em;
 }
 
-#avatar:hover {
+.profile-pic {
+	position: relative;
+	width: 128px;
+}
+
+.profile-pic:hover {
 	cursor: pointer;
+}
+
+.profile-pic:hover .overlay {
+	opacity: 0.8;
+}
+
+.overlay {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 128px;
+	width: 128px;
+	opacity: 0;
+	transition: .3s ease;
+	background-color: rgb(119, 117, 117);
+	border-radius: 1em;
+}
+
+.icon {
+	color: white;
+	font-size: 100px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	text-align: center;
+}
+
+.fa-user {
+	color: #eee;
 }
 
 .hor-line {
 	width: 50%;	
 }
 
-#avatar-form-submit {
-	margin: 0 auto;
+
+
+/* 
+ * SPINNER STYLES START
+*/
+.modal {
+	display:    none;
+	position:   fixed;
+	z-index:    1000;
+	top:        0;
+	left:       0;
+	height:     100%;
+	width:      100%;
+	background: rgba( 255, 255, 255, .8 ) 
+				url('http://i.stack.imgur.com/FhHRx.gif') 
+				50% 50% 
+				no-repeat;
 }
+
+body.loading .modal {
+    overflow: hidden;   
+}
+
+body.loading .modal {
+    display: block;
+}
+
+/* SPINNER STYLES ENDS */
+
 
 
 /* MEDIA QUERIES */
@@ -48,3 +112,8 @@ body {
 		width: 90%;
 	}
 }
+
+
+
+
+

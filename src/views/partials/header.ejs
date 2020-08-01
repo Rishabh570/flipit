@@ -16,7 +16,8 @@
 				<% if (user) { %>
 					<li class="nav-item dropdown mr-1">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<img class="rounded-circle" src="/images/avatar.svg" alt width="32" height="32">
+							<% avatarSrc = user.picture ? user.picture : '/images/avatar.svg' %> 
+							<img id="avatar-nav" class="rounded-circle" src="<%= avatarSrc %> " alt width="32" height="32">
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 							<a class="dropdown-item texts px-3" href="/profile">

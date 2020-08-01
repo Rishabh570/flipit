@@ -3,6 +3,7 @@
 <head>
 	<title>Profile</title>
 	<%- include ('./partials/head.ejs') %> 
+	<meta name="_csrf" content="<%= locals.csrfToken %>">
 	<link rel="stylesheet" href="/css/profile.css">
 	<script src="/js/profile.js" defer></script>
 </head>
@@ -14,10 +15,20 @@
 	<main>
 		<section class="container-fluid my-3">
 			<% avatarSrc = user.picture ? user.picture : '/images/avatar.svg' %> 
-			<img class="d-block mx-auto" id="avatar" src="<%= avatarSrc %>" alt width="128" height="128">
-			<h1 class="display-4 my-2 text-center"><%= user.name %> </h1>
-
+			<div class="profile-pic mx-auto" title="Upload avatar">
+				<img class="d-block mx-auto" id="avatar" src="<%= avatarSrc %> " alt width="128" height="128">
+				<div class="overlay">
+					<span class="icon"><i class="fa fa-user"></i></span>
+				</div>
+			</div>
 			
+			<!-- HIDDEN AVATAR UPLOAD FORM STARTS -->
+			<form id="avatar-form">
+				<input type="file" name="avatarInput" id="avatarInput">
+			</form>
+			<!-- HIDDEN AVATAR UPLOAD FORM ENDS -->
+
+			<h1 class="display-4 my-2 text-center"><%= user.name %> </h1>
 			<div class="main-content mx-auto">
 				<!-- H-LINE -->
 				<hr class="hor-line">
@@ -74,6 +85,8 @@
 
 			</div>
 		</section>
+		<div class="modal"><!-- Place at bottom of page --></div>
+
 	</main>
 
 	<footer>
