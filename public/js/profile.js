@@ -21,6 +21,9 @@ $('#avatar-form').submit(function(e) {
 		headers: {
 			"CSRF-Token": csrf
 		},
+		xhrFields: {
+			withCredentials: true
+		},
 		data: formData,
 		contentType: false,
         processData: false

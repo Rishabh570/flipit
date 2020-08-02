@@ -35,6 +35,9 @@ const {
 const { errorHandler, stagingError } = require('../middlewares/error');
 const app = express();
 
+// Enable trust proxy, using nginx
+app.set('trust proxy', 1);
+
 // Enforces HTTPS, redirect to HTTPS if using HTTP
 app.use(express_enforces_ssl());
 
