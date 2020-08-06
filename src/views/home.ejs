@@ -4,6 +4,8 @@
 	<%- include ('./partials/head.ejs') %>
 	<title>Home</title>
 	<link rel="stylesheet" href="/css/home.css">
+	<script src="/js/shuffle.min.js"></script>
+	<script src="/js/home.js" defer></script>
 </head>
 <body>
 	<header>
@@ -22,43 +24,43 @@
 				}).showToast();
 			</script>
 		<% } %>
-		
-		<% if (!user) { %>
-			<p>Welcome! Please <a href="/auth/login">log in</a>.</p>
-		<% } else { %>
-			<!-- JUMBOTRON STARTS -->
-			<div class="jumbotron jumbotron-fluid" id="banner">
-				<div class="container text-center">
-				  <h1 class="display-4">Hi <%= user.name %> 👋</h1>
-				  <p class="lead">Check out the listings available and find a steal!</p>
+
+		<section class="container my-3">
+			<div class="row sticky-top">
+				<div class="col">
+					<input class="filter__search js-shuffle-search d-block mx-auto" type="search" id="filters-search-input" placeholder="Search listings">
 				</div>
 			</div>
-			<!-- JUMBOTRON ENDS -->
-			
 
-			<% if (items) { %>
-
-				<div class="cards">
-					<% for( let i = 0; i < items.length; i++ ) { %>
-						<div class="card mx-auto my-2" id=<%= items[i].id %>>
-							<% imgUrl = `https://d1azyv1vbeu0vt.cloudfront.net/${items[i].pictures[0]}` %> 
-							<img class="card-img" src=<%= imgUrl %> alt>
-							<div class="card-body">
-								<h5 class="card-title"><%= items[i].name %></h5>
-								<p><%= items[i].description %> </p>
-								<p class="card-text">Price: <%= items[i].price %></p>
-								<% URL = `/item/checkout/${items[i].id}` %> 
-								<a href=<%= URL %> class="btn btn-success">More Info</a>
-							</div>
+			<div class="listings container">
+				<% if (!user) { %>
+					<p>Welcome! Please <a href="/auth/login">log in</a>.</p>
+				<% } else { %>
+					<% if (items) { %>
+						<div id="grid" class="cards my-shuffle-container mx-1 my-2">
+							<% for( let i = 0; i < items.length; i++ ) { %>
+								<div class="card mx-auto my-2 col-xs-3 col-sm-4 col-md-3 picture-item" id=<%= items[i].id %>>
+									<% imgUrl = `https://d1azyv1vbeu0vt.cloudfront.net/${items[i].pictures[0]}` %> 
+									<i class="fa fa-lg fa-bookmark-o bookmarker"></i>
+									<img class="card-img" src=<%= imgUrl %> alt>
+									<div class="card-body">
+										<h5 class="picture-item__title card-title"><%= items[i].name %></h5>
+										<p><%= items[i].description %> </p>
+										<p class="card-text">Price: <%= items[i].price %></p>
+										<% URL = `/item/checkout/${items[i].id}` %> 
+										<a href=<%= URL %> class="btn btn-secondary btn-sm">More Info</a>
+									</div>
+								</div>
+							<% } %>
+							<div class="col-sm-1 col-xs-1 my-sizer-element"></div>
 						</div>
-					<% } %>
-				</div>
-			<% } else { %>
-				<h4>No items to display!!!</h4>
-			<% } %>
-
+					<% } else { %>
+						<h4>No items to display!!!</h4>
+					<% } %>		
+				<% } %>
+			</div>
+		</section>
 		
-		<% } %>
 	</main>
 
 	<footer>

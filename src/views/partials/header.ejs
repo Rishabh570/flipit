@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="/css/header.css">
-<nav class="navbar navbar-expand-sm navbar-light bg-light" role="navigation">
+<nav id="first-navbar" class="navbar navbar-expand-sm navbar-light bg-light" role="navigation">
 	<div class="container-fluid">
 		<a class="navbar-brand texts" href="/">
 			<img src="/images/flipit-logo-latest.svg" width="30" height="30" class="d-inline-block align-top" alt>
@@ -58,7 +58,7 @@
 				<!-- li item 3 -->
 				<% if (user) { %>
 					<li class="nav-item mr-1">
-						<a class="nav-link texts" href="/auth/logout">Logout</a> 
+						<a id="logout-button" class="nav-link texts" href="/auth/logout">Logout</a> 
 					</li>
 				<% } %>
 				<!-- li item 3 ends -->

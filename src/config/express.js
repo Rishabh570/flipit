@@ -139,6 +139,7 @@ app.use(
 				'lh3.googleusercontent.com',
 				'platform-lookaside.fbsbx.com',
 				'd1azyv1vbeu0vt.cloudfront.net',
+				'raw.githubusercontent.com',
 			],
 			styleSrc: [
 				"'self'",

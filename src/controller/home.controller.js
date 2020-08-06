@@ -5,16 +5,17 @@ const AppError = require('../utils/error.utils');
 
 exports.homeGET = async (req, res, next) => {
 	try {
-		const items = await Item.find(
-			{
-				$and: [{ sellerId: { $ne: req.user.id } }, { status: 1 }],
-			},
-			{
-				createdAt: 0,
-				updatedAt: 0,
-				__v: 0,
-			}
-		);
+		const items = await Item.find({
+			$and: [{ sellerId: { $ne: req.user.id } }, { status: 1 }],
+		})
+			.select({
+				name: 1,
+				description: 1,
+				price: 1,
+				condition: 1,
+				pictures: 1,
+			})
+			.lean();
 
 		res.render('home', { user: req.user, items });
 	} catch (error) {
