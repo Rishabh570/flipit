@@ -28,7 +28,12 @@ const {
 exports.listings = async (req, res, next) => {
 	const { user } = req;
 	try {
-		const listings = await Item.find({ sellerId: user.id });
+		const listings = await Item.find({
+			sellerId: user.id,
+		})
+			.select({ name: 1, price: 1, status: 1 })
+			.lean();
+
 		res.render('my-listings', { user, listings });
 	} catch (err) {
 		const finalErr = new AppError(
@@ -48,7 +53,12 @@ exports.listings = async (req, res, next) => {
 exports.purchased = async (req, res, next) => {
 	const { user } = req;
 	try {
-		const purchasedItems = await Item.find({ buyerId: user.id });
+		const purchasedItems = await Item.find({
+			buyerId: user.id,
+		})
+			.select({ name: 1, price: 1, updatedAt: 1 })
+			.lean();
+
 		res.render('purchased', { user, purchasedItems });
 	} catch (err) {
 		const finalErr = new AppError(
@@ -100,10 +110,11 @@ exports.sellPOST = async (req, res, next) => {
 		const pictures_array = req.files.map((picture) => picture.filename);
 		req.body.pictures = pictures_array; // Storing the names in the DB for reference
 
-		// Upload the images to AWS S3
-		await uploadToS3(req.files);
+		const [, item] = await Promise.all([
+			uploadToS3(req.files),
+			new Item(req.body).save(),
+		]);
 
-		const item = await new Item(req.body).save();
 		await createStripeEntry(item);
 		req.flash('notification', 'Item posted successfully 🙂');
 		res.redirect('/listings');
@@ -117,16 +128,22 @@ exports.sellPOST = async (req, res, next) => {
 const handlePurchaseFulfillment = async (data) => {
 	try {
 		const item = await Item.findOne({ priceId: data.metadata.priceId });
-		const buyer = await User.findOne({ email: data.customer_email });
-		const seller = await User.findById(item.sellerId);
+		const [buyer, seller] = await Promise.all([
+			User.findOne({ email: data.customer_email })
+				.select({ name: 1, email: 1 })
+				.lean(),
+			User.findById(item.sellerId).select({ name: 1, email: 1 }).lean(),
+		]);
 
 		item.status = 0; // Shows that the item is sold
-		item.buyerId = buyer.id; // Setting the buyer of the item
+		item.buyerId = buyer._id; // Setting the buyer of the item
 		await item.save();
 
-		// Send mail to buyer and seller (This is handled by stripe now, not tested on live yet.)
-		await sendEmail(confirmationForSeller(seller, item, buyer));
-		await sendEmail(confirmationForBuyer(buyer, item, seller));
+		// Send mail to buyer and seller (Also, stripe sends the receipt to the buyer only)
+		await Promise.all([
+			sendEmail(confirmationForSeller(seller, item, buyer)),
+			sendEmail(confirmationForBuyer(buyer, item, seller)),
+		]);
 	} catch (err) {
 		throw new AppError(
 			'Something went wrong in purchase fulfillment!',
@@ -143,7 +160,7 @@ exports.handlePurchaseFulfillment = handlePurchaseFulfillment; // Inline export
 exports.checkoutItem = async (req, res, next) => {
 	const { user } = req;
 	try {
-		const item = await Item.findById(req.params.itemId);
+		const item = await Item.findById(req.params.itemId).lean();
 		const itemImagesPaths = getImagesFromS3(item.pictures);
 		res.render('checkout', { user, item, itemImagesPaths });
 	} catch (error) {

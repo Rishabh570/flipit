@@ -16,7 +16,7 @@ exports.profilePOST = async (req, res, next) => {
 	const { user } = req;
 	const { name } = req.body;
 	try {
-		const userObj = await User.findById(user.id);
+		const userObj = await User.findById(user.id).select({ name: 1 });
 		userObj.name = name;
 		await userObj.save();
 		res.redirect('/profile');
@@ -35,10 +35,11 @@ exports.profilePOST = async (req, res, next) => {
 exports.updateAvatar = async (req, res, next) => {
 	const { user } = req;
 	try {
-		// Upload the images to AWS S3
-		const avatarBuffer = await uploadToS3(req.files);
+		const [avatarBuffer, userObj] = await Promise.all([
+			uploadToS3(req.files),
+			User.findById(user.id).select({ picture: 1 }),
+		]);
 
-		const userObj = await User.findById(user.id);
 		const imageUrl = `${CLOUDFRONT_URL}/${req.files[0].filename}`;
 		userObj.picture = imageUrl;
 		await userObj.save();

@@ -39,7 +39,7 @@
 					<% if (items) { %>
 						<div id="grid" class="cards my-shuffle-container mx-1 my-2">
 							<% for( let i = 0; i < items.length; i++ ) { %>
-								<div class="card mx-auto my-2 col-xs-3 col-sm-4 col-md-3 picture-item" id=<%= items[i].id %>>
+								<div class="card mx-auto my-2 col-xs-3 col-sm-4 col-md-3 picture-item" id=<%= items[i]._id %>>
 									<% imgUrl = `https://d1azyv1vbeu0vt.cloudfront.net/${items[i].pictures[0]}` %> 
 									<i class="fa fa-lg fa-bookmark-o bookmarker"></i>
 									<img class="card-img" src=<%= imgUrl %> alt>
@@ -47,7 +47,7 @@
 										<h5 class="picture-item__title card-title"><%= items[i].name %></h5>
 										<p><%= items[i].description %> </p>
 										<p class="card-text">Price: <%= items[i].price %></p>
-										<% URL = `/item/checkout/${items[i].id}` %> 
+										<% URL = `/item/checkout/${items[i]._id}` %> 
 										<a href=<%= URL %> class="btn btn-secondary btn-sm">More Info</a>
 									</div>
 								</div>

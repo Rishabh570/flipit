@@ -79,7 +79,7 @@
 					<p class="lead">Condition: <%= item.condition %> <small> out of 5</small> </p>
 		
 					<input type="hidden" id="_csrf" name="_csrf" value="<%= locals.csrfToken %>">
-					<input type="hidden" id="item_id" value=<%= item.id %>>
+					<input type="hidden" id="item_id" value=<%= item._id %>>
 			
 					<!-- This also acts as modal button -->
 					<div class="buttons">

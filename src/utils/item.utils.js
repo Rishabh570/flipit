@@ -69,11 +69,10 @@ async function uploadToS3(files) {
 							false
 						);
 					}
+					resolve(fileContent);
 					fs.unlink(picture.path, (err) => {
 						if (err) console.log('err in unlinking');
-						else console.log('unlink done');
 					});
-					resolve(fileContent);
 				});
 			});
 		});

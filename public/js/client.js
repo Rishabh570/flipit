@@ -9,6 +9,12 @@ let confirmActionPasswordValue = null;
 confirmActionPassword.on('change', e => {
 	confirmActionPasswordValue = e.target.value;
 })
+$('#confirmActionPassword').keyup(function(e) {
+	if(e.keyCode === 13) {
+		e.preventDefault();
+		$('#sub').click();
+	}
+})
 
 
 /* Handle any errors returns from Checkout  */
