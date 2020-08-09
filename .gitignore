@@ -16,3 +16,6 @@ design/
 # AWS keypair
 flipit-keypair.pem
 
+# Profiling dir
+.clinic
+

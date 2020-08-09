@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Your wishlist | Flipit</title>
+	<%- include ('./partials/head.ejs') %> 
+	<meta name="_csrf" content="<%= locals.csrfToken %>">
+	<link rel="stylesheet" href="/css/wishlist.css">
+	<script src="/js/wishlist.js" defer></script>
+</head>
+<body>
+	<header>
+		<%- include ('./partials/header.ejs', {user}) %> 
+	</header>
+	
+	<main>
+		<section class="container-fluid my-4">
+			<h1 id="heading" class="my-4 text-center">Wishlist 🛍️</h1>
+
+			<div class="main-content mx-auto">
+				<% for( let i = 0; i < wishlist.length; i++ ) { %>
+					<div class="wishlist-items row mb-3">
+						<div class="wishlist-content col py-1 px-3">
+							<% URL = `/item/checkout/${wishlist[i]._id}` %>
+							<div class="wishlist-details">
+								<h4 class="wishlist-item-title"> <a href="<%= URL %>"><%= wishlist[i].name %></a></h4>
+								<span><small class="wishlist-item-price">You can buy it for ₹<%= wishlist[i].price %>.</small></span>
+							</div>
+							<div class="wishlist-buttons my-auto">
+								<a href="<%= URL %>" class="btn btn-info btn-sm">View Item</a>
+								<a href="/item/wishlist" id=<%= wishlist[i]._id %> class="btn btn-danger btn-sm wishlist-remove">Remove from wishlist</a>
+							</div>
+						</div>
+					</div>
+				<% } %>
+			</div>
+
+		</section>
+	</main>
+
+	<footer>
+		<%- include ('./partials/footer.ejs') %> 
+	</footer>
+</body>
+</html>

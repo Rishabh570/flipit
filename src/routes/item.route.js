@@ -9,13 +9,11 @@ const { MAX_PRODUCT_IMAGES_ALLOWED } = require('../config/vars');
 const router = express.Router();
 
 /**
- * My listings route
  * Shows listings posted by the logged in user
  */
 router.route('/me').get(verifyJWT(), itemController.listings);
 
 /**
- * Purchased items route
  * Shows purchased items
  */
 router.route('/purchased').get(verifyJWT(), itemController.purchased);
@@ -31,6 +29,14 @@ router
 		upload.array('upload_imgs', MAX_PRODUCT_IMAGES_ALLOWED),
 		itemController.sellPOST
 	);
+
+/**
+ * Wishlist routes
+ */
+router
+	.route('/wishlist')
+	.get(verifyJWT(), itemController.wishlistGET)
+	.post(verifyJWT(), itemController.wishlistPOST);
 
 /**
  * Checkout successful page

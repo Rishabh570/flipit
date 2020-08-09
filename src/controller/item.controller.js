@@ -1,6 +1,6 @@
 'use-strict';
 const httpStatus = require('http-status');
-const { Item, User } = require('../models/index');
+const { Item, User, Wishlist } = require('../models/index');
 const AppError = require('../utils/error.utils');
 const {
 	createStripeEntry,
@@ -122,6 +122,68 @@ exports.sellPOST = async (req, res, next) => {
 		next(error);
 		req.flash('notification', error.message);
 		res.redirect('/item/sell');
+	}
+};
+
+/**
+ * Shows wishlist
+ */
+exports.wishlistGET = async (req, res, next) => {
+	const userId = req.user._id;
+	try {
+		const wishlist = await Wishlist.find({ userId });
+		const wishlistItems = wishlist.map((wishlistObj) => {
+			return new Promise((resolve, reject) => {
+				Item.findById(wishlistObj.itemId)
+					.then((item) => resolve(item))
+					.catch((err) => reject(err));
+			});
+		});
+
+		const savedItems = await Promise.all(wishlistItems);
+		res.render('wishlist', { user: req.user, wishlist: savedItems });
+	} catch (err) {
+		const finalErr = new AppError(
+			'Failed to load your wishlist :(',
+			httpStatus['500'],
+			false
+		);
+		next(finalErr.message);
+		req.flash('notification', finalErr.message);
+		res.redirect('/listings');
+	}
+};
+
+/**
+ * Adds or removes item from wishlist
+ * Accessed through AJAX
+ */
+exports.wishlistPOST = async (req, res, next) => {
+	const { user } = req;
+	const { itemId } = req.body;
+	try {
+		const [checkIfWishlisted, itemObj] = await Promise.all([
+			Wishlist.findOneAndRemove({ userId: user._id, itemId }),
+			Item.findById(itemId).select({ totalSaves: 1 }),
+		]);
+
+		if (checkIfWishlisted) {
+			itemObj.totalSaves = Math.max(0, itemObj.totalSaves - 1);
+			await itemObj.save();
+			return res.send(false);
+		}
+		await Wishlist.create({ userId: user._id, itemId });
+		itemObj.totalSaves += 1;
+		await itemObj.save();
+		return res.send(true);
+	} catch (err) {
+		const finalErr = new AppError(
+			'Item could not be added to the wishlist :(',
+			httpStatus['500'],
+			false
+		);
+		next(finalErr.message);
+		res.send(false);
 	}
 };
 

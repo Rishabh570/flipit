@@ -21,6 +21,7 @@ exports.connect = () => {
 	mongoose.connect(mongo.uri, {
 		keepAlive: 1,
 		useNewUrlParser: true,
+		autoIndex: false,
 	});
 	return mongoose.connection;
 };

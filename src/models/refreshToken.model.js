@@ -6,26 +6,31 @@ const moment = require('moment-timezone');
 /**
  * Refresh Token Schema
  */
-const refreshTokenSchema = new mongoose.Schema({
-	token: {
-		type: String,
-		required: true,
-		index: true,
+const refreshTokenSchema = new mongoose.Schema(
+	{
+		token: {
+			type: String,
+			required: true,
+			index: { unique: true },
+		},
+		userId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'User',
+			required: true,
+		},
+		userEmail: {
+			type: String,
+			ref: 'User',
+			required: true,
+		},
+		expires: {
+			type: Date,
+		},
 	},
-	userId: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-		required: true,
-	},
-	userEmail: {
-		type: 'String',
-		ref: 'User',
-		required: true,
-	},
-	expires: {
-		type: Date,
-	},
-});
+	{
+		timestamps: false,
+	}
+);
 
 refreshTokenSchema.statics = {
 	/**

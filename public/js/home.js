@@ -161,10 +161,38 @@ $('.card').hover(function(e) {
 })
 
 $('.bookmarker').hover(function(e) {
-	const target = $(this);
-	target.attr('class', 'fa fa-lg fa-bookmark bookmarker');
+	$(this).attr('class', 'fa fa-lg fa-bookmark bookmarker');
 }, function(e) {
-	const target = $(this);
-	target.attr('class', 'fa fa-lg fa-bookmark-o bookmarker');
+	$(this).attr('class', 'fa fa-lg fa-bookmark-o bookmarker');
 })
 
+$('.bookmarker').click(function(e) {
+	e.preventDefault();
+	const parent = $(this).parent();
+	const _csrf = $('meta[name=_csrf]')[0].content;
+	const itemId = parent.attr('id');
+	
+	$.ajax({
+		url: '/item/wishlist',
+		method: 'POST',
+		data: { itemId, _csrf },
+		dataType: 'json'
+	})
+	.done(isWishlisted => {
+		if(isWishlisted) {
+			Toastify({
+				text: 'Item saved to wishlist',
+				backgroundColor: 'darkcyan',
+			}).showToast();
+ 		} else {
+			Toastify({
+				text: 'Item removed from wishlist',
+				backgroundColor: 'darkcyan',
+			}).showToast();	
+		}
+	})
+	.fail(err => {
+		console.log("Save to wishlist failed");
+	});
+
+})

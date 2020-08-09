@@ -18,12 +18,11 @@ const userSchema = new mongoose.Schema(
 	{
 		email: {
 			type: String,
-			match: /^\S+@\S+\.\S+$/,
 			required: true,
 			unique: true,
 			trim: true,
 			lowercase: true,
-			index: { unique: true, background: true },
+			index: { unique: true },
 		},
 		password: {
 			type: String,
@@ -50,7 +49,7 @@ const userSchema = new mongoose.Schema(
 		},
 	},
 	{
-		timestamps: true,
+		timestamps: false,
 	}
 );
 

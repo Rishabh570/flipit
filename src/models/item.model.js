@@ -24,11 +24,11 @@ const itemSchema = new mongoose.Schema(
 		},
 		condition: {
 			type: Number,
-			default: 3,
+			required: true,
 		},
 		sellerId: {
 			type: String,
-			index: { background: true },
+			index: true,
 			required: true,
 		},
 		status: {
@@ -39,7 +39,7 @@ const itemSchema = new mongoose.Schema(
 		priceId: {
 			// References the stripe Price object
 			type: String,
-			index: true,
+			index: { unique: true },
 		},
 		pictures: {
 			type: Array,
@@ -47,12 +47,15 @@ const itemSchema = new mongoose.Schema(
 		},
 		buyerId: {
 			type: String,
-			index: { background: true },
+			index: true,
+		},
+		totalSaves: {
+			type: Number,
+			default: 0,
 		},
 	},
 	{
-		timestamps: true,
-		autoIndex: true,
+		timestamps: false,
 	}
 );
 

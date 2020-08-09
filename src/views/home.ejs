@@ -3,6 +3,7 @@
 <head>
 	<%- include ('./partials/head.ejs') %>
 	<title>Home</title>
+	<meta name="_csrf" content="<%= locals.csrfToken %>">
 	<link rel="stylesheet" href="/css/home.css">
 	<script src="/js/shuffle.min.js"></script>
 	<script src="/js/home.js" defer></script>
@@ -32,7 +33,7 @@
 				</div>
 			</div>
 
-			<div class="listings container">
+			<div class="listings">
 				<% if (!user) { %>
 					<p>Welcome! Please <a href="/auth/login">log in</a>.</p>
 				<% } else { %>
