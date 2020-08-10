@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			trim: true,
 		},
+		stars: {
+			type: Number,
+			default: 0,
+		},
 	},
 	{
 		timestamps: false,

@@ -3,7 +3,9 @@
 <head>
 	<title>Payment successful</title>
 	<%- include ('./partials/head.ejs') %>
+	<meta name="_csrf" content="<%= locals.csrfToken %>">
 	<link rel="stylesheet" href="/css/checkout-success.css">
+	<script src="/js/checkout-success.js" defer></script>
 </head>
 <body>
 
@@ -23,7 +25,7 @@
 		<section class="main-content container-fluid my-3">
 			<p class="text-center">Order confirmation mail has been sent to <span id="mail-confirmation"><%= checkout_session.customer_email %></span>. Please read the mail for further proceedings.</p>
 
-			<table class="table table-bordered table-hover order-info">
+			<table class="table table-bordered table-hover order-info mb-5">
 				<thead class="thead-light">
 					<th class="text-center" scope="col">Order details</th>
 					<th class="text-center" scope="col">Amount (INR)</th>
@@ -48,9 +50,38 @@
 				</tbody>
 			</table>
 
+
+			<div class="rating-form mt-5">
+				<form name="review" action="/review" method="POST" class="form" autocomplete="off" role="form">
+					<input type="hidden" name="priceId" value="<%= checkout_session.metadata.priceId %> ">
+					<div class="smaller-inputs">
+						<div id="full-stars-example-two">
+							<p class="rating-head mb-0">Rate the seller</p>
+							<small>5 stars for the best seller experience</small>
+							<div class="rating-group" id="rating-group-box">
+								<input disabled checked class="rating__input rating__input--none" name="rating" id="rating3-none" value="0" type="radio">
+								<label aria-label="1 star" class="rating__label" id="label-1" for="rating3-1"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+								<input class="ratings-input-class rating__input" name="rating" id="rating3-1" value="1" type="radio">
+								<label aria-label="2 stars" class="rating__label" id="label-2" for="rating3-2"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+								<input class="ratings-input-class rating__input" name="rating" id="rating3-2" value="2" type="radio">
+								<label aria-label="3 stars" class="rating__label" id="label-3" for="rating3-3"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+								<input class="ratings-input-class rating__input" name="rating" id="rating3-3" value="3" type="radio">
+								<label aria-label="4 stars" class="rating__label" id="label-4" for="rating3-4"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+								<input class="ratings-input-class rating__input" name="rating" id="rating3-4" value="4" type="radio">
+								<label aria-label="5 stars" class="rating__label" id="label-5" for="rating3-5"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+								<input class="ratings-input-class rating__input" name="rating" id="rating3-5" value="5" type="radio">
+							</div>
+						</div>
+						<p id="ratings-feedback"></p>
+					</div>
+					<button id="review-form-submit" class="btn btn-success btn-sm">Submit your review</button>
+				</form>
+			</div>
+
+
 			<div id="upsell" class="my-5">
 				<p>Want more? Head back to the home page to find more amazing deals!!!</p>
-				<a class="btn btn-success" href="/listings">Home</a>
+				<a class="btn btn-success btn-sm" href="/listings">Home</a>
 			</div>
 
 		</section>

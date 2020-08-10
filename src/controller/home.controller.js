@@ -1,6 +1,6 @@
 'use-strict';
 const httpStatus = require('http-status');
-const { Item } = require('../models/index');
+const { User, Item } = require('../models/index');
 const AppError = require('../utils/error.utils');
 
 exports.homeGET = async (req, res, next) => {
@@ -32,4 +32,27 @@ exports.homeGET = async (req, res, next) => {
 
 exports.landingGET = async (req, res) => {
 	res.render('landing');
+};
+
+exports.reviewPOST = async (req, res, next) => {
+	const { rating, priceId } = req.body;
+	console.log('rating: ', rating);
+	console.log('priceId: ', priceId);
+	try {
+		const itemObj = await Item.find({ priceId: priceId }).select({
+			sellerId: 1,
+		});
+		console.log('itemObj: ', itemObj);
+		const sellerObj = await User.findById(itemObj.sellerId).select({
+			stars: 1,
+		});
+		console.log('sellerObj: ', sellerObj);
+		const newRating = Math.ceil((sellerObj.stars + rating) / 2);
+		sellerObj.stars = newRating;
+		await sellerObj.save();
+		return res.send(true);
+	} catch (err) {
+		next(err);
+		return res.send(false);
+	}
 };

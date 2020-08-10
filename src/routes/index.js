@@ -1,6 +1,6 @@
 'use-strict';
 const express = require('express');
-const { verifyAnonymous } = require('../middlewares/auth');
+const { verifyJWT, verifyAnonymous } = require('../middlewares/auth');
 const authRoutes = require('./auth.route');
 const itemRoutes = require('./item.route');
 const profileRoutes = require('./profile.route');
@@ -12,6 +12,8 @@ router.use('/auth', authRoutes);
 router.use('/item', itemRoutes);
 router.use('/profile', profileRoutes);
 router.use('/listings', listingsRoutes);
+router.route('/review').post(verifyJWT(), homeController.reviewPOST);
+
 router.get('/', verifyAnonymous(), homeController.landingGET);
 router.get('/*', (req, res) => res.send("You're lost!"));
 

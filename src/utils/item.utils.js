@@ -19,7 +19,7 @@ async function createStripeEntry(item) {
 		});
 		const price = await stripe.prices.create({
 			product: product.id,
-			unit_amount: item.price * 100, // For converting to rupees (defaults to paisa)
+			unit_amount: item.price,
 			currency: 'inr',
 		});
 		item.priceId = price.id; // Saving the stripe Price obj id to DB
