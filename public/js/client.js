@@ -3,7 +3,6 @@ const itemId = $('#item_id').val();
 const csrfToken = $('#_csrf').val();
 const modalToggleBtn = $('#modalToggleBtn');
 const confirmActionCsrf = $('#confirm-action-csrf').val();
-const confirmActionCancel = $('#confirmActionCancel');
 const confirmActionPassword = $('#confirmActionPassword');
 let confirmActionPasswordValue = null;
 confirmActionPassword.on('change', e => {
@@ -25,10 +24,58 @@ const handleResult = function (result) {
 	}
 };
 
-// Clears the password confirmation input on close w/o submit
 
-confirmActionCancel.on('click', (e) => {
-	confirmActionPassword.val("");
+$('.clipboard').click(function(e) {
+	console.log("clip clicked");
+	const el = document.createElement('textarea');
+	el.value = `https://localhost:3000/item/checkout/${$(this).attr('id')}`;
+	el.setAttribute('readonly', '');
+	el.style.position = 'absolute';
+	el.style.left = '-9999px';
+	document.body.appendChild(el);
+	el.select();
+	document.execCommand('copy');
+	document.body.removeChild(el);
+})
+
+
+// ask the seller
+$('#ats-submit').click(function(e) {
+	e.preventDefault();
+	const _csrf = $('#ats-csrf').val();
+	const message = $('#ats-message').val();
+	const itemId = $('#ats-item').val();	
+	const recepientEmail = $('#ats-email').val();
+	if(!recepientEmail || !message) {
+		Toastify({
+ 			text: 'Please fill the missing fields',
+			backgroundColor: 'darkcyan'
+		}).showToast();
+		return;
+	}
+
+	$.ajax({
+		url: '/ask-seller',
+		method: 'POST',
+		data: {_csrf, message, itemId, recepientEmail},
+		dataType: 'json'
+	})
+	.done(isDone => {
+		$('#ats-cancel').click();
+		$('#ats-message').html("");
+		Toastify({
+			text: 'Mail sent',
+			backgroundColor: 'darkcyan'
+		}).showToast();
+	})
+	.fail(err => {
+		$('#ats-cancel').click();
+		$('#ats-message').html("");
+		Toastify({
+			text: 'Something went wrong!',
+			backgroundColor: 'darkcyan'
+		}).showToast();
+	})
 })
 
 

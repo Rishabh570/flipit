@@ -13,6 +13,7 @@ router.use('/item', itemRoutes);
 router.use('/profile', profileRoutes);
 router.use('/listings', listingsRoutes);
 router.route('/review').post(verifyJWT(), homeController.reviewPOST);
+router.route('/ask-seller').post(verifyJWT(), homeController.askSeller);
 
 router.get('/', verifyAnonymous(), homeController.landingGET);
 router.get('/*', (req, res) => res.send("You're lost!"));

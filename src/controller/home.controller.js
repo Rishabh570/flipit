@@ -3,6 +3,8 @@ const httpStatus = require('http-status');
 const { User, Item } = require('../models/index');
 const AppError = require('../utils/error.utils');
 
+const { sendEmail, askSeller } = require('../utils/email.utils');
+
 exports.homeGET = async (req, res, next) => {
 	try {
 		const items = await Item.find({
@@ -35,21 +37,42 @@ exports.landingGET = async (req, res) => {
 };
 
 exports.reviewPOST = async (req, res, next) => {
-	const { rating, priceId } = req.body;
-	console.log('rating: ', rating);
-	console.log('priceId: ', priceId);
+	const { rating, stripePriceId } = req.body;
 	try {
-		const itemObj = await Item.find({ priceId: priceId }).select({
-			sellerId: 1,
-		});
-		console.log('itemObj: ', itemObj);
+		const itemObj = await Item.findOne({ priceId: stripePriceId })
+			.select({ sellerId: 1 })
+			.lean();
 		const sellerObj = await User.findById(itemObj.sellerId).select({
 			stars: 1,
 		});
-		console.log('sellerObj: ', sellerObj);
 		const newRating = Math.ceil((sellerObj.stars + rating) / 2);
 		sellerObj.stars = newRating;
 		await sellerObj.save();
+		return res.send(true);
+	} catch (err) {
+		next(err);
+		return res.send(false);
+	}
+};
+
+exports.askSeller = async (req, res, next) => {
+	const { message, itemId, recepientEmail } = req.body;
+	try {
+		const itemObj = await Item.findById(itemId)
+			.select({ name: 1, sellerId: 1 })
+			.lean();
+		const sellerObj = await User.findById(itemObj.sellerId)
+			.select({ name: 1, email: 1 })
+			.lean();
+		sendEmail(
+			askSeller(
+				sellerObj.name,
+				sellerObj.email,
+				itemObj.name,
+				message,
+				recepientEmail
+			)
+		); // We are not awaiting for it
 		return res.send(true);
 	} catch (err) {
 		next(err);

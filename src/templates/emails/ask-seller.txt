@@ -1,0 +1,14 @@
+Hi <%= sellerName %>,
+
+A user on flipit have a query regarding your listing named <%= itemName %>
+
+This is the message they dropped:
+
+<%= message %>
+
+You can reply to <%= recepientEmail %>
+
+If you are encountering this specific query more frequently, we would recommend to add a FAQ answering this query. You can do that by heading over to My Listings.
+
+
+- Flipit Support.

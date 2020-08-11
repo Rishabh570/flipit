@@ -1,0 +1,29 @@
+<!-- ASK THE SELLER MODAL STARTS -->
+<div class="modal fade" id="ats-modal">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title heading">Ask the Seller</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" id="ats-csrf" name="_csrf" value="<%= locals.csrfToken %>">
+				<input type="hidden" id="ats-item" name="ats-item" value="<%= item._id %>">
+				<div class="form-group">
+					<input type="email" id="ats-email" class="form-control" placeholder="Enter your email" required>
+				</div>
+				<div class="form-group">
+					<textarea type="text" class="form-control" id="ats-message" rows="5" cols="10" placeholder="Enter your message" required></textarea>
+				</div>
+				<button id="ats-submit" type="button" class="btn btn-info btn-sm">
+					Send mail
+					<img src="/images/send.svg" alt width="24" height="24">
+				</button>
+				<button id="ats-cancel" type="button" class="d-none" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- ASK THE SELLER MODAL ENDS -->

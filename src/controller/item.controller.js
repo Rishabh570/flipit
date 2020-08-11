@@ -224,7 +224,16 @@ exports.checkoutItem = async (req, res, next) => {
 	try {
 		const item = await Item.findById(req.params.itemId).lean();
 		const itemImagesPaths = getImagesFromS3(item.pictures);
-		res.render('checkout', { user, item, itemImagesPaths });
+		const seller = await User.findById(item.sellerId)
+			.select({
+				name: 1,
+				picture: 1,
+				stars: 1,
+				email: 1,
+			})
+			.lean();
+
+		res.render('checkout', { user, item, itemImagesPaths, seller });
 	} catch (error) {
 		const finalErr = new AppError(
 			"Cannot find the item you're looking for :(",

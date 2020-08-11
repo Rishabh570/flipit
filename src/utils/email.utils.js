@@ -70,6 +70,29 @@ function confirmationForBuyer(buyer, itemSold, seller) {
 	};
 }
 
+// 4. Ask the seller
+function askSeller(sellerName, sellerEmail, itemName, message, recepientEmail) {
+	return {
+		from: EMAIL_FROM_SUPPORT,
+		to: `${sellerName} <${sellerEmail}>`,
+		subject: `Query regarding your listing ${itemName}`,
+		text: genFromTemplate('ask-seller.txt', {
+			sellerName,
+			sellerEmail,
+			itemName,
+			message,
+			recepientEmail,
+		}),
+		html: genFromTemplate('ask-seller.html', {
+			sellerName,
+			sellerEmail,
+			itemName,
+			message,
+			recepientEmail,
+		}),
+	};
+}
+
 /**
  * Send Email function
  */
@@ -91,6 +114,7 @@ function sendEmail(emailContent) {
 // EXPORTS
 module.exports = {
 	sendEmail,
+	askSeller,
 	forgotPasswordEmail,
 	confirmationForSeller,
 	confirmationForBuyer,

@@ -6,13 +6,13 @@ $('.ratings-input-class').click(function(e) {
 
 $('#review-form-submit').click(function(e) {
 	e.preventDefault();
-	const priceId = $('input[name=priceId]').val();
+	const stripePriceId = $('input[name=priceId]').val();
 	const _csrf = $('meta[name=_csrf]')[0].content;
-
+	
 	$.ajax({
 		url: '/review',
 		method: 'POST',
-		data: { rating, _csrf, priceId },
+		data: { rating, stripePriceId, _csrf },
 		dataType: 'json'
 	})
 	.done(isDone => {
