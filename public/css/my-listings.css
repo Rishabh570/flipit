@@ -11,6 +11,10 @@ body {
 	width: 80%;
 }
 
+.form-group textarea {
+	resize: none;
+}
+
 /* MEDIA QUERIES */
 
 @media screen and (max-width: 500px) {

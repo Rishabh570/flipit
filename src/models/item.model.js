@@ -53,6 +53,10 @@ const itemSchema = new mongoose.Schema(
 			type: Number,
 			default: 0,
 		},
+		bill: {
+			type: Boolean,
+			default: 0,
+		},
 	},
 	{
 		timestamps: false,

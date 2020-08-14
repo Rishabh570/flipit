@@ -4,6 +4,7 @@
 	<title>My listings</title>
 	<%- include ('./partials/head.ejs') %> 
 	<link rel="stylesheet" href="/css/my-listings.css">
+	<script src="/js/my-listings.js" defer></script>
 </head>
 <body>
 	<header>
@@ -11,6 +12,34 @@
 	</header>
 
 	<main>
+		<!-- MODAL STARTS -->
+		<div class="modal fade" id="add-faq-modal" data-backdrop="static">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title heading">Add FAQ</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<input type="hidden" id="add-faq-csrf" name="_csrf" value="<%= locals.csrfToken %>">
+						<div class="form-group">
+							<textarea type="text" id="faq-form-ques" class="form-control" placeholder="Add a question: i.e., how does the post-purchase process looks like?" rows="2" required></textarea>
+						</div>
+						<div class="form-group">
+							<textarea type="text" id="faq-form-ans" class="form-control" placeholder="Add an answer: i.e., I will ship you the package, no effort should be needed on your end." rows="3" required></textarea>
+						</div>
+						<div class="form-group">
+							<button data-toggle="modal" data-target="#add-faq-modal" id="add-faq" class="btn btn-success">Add</button>
+							<button data-toggle="modal" data-target="#add-faq-modal" id="cancel-faq" class="btn btn-muted btn-sm">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- MODAL ENDS -->
+
 		<section class="main-content container-fluid my-3">
 			<h1 class="heading my-4">My Listings 📃</h1>
 			
@@ -34,6 +63,7 @@
 							<td> <a href=<%= linkToItem%>> <%= listings[i].name %> </a></td>
 							<td><%= listings[i].price %></td>
 							<td><%= status %> </td>
+							<td><button id="<%= listings[i]._id %>" data-toggle="modal" data-target="#add-faq-modal" class="btn btn-success btn-sm add-faq-toggler">Add FAQ</button></td>
 						</tr>
 					<% } %>
 				</tbody>

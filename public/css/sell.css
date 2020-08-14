@@ -3,12 +3,26 @@ body {
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-#heading {
+.heading {
 	font-family: 'Playfair Display', serif;
 }
 
-.main-content {
-	width: 50%;
+#sell-form {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+#sell-form-submit {
+	display: none;
+}
+
+.left-form {
+	width: 40%;
+}
+
+.right-form {
+	width: 40%;
 }
 
 .input-group {
@@ -82,11 +96,120 @@ input[readonly] {
 /* CONDITION RATINGS STYLES ENDS */
 
 
+/* faq form styles */
+#faq {
+	display: none;
+	background-color: rgba(241, 241, 203, 0.548);
+}
+
+#right-form-heading {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	border-bottom: 0.01em solid #111111;
+}
+
+#faq textarea {
+	border-radius: 2px;
+	padding: 5px 10px;
+	resize: none;
+	width: 100%;
+	background-color:#fff;
+}
+
+#faq .btns {
+	display: flex;
+	justify-content: flex-end;
+}
+
+#show-faqs {
+	overflow: scroll;
+}
+
+.card-header {
+	background: lightcyan;
+}
+
+.btn-link {
+	color: green;
+}
+
+.btn-link:hover {
+	text-decoration: none;
+	color: #111111;
+}
+
+.btn-link:focus {
+	text-decoration: none;
+}
+
+
+
+/* scrollbar width */
+::-webkit-scrollbar {
+	width: 0.5em;
+}
+  
+/* scrollbar Track */
+::-webkit-scrollbar-track {
+	background: beige;
+}
+  
+/* scrollbar Handle */
+::-webkit-scrollbar-thumb {
+	background: beige;
+}
+  
+/* scrollbar Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: beige;
+}
+
+
+
 
 /* MEDIA QUERIES */
 
+@media screen and (max-width: 900px) {
+
+	#right-form-heading h5, a, p {
+		font-size: 0.95rem;
+	}
+}
+
+
+@media screen and (max-width: 700px) {
+	.main-content {
+		width: 100%;
+	}
+	#sell-form {
+		flex-direction: column;
+	}
+	.left-form {
+		width: 80%;
+		margin: auto;
+	}
+	.right-form {
+		width: 80%;
+		margin: 10px auto;
+	}
+}
+
+
+
 @media screen and (max-width: 500px) {
 	.main-content {
+		width: 100%;
+	}
+	.left-form {
 		width: 90%;
+		margin: auto;
+	}
+	.right-form {
+		width: 90%;
+		margin: 10px auto;
+	}
+	#right-form-heading h5, a {
+		font-size: 0.85rem;
 	}
 }

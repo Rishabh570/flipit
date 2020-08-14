@@ -66,7 +66,7 @@
 
 				<!-- INFO BOX STARTS -->
 				<div class="left-lower">
-					<h1 id="item-name" class="display-5"><%= item.name %> </h1>
+					<h1 id="item-name" class="display-5"><%= item.name %></h1>
 					<p class="item-desc"><%= item.description %> </p>
 					<p class="item-desc">Condition: <%= item.condition %> <small> out of 5</small> </p>
 					<input type="hidden" id="_csrf" name="_csrf" value="<%= locals.csrfToken %>">
@@ -106,19 +106,40 @@
 				<div class="faqs mt-4">
 					<h5 class="heading">Frequently Asked Questions</h5>
 					<div class="accordion" id="accordionExample">
-						<div class="card">
-							<div class="card-header" id="headingOne">
-								<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-									How would the post-purchase process looks like?
-								</button>
-							</div>
-							  
-							<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-								<div class="card-body">
-									That's not a problem. I'll send you the package to your doorstep through speed post. You just need to give me your shipping address in the mail post-purchase 😃.
+						<% if (faqs.length > 0) { %>
+							<div class="card">
+								<div class="card-header" id="heading-0">
+									<h5 class="mb-0">
+										<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-0" aria-expanded="false" aria-controls="collapse-0">
+											<%= faqs[0].question %> 
+										</button>
+									</h5>
+								</div>
+								  
+								<div id="collapse-0" class="collapse show" aria-labelledby="heading-0" data-parent="#accordionExample">
+									<div class="card-body">
+										<%= faqs[0].answer %> 
+									</div>
 								</div>
 							</div>
-						</div>
+						<% } %>
+						<% for( let p=1; p < faqs.length; p++ ) { %>
+							<div class="card">
+								<div class="card-header" id="heading-<%= p %>">
+									<h5 class="mb-0">
+										<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse-<%= p %>" aria-expanded="false" aria-controls="collapse-<%= p %>">
+											<%= faqs[p].question %> 
+										</button>
+									</h5>
+								</div>
+								
+								<div id="collapse-<%= p %>" class="collapse" aria-labelledby="heading-<%= p %>" data-parent="#accordionExample">
+									<div class="card-body">
+										<%= faqs[p].answer %> 
+									</div>
+								</div>
+							</div>
+						<% } %>
 					</div>
 				</div>
 				<!-- FAQS ENDS -->

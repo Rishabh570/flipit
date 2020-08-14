@@ -3,40 +3,9 @@
 <head>
 	<title>Sell</title>
 	<%- include ('./partials/head.ejs') %> 
+	<meta name="_csrf" content="<%= locals.csrfToken %>">
 	<link rel="stylesheet" href="/css/sell.css">
-
-	<script>
-		$(document).on('change', '.btn-file :file', function() {
-			var input = $(this),
-				numFiles = input.get(0).files ? input.get(0).files.length : 1,
-				label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-			input.trigger('fileselect', [numFiles, label]);
-		});
-
-		$(document).ready( function() {
-			$('.btn-file :file').on('fileselect', function(event, numFiles, label) {
-				var input_label = $(this).closest('.input-group').find('.file-input-label'),
-					log = numFiles > 1 ? numFiles + ' files selected' : label;
-
-				if( input_label.length ) {
-					input_label.text(log);
-				} else {
-					if( log ) alert(log);
-				}
-			});
-
-			// Tooltip on condition ratings input
-			$('.rating__label').mouseover((e) => {
-				const ratingVal = (e.target.id).split('-')[1];
-				if(ratingVal === '1') $('#ratings-feedback').html("<small>Used for a significant amount of time 🐢</small>");
-				else if (ratingVal === '2') $('#ratings-feedback').html("<small>Used for a little over one month 🗓️</small>");
-				else if (ratingVal === '3') $('#ratings-feedback').html("<small>Celebrating its one week anniversary 😃</small>");
-				else if (ratingVal === '4') $('#ratings-feedback').html("<small>Barely used it 📦</small>");
-				else if (ratingVal === '5') $('#ratings-feedback').html("<small>Haven't used it once 🎉</small>");
-			})
-
-		});
-	</script>
+	<script src="/js/sell.js" defer></script>
 </head>
 <body>
 
@@ -61,61 +30,99 @@
 			<% } %>
 			<!-- notification ends -->
 
-			<h3 class="pt-4 text-center" id="heading">Go ahead and post what you're flippin' today 🛒</h3>
+			<h3 class="pt-4 text-center heading">Go ahead and post what you're flippin' today 🛒</h3>
 		
 			<!-- SELL FORM starts -->
 			<section class="main-content container-fluid my-4">
-				<form name="sell" method="POST" action="/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data" autocomplete="off" class="form" role="form">
-					<div class="form-group">
-						<input name="name" class="form-control" placeholder="Enter the item name" required type="text">
-					</div>
-					<div class="form-group">
-						<textarea name="description" class="form-control" placeholder="Enter the item description" required type="text" rows="5" cols="30"></textarea>
-					</div>
-					<div class="form-group">
-						<input type="number" name="price" min="1" class="form-control" placeholder="Enter the item price" required> 
-					</div>
-					<div class="smaller-inputs">
-						<div id="full-stars-example-two">
-							<p class="mb-0">Condition</p>
-							<div class="rating-group" id="rating-group-box">
-								<input disabled checked class="rating__input rating__input--none" name="condition" id="rating3-none" value="0" type="radio">
-								<label aria-label="1 star" class="rating__label" id="label-1" for="rating3-1"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-								<input class="ratings-input-class rating__input" name="condition" id="rating3-1" value="1" type="radio">
-								<label aria-label="2 stars" class="rating__label" id="label-2" for="rating3-2"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-								<input class="ratings-input-class rating__input" name="condition" id="rating3-2" value="2" type="radio">
-								<label aria-label="3 stars" class="rating__label" id="label-3" for="rating3-3"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-								<input class="ratings-input-class rating__input" name="condition" id="rating3-3" value="3" type="radio">
-								<label aria-label="4 stars" class="rating__label" id="label-4" for="rating3-4"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-								<input class="ratings-input-class rating__input" name="condition" id="rating3-4" value="4" type="radio">
-								<label aria-label="5 stars" class="rating__label" id="label-5" for="rating3-5"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-								<input class="ratings-input-class rating__input" name="condition" id="rating3-5" value="5" type="radio">
+				
+				<form id="sell-form" name="sell" method="POST" action="/item/sell/?_csrf=<%=locals.csrfToken%>" enctype="multipart/form-data" autocomplete="off" class="form" role="form">
+					<!-- LEFT form starts -->
+					<div class="left-form">
+						<div class="form-group">
+							<input id="item-name" name="name" class="form-control" placeholder="Enter the item name" required type="text">
+						</div>
+						<div class="form-group">
+							<textarea id="item-desc" name="description" class="form-control" placeholder="Enter the item description" required type="text" rows="5" cols="30"></textarea>
+						</div>
+						<div class="form-group">
+							<input id="item-price" type="number" name="price" min="1" class="form-control" placeholder="Enter the item price" required> 
+						</div>
+						<div class="smaller-inputs">
+							<div id="full-stars-example-two">
+								<p class="mb-0">Condition</p>
+								<div class="rating-group" id="rating-group-box">
+									<input disabled checked class="rating__input rating__input--none" name="condition" id="rating3-none" value="0" type="radio">
+									<label aria-label="1 star" class="rating__label" id="label-1" for="rating3-1"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+									<input class="ratings-input-class rating__input" name="condition" id="rating3-1" value="1" type="radio">
+									<label aria-label="2 stars" class="rating__label" id="label-2" for="rating3-2"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+									<input class="ratings-input-class rating__input" name="condition" id="rating3-2" value="2" type="radio">
+									<label aria-label="3 stars" class="rating__label" id="label-3" for="rating3-3"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+									<input class="ratings-input-class rating__input" name="condition" id="rating3-3" value="3" type="radio">
+									<label aria-label="4 stars" class="rating__label" id="label-4" for="rating3-4"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+									<input class="ratings-input-class rating__input" name="condition" id="rating3-4" value="4" type="radio">
+									<label aria-label="5 stars" class="rating__label" id="label-5" for="rating3-5"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+									<input class="ratings-input-class rating__input" name="condition" id="rating3-5" value="5" type="radio">
+								</div>
+							</div>
+							<p id="ratings-feedback"></p>
+	
+							<div class="input-group">
+								<span class="input-group-btn">
+									<label class="btn btn-secondary btn-file" for="multiple_input_group">
+										<div class="input required"><input id="multiple_input_group" type="file" name="upload_imgs" multiple></div>
+										Upload Product Images
+									</label>
+								</span>
+								<span class="file-input-label"></span>
 							</div>
 						</div>
-						<p id="ratings-feedback"></p>
-
-						<div class="input-group">
-							<span class="input-group-btn">
-								<label class="btn btn-secondary btn-file" for="multiple_input_group">
-									<div class="input required"><input id="multiple_input_group" type="file" name="upload_imgs" multiple></div>
-									Upload Product Images
-								</label>
-							</span>
-							<span class="file-input-label"></span>
+						<div class="form-check my-2">
+							<input type="checkbox" name="bill" class="form-check-input" id="bill-input">
+							<label for="bill-input" class="form-check-label">Includes bill</label>
+						</div>
+						<div class="form-group">
+							<button id="sell-form-submit" class="btn btn-danger btn-sm" type="submit">Submit your listing</button>
 						</div>
 					</div>
-					<div class="form-group">
-						<button class="btn btn-danger btn-sm" type="submit">Submit</button>
+					<!-- LEFT form ends -->
+
+					<!-- FAQ form starts -->
+					<div class="right-form">
+						<div>
+							<div id="right-form-heading">
+								<h5 class="heading">Frequently Asked Questions</h5>
+								<a href="#">+ Add FAQ</a>
+							</div>
+							<p class="my-4 text-center">Add Questions & Answers for Your Buyers.</p>
+							<div id="faq" class="mx-auto">
+								<div class="form-group">
+									<textarea type="text" id="faq-form-ques" class="form-control" placeholder="Add a question: i.e., how does the post-purchase process looks like?" rows="1" required></textarea>
+								</div>
+								<div class="form-group">
+									<textarea type="text" id="faq-form-ans" class="form-control" placeholder="Add an answer: i.e., I will ship you the package, no effort should be needed on your end." rows="3" required></textarea>
+								</div>
+								<div class="form-group btns">
+									<button id="add-faq" class="btn btn-success">Add</button>
+									<button id="cancel-faq" class="btn btn-muted btn-sm">Cancel</button>
+								</div>
+							</div>
+						</div>
+
+						<div id="show-faqs">
+							<div class="accordian" id="accordionExample">
+
+							</div>
+						</div>
 					</div>
+					<!-- FAQ form starts -->
+
 				</form>
+				
+				<button id="submit-alias" class="btn btn-danger btn-sm d-block mx-auto">Submit your listing</button>
 			</section>
 			<!-- SELL FORM section ends -->
 		<% } %>
 	</main>
-
-	<footer>
-		<%- include ('./partials/footer.ejs') %> 
-	</footer>
 	
 	
 </body>

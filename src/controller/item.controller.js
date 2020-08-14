@@ -1,6 +1,6 @@
 'use-strict';
 const httpStatus = require('http-status');
-const { Item, User, Wishlist } = require('../models/index');
+const { Item, User, Wishlist, Faq } = require('../models/index');
 const AppError = require('../utils/error.utils');
 const {
 	createStripeEntry,
@@ -81,6 +81,8 @@ exports.sellGET = (req, res) => {
 };
 
 exports.sellPOST = async (req, res, next) => {
+	const questions = JSON.parse(req.body.questions);
+	const answers = JSON.parse(req.body.answers);
 	try {
 		// Check for Item Condition field
 		if (req.body.condition === undefined) {
@@ -115,13 +117,15 @@ exports.sellPOST = async (req, res, next) => {
 			new Item(req.body).save(),
 		]);
 
-		await createStripeEntry(item);
-		req.flash('notification', 'Item posted successfully 🙂');
-		res.redirect('/listings');
+		const faqs = questions.map((question, i) => {
+			return { itemId: item._id, question, answer: answers[i] };
+		});
+
+		await Promise.all([Faq.insertMany(faqs), createStripeEntry(item)]);
+		return res.send(true);
 	} catch (error) {
 		next(error);
-		req.flash('notification', error.message);
-		res.redirect('/item/sell');
+		return res.send(false);
 	}
 };
 
@@ -233,7 +237,8 @@ exports.checkoutItem = async (req, res, next) => {
 			})
 			.lean();
 
-		res.render('checkout', { user, item, itemImagesPaths, seller });
+		const faqs = await Faq.find({ itemId: item._id });
+		res.render('checkout', { user, item, itemImagesPaths, seller, faqs });
 	} catch (error) {
 		const finalErr = new AppError(
 			"Cannot find the item you're looking for :(",
