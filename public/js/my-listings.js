@@ -1,5 +1,22 @@
 let itemIdSelectedForFaq = null;
 
+// Caps the characters in faq ques and answer textfield
+$('.inputs').on("keyup", function(e) {
+	const quesInp = $(this).children('textarea');
+	const maxLimit = quesInp.attr('id') === "faq-form-ques" ? 150 : 300;
+	console.log(maxLimit);
+	if(quesInp.val().length === maxLimit) {
+		e.preventDefault();
+	}
+	else if(quesInp.val().length > maxLimit) {
+		quesInp.val(quesInp.val().substring(0, maxLimit));
+		return;
+	}
+	const countInp = $(this).children('small');
+	countInp.text(`${quesInp.val().length}/${maxLimit} Characters`);
+})
+
+// Adds faq to the front-end
 $('#add-faq').click(function(e) {
 	e.preventDefault();
 	const _csrf = $('#add-faq-csrf').val();

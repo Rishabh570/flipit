@@ -15,6 +15,18 @@ body {
 	resize: none;
 }
 
+.inputs {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+.characters-limit {
+	color: #999;
+	font-size: 12px;
+	margin: 5px 0 10px;
+}
+
 /* MEDIA QUERIES */
 
 @media screen and (max-width: 500px) {

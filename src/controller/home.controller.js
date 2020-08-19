@@ -37,19 +37,23 @@ exports.landingGET = async (req, res) => {
 };
 
 exports.reviewPOST = async (req, res, next) => {
-	const { rating, stripePriceId } = req.body;
+	const { rating } = req.body;
+	const priceId = req.body.stripePriceId.trim();
+
 	try {
-		const itemObj = await Item.findOne({ priceId: stripePriceId })
+		const itemObj = await Item.findOne({ priceId })
 			.select({ sellerId: 1 })
 			.lean();
 		const sellerObj = await User.findById(itemObj.sellerId).select({
 			stars: 1,
 		});
+
 		const newRating = Math.ceil((sellerObj.stars + rating) / 2);
 		sellerObj.stars = newRating;
 		await sellerObj.save();
 		return res.send(true);
 	} catch (err) {
+		console.log('err: ', err);
 		next(err);
 		return res.send(false);
 	}

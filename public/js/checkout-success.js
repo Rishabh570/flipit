@@ -22,9 +22,8 @@ $('#review-form-submit').click(function(e) {
 		}).showToast();
 	})
 	.fail(err => {
-		console.log('rating post, err: ', err);
 		Toastify({
-			text: 'Something went wrrong!',
+			text: 'Something went wrrongg!',
 			backgroundColor: 'darkcyan',
 		}).showToast();
 	})

@@ -7,8 +7,9 @@
 	<!-- Load Stripe.js on your website. -->
 	<script src="https://js.stripe.com/v3/" defer></script>
 	<link rel="stylesheet" href="/css/checkout.css">
+	<script src="/socket.io/socket.io.js"></script>
 	<script src="/js/client.js" defer></script>
-  </head>
+</head>
 
 <body>
 	<header>
@@ -20,7 +21,7 @@
 		<%- include ('./partials/password-confirmation.ejs') %> 
 
 		<!-- ASK THE SELLER MODAL -->
-		<%- include ('./partials/ask-the-seller.ejs') %> 
+		<%- include ('./partials/ask-the-seller.ejs', {user}) %> 
 
 
 		<!-- Item info STARTS -->
@@ -28,6 +29,9 @@
 
 			<!-- LEFT COL STARTS -->
 			<div class="left-container p-3">
+				<img src="/images/viewers.svg" alt width="12" height="12">
+				<div class="d-inline-block" id="currentViewers">1</div>
+				<span><small>people are viewing this item right now</small></span>
 				<div class="left-upper">
 					<!-- CAROUSAL STARTS -->
 					<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -59,14 +63,21 @@
 						<div class="clipboard my-1 p-2" id="<%= item._id %>" title="Copy to clipboard">
 							<img src="/images/clipboard.svg" alt width="24" height="24">
 						</div>
-
 					</div>
 				</div>
 				
 
 				<!-- INFO BOX STARTS -->
 				<div class="left-lower">
-					<h1 id="item-name" class="display-5"><%= item.name %></h1>
+					<h1 id="item-name" class="display-5">
+						<div>
+							<%= item.name %>
+							<% if (item.bill) { %>
+								<img src="/images/file.svg" title="Includes Bill" alt width="24" height="24">
+							<% } %>
+						</div>
+						
+					</h1>
 					<p class="item-desc"><%= item.description %> </p>
 					<p class="item-desc">Condition: <%= item.condition %> <small> out of 5</small> </p>
 					<input type="hidden" id="_csrf" name="_csrf" value="<%= locals.csrfToken %>">
@@ -105,6 +116,9 @@
 				<!-- FAQS STARTS -->
 				<div class="faqs mt-4">
 					<h5 class="heading">Frequently Asked Questions</h5>
+					<% if (faqs.length === 0) { %>
+						<small>There are no FAQs for this item currently.</small>
+					<% } %>
 					<div class="accordion" id="accordionExample">
 						<% if (faqs.length > 0) { %>
 							<div class="card">

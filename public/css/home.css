@@ -1,5 +1,6 @@
 body {
 	background-color: beige;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 #filters-search-input {
@@ -7,7 +8,7 @@ body {
 	width: 50%;
 	height: 2em;
 	border-radius: 0.3em;
-	border: 0.02em solid #c8e1ff;
+	border: 0.02em solid #00c583ce;
 	/* background: url('/images/search.svg') no-repeat fixed 25px 81px; */
 	font-weight: lighter;
 	padding-left: 10px;
@@ -28,31 +29,52 @@ body {
 
 .card {
 	position: relative;
-	padding: 10px;
+	padding: 5px;
 	max-width: 14em;
-	border: 1px solid #c8e1ff;
-	background-color: #f1f8ff;
-	border-radius: 5px;
+	background-color: #ffefe0;
+	border-radius: 2px;
+}
+
+.card a {
+	font-weight: 450;
+}
+
+.card-body {
+	padding: 5px;
+}
+
+.card-title {
+	color: #658361;
+	text-transform: capitalize;
+	font-weight: 450;
+	margin: 0;
 }
 
 .card-img {
 	height: 10em;
 	max-width: 14em;
-	background-color: rgba(53, 204, 53, 0.301);
-	border-bottom: 1px solid #c8e1ff;
+	border-radius: 5px;
+	padding: 1px;
+}
+
+.price-tag {
+	color: #ce2f2f;
+	font-weight: 400;
 }
 
 .bookmarker {
 	display: none;
 	position: absolute;
-	right: 15px;
-	top: 15px;
+	right: 10px;
+	top: 10px;
+	background-color: rgba(255, 255, 255, 0.733);
+	padding: 5px 3px;
+	border-radius: 2px;
 }
 
 .bookmarker:hover {
 	cursor: pointer;
 }
-
 
 
 /* MEDIA QUERIES */

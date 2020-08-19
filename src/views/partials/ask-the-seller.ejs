@@ -12,7 +12,7 @@
 				<input type="hidden" id="ats-csrf" name="_csrf" value="<%= locals.csrfToken %>">
 				<input type="hidden" id="ats-item" name="ats-item" value="<%= item._id %>">
 				<div class="form-group">
-					<input type="email" id="ats-email" class="form-control" placeholder="Enter your email" required>
+					<input type="email" id="ats-email" class="form-control" placeholder="Enter your email" value="<%= user.email %>" readonly>
 				</div>
 				<div class="form-group">
 					<textarea type="text" class="form-control" id="ats-message" rows="5" cols="10" placeholder="Enter your message" required></textarea>

@@ -5,6 +5,21 @@ const modalToggleBtn = $('#modalToggleBtn');
 const confirmActionCsrf = $('#confirm-action-csrf').val();
 const confirmActionPassword = $('#confirmActionPassword');
 let confirmActionPasswordValue = null;
+
+// Socket
+var socket = io();
+socket.emit('message', itemId);
+socket.on('viewersCnt', data => {
+	$('#currentViewers').text(data);
+});
+
+$(window).on("unload", function(e) {
+	socket.emit('decrementViewers', itemId);
+});
+
+
+// event listeners
+
 confirmActionPassword.on('change', e => {
 	confirmActionPasswordValue = e.target.value;
 })

@@ -26,6 +26,22 @@ $('.rating__label').mouseover((e) => {
 	else if (ratingVal === '5') $('#ratings-feedback').html("<small>Haven't used it once 🎉</small>");
 })
 
+// Caps the characters in faq ques and answer textfield
+$('.inputs').on("keyup", function(e) {
+	const quesInp = $(this).children('textarea');
+	const maxLimit = quesInp.attr('id') === "faq-form-ques" ? 150 : 300;
+	console.log(maxLimit);
+	if(quesInp.val().length === maxLimit) {
+		e.preventDefault();
+	}
+	else if(quesInp.val().length > maxLimit) {
+		quesInp.val(quesInp.val().substring(0, maxLimit));
+		return;
+	}
+	const countInp = $(this).children('small');
+	countInp.text(`${quesInp.val().length}/${maxLimit} Characters`);
+})
+
 // Show the add faq form
 $('#right-form-heading a').click(function(e) {
 	e.preventDefault();
@@ -142,14 +158,14 @@ $('#sell-form').submit(function(e) {
 		contentType: false,
         processData: false
 	})
-	.done(() => {
+	.done(data => {
 		Toastify({
 			text: 'Item posted successfully 🙂',
 			backgroundColor: 'darkcyan'
 		}).showToast();
 		window.location.href = '/listings';
 	})
-	.fail(() => {
+	.fail(err => {
 		Toastify({
 			text: 'Something went wrong!',
 			backgroundColor: 'darkcyan'

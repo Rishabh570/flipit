@@ -109,6 +109,18 @@ input[readonly] {
 	border-bottom: 0.01em solid #111111;
 }
 
+#faq .inputs {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+.characters-limit {
+	color: #999;
+	font-size: 12px;
+	margin: 5px 0 10px;
+}
+
 #faq textarea {
 	border-radius: 2px;
 	padding: 5px 10px;

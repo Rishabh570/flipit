@@ -14,7 +14,7 @@ router.use('/item', itemRoutes);
 router.use('/profile', profileRoutes);
 router.use('/listings', listingsRoutes);
 router.use('/faq', faqRoute);
-router.route('/review').post(verifyJWT(), homeController.reviewPOST);
+router.post('/review', verifyJWT(), homeController.reviewPOST);
 router.route('/ask-seller').post(verifyJWT(), homeController.askSeller);
 
 router.get('/', verifyAnonymous(), homeController.landingGET);

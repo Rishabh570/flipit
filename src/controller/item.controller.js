@@ -117,11 +117,15 @@ exports.sellPOST = async (req, res, next) => {
 			new Item(req.body).save(),
 		]);
 
-		const faqs = questions.map((question, i) => {
-			return { itemId: item._id, question, answer: answers[i] };
-		});
+		if (questions && questions.length > 0) {
+			const faqs = questions.map((question, i) => {
+				return { itemId: item._id, question, answer: answers[i] };
+			});
+			await Promise.all([Faq.insertMany(faqs), createStripeEntry(item)]);
+		} else {
+			await createStripeEntry(item);
+		}
 
-		await Promise.all([Faq.insertMany(faqs), createStripeEntry(item)]);
 		return res.send(true);
 	} catch (error) {
 		next(error);
