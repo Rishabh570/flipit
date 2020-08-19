@@ -1,5 +1,23 @@
 let itemIdSelectedForFaq = null;
 
+// HTML Escaper
+const entityMap = {
+	'&': '&amp;',
+	'<': '&lt;',
+	'>': '&gt;',
+	'"': '&quot;',
+	"'": '&#39;',
+	'/': '&#x2F;',
+	'`': '&#x60;',
+	'=': '&#x3D;'
+  };
+  
+function escapeHtml (string) {
+	return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+		return entityMap[s];
+	});
+}
+
 // Caps the characters in faq ques and answer textfield
 $('.inputs').on("keyup", function(e) {
 	const quesInp = $(this).children('textarea');
@@ -20,8 +38,8 @@ $('.inputs').on("keyup", function(e) {
 $('#add-faq').click(function(e) {
 	e.preventDefault();
 	const _csrf = $('#add-faq-csrf').val();
-	const question = $('#faq-form-ques').val();
-	const answer = $('#faq-form-ans').val();
+	const question = escapeHtml($('#faq-form-ques').val());
+	const answer = escapeHtml($('#faq-form-ans').val());
 
 	// Validation
 	if(
@@ -47,7 +65,7 @@ $('#add-faq').click(function(e) {
 		data: {
 			_csrf,
 			question, 
-			answer, 
+			answer,
 			itemId: itemIdSelectedForFaq
 		},
 		dataType: 'json'
@@ -76,4 +94,6 @@ $('#cancel-faq').click(function(e) {
 
 $('.add-faq-toggler').click(function(e) {
 	itemIdSelectedForFaq = $(this).attr('id');
+	$('#ques-limit').text("0/150 Characters");
+	$('#ans-limit').text("0/300 Characters");
 })

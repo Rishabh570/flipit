@@ -82,7 +82,9 @@ exports.sellGET = (req, res) => {
 
 exports.sellPOST = async (req, res, next) => {
 	const questions = JSON.parse(req.body.questions);
+	console.log('questions: ', questions);
 	const answers = JSON.parse(req.body.answers);
+	console.log('answers: ', answers);
 	try {
 		// Check for Item Condition field
 		if (req.body.condition === undefined) {
@@ -111,12 +113,14 @@ exports.sellPOST = async (req, res, next) => {
 		}
 		const pictures_array = req.files.map((picture) => picture.filename);
 		req.body.pictures = pictures_array; // Storing the names in the DB for reference
+		req.body.bill = req.body.bill === 'on' ? true : false;
 
 		const [, item] = await Promise.all([
 			uploadToS3(req.files),
 			new Item(req.body).save(),
 		]);
 
+		console.log('uploaded images..');
 		if (questions && questions.length > 0) {
 			const faqs = questions.map((question, i) => {
 				return { itemId: item._id, question, answer: answers[i] };
@@ -128,6 +132,7 @@ exports.sellPOST = async (req, res, next) => {
 
 		return res.send(true);
 	} catch (error) {
+		console.log('error: ', error);
 		next(error);
 		return res.send(false);
 	}

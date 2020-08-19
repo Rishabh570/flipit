@@ -1,3 +1,22 @@
+// HTML Escaper
+const entityMap = {
+	'&': '&amp;',
+	'<': '&lt;',
+	'>': '&gt;',
+	'"': '&quot;',
+	"'": '&#39;',
+	'/': '&#x2F;',
+	'`': '&#x60;',
+	'=': '&#x3D;'
+  };
+  
+function escapeHtml (string) {
+	return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+		return entityMap[s];
+	});
+}
+
+// Listeners on file input
 $(document).on('change', '.btn-file :file', function() {
 	var input = $(this),
 		numFiles = input.get(0).files ? input.get(0).files.length : 1,
@@ -47,6 +66,8 @@ $('#right-form-heading a').click(function(e) {
 	e.preventDefault();
 	$('#faq-form-ques').val("");
 	$('#faq-form-ans').val("");
+	$('#ques-limit').text("0/150 Characters");
+	$('#ans-limit').text("0/300 Characters");
 
 	// Show the faq form
 	$('#faq').show();
@@ -65,13 +86,14 @@ $('#cancel-faq').click(function(e) {
 // Adds the faq on the frontend
 $('#add-faq').click(function(e) {
 	e.preventDefault();
-	const ques = $('#faq-form-ques').val();
-	const ans = $('#faq-form-ans').val();
+	const ques = escapeHtml($('#faq-form-ques').val());
+	const ans = escapeHtml($('#faq-form-ans').val());
 	if(
 		ques === undefined ||
 		ans === undefined || 
 		!ques.length || 
-		!ans.length) {
+		!ans.length
+	) {
 		Toastify({
 			text: 'Please fill the missing fields',
 		   backgroundColor: 'darkcyan'
@@ -88,15 +110,11 @@ $('#add-faq').click(function(e) {
 		$('.accordian').append(`
 		<div class="card">
 			<div class="card-header" id="heading-${childrenCnt}">
-				<button class="btn btn-link faq-questions" type="button" data-toggle="collapse" data-target="#collapse-${childrenCnt}" aria-expanded="false" aria-controls="collapse-${childrenCnt}">
-					${ques}
-				</button>
+				<button class="btn btn-link faq-questions" type="button" data-toggle="collapse" data-target="#collapse-${childrenCnt}" aria-expanded="false" aria-controls="collapse-${childrenCnt}"></button>
 			</div>
 			
 			<div id="collapse-${childrenCnt}" class="collapse show" aria-labelledby="heading-${childrenCnt}" data-parent="#accordionExample">
-				<div class="card-body faq-answers">
-					${ans}
-				</div>
+				<div class="card-body faq-answers"></div>
 			</div>
 		</div>
 		`);
@@ -105,26 +123,26 @@ $('#add-faq').click(function(e) {
 		$('.accordian').append(`
 		<div class="card">
 			<div class="card-header" id="heading-${childrenCnt}">
-				<button class="btn btn-link collapsed faq-questions" type="button" data-toggle="collapse" data-target="#collapse-${childrenCnt}" aria-expanded="false" aria-controls="collapse-${childrenCnt}">
-					${ques}
-				</button>
+				<button class="btn btn-link collapsed faq-questions" type="button" data-toggle="collapse" data-target="#collapse-${childrenCnt}" aria-expanded="false" aria-controls="collapse-${childrenCnt}"></button>
 			</div>
 			
 			<div id="collapse-${childrenCnt}" class="collapse" aria-labelledby="heading-${childrenCnt}" data-parent="#accordionExample">
-				<div class="card-body faq-answers">
-					${ans}
-				</div>
+				<div class="card-body faq-answers"></div>
 			</div>
 		</div>
 		`);
 	}
+
+	// Append the ques and ans as plain text, avoid html
+	$('.accordian:last-child .card-header button').text(ques);
+	$('.accordian:last-child .card-body').text(ans);
 });
 
 
 // Submit form on clicking submit alias
 $('#submit-alias').click(function(e) {
 	e.preventDefault();
-	$('#sell-form-submit').click();
+	$("#sell-form").submit();
 })
 
 

@@ -80,9 +80,6 @@
 							<input type="checkbox" name="bill" class="form-check-input" id="bill-input">
 							<label for="bill-input" class="form-check-label">Includes bill</label>
 						</div>
-						<div class="form-group">
-							<button id="sell-form-submit" class="btn btn-danger btn-sm" type="submit">Submit your listing</button>
-						</div>
 					</div>
 					<!-- LEFT form ends -->
 
@@ -97,11 +94,11 @@
 							<div id="faq" class="mx-auto">
 								<div class="form-group inputs">
 									<textarea type="text" id="faq-form-ques" class="form-control" placeholder="Add a question: i.e., how does the post-purchase process looks like?" rows="1"></textarea>
-									<small class="characters-limit">0/150 Characters</small>
+									<small id="ques-limit" class="characters-limit">0/150 Characters</small>
 								</div>
 								<div class="form-group inputs">
 									<textarea type="text" id="faq-form-ans" class="form-control" placeholder="Add an answer: i.e., I will ship you the package, no effort should be needed on your end." rows="3"></textarea>
-									<small class="characters-limit">0/300 Characters</small>
+									<small id="ans-limit" class="characters-limit">0/300 Characters</small>
 								</div>
 								<div class="form-group btns">
 									<button id="add-faq" class="btn btn-success">Add</button>
