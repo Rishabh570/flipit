@@ -3,7 +3,7 @@
   <head>
 	<title>Checkout Page</title>
 	<%- include ('./partials/head.ejs') %> 
-
+	<meta name="_csrf" content="<%= locals.csrfToken %>">
 	<!-- Load Stripe.js on your website. -->
 	<script src="https://js.stripe.com/v3/" defer></script>
 	<link rel="stylesheet" href="/css/checkout.css">
@@ -37,11 +37,11 @@
 					<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
 						<div class="carousel-inner">
 							<div class="carousel-item active">
-								<img src=<%= itemImagesPaths[0] %> class="carousal-images d-block" alt>
+								<img data-enlargable src=<%= itemImagesPaths[0] %> class="carousal-images d-block" alt>
 							</div>
 							<% for( let i=1; i < itemImagesPaths.length; i++ ) { %>
 								<div class="carousel-item">
-									<img src=<%= itemImagesPaths[i] %> class="carousal-images d-block" alt>
+									<img data-enlargable src=<%= itemImagesPaths[i] %> class="carousal-images d-block" alt>
 								</div>
 							<% } %>
 						</div>
@@ -57,7 +57,7 @@
 					<!-- CAROUSAL ENDS -->
 	
 					<div class="item-sidebar">
-						<div class="saves my-1 p-2" title="Save to wishlist">
+						<div class="saves my-1 p-2 bookmarker" id="<%= item._id %>" title="Save to wishlist">
 							<img src="/images/save.svg" alt width="24" height="24">
 						</div>
 						<div class="clipboard my-1 p-2" id="<%= item._id %>" title="Copy to clipboard">
@@ -106,7 +106,7 @@
 						<div id="seller-name" class="ml-2">
 							<p class="lead mb-0 d-inline-block"><%= seller.name %> </p>
  							<span><small>( Online )</small></span>
-							<% starsCount = seller.stars ? (seller.stars === 0 ? 'New Seller' : `${seller.stars} stars`) : 'New Seller' %> 
+							<% starsCount = seller.rating ? (seller.rating === 0 ? 'New Seller' : `${seller.rating} stars`) : 'New Seller' %> 
 							<small class="d-block"><%= starsCount %> </small>
 						</div>
 					</div>

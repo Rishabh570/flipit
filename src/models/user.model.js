@@ -51,6 +51,14 @@ const userSchema = new mongoose.Schema(
 			type: Number,
 			default: 0,
 		},
+		reviews: {
+			type: Number,
+			default: 1,
+		},
+		rating: {
+			type: Number,
+			default: 0,
+		},
 	},
 	{
 		timestamps: false,

@@ -44,6 +44,7 @@ body {
 .carousal-images {
 	width: 100%;
 	height: 100%;
+	cursor: zoom-in;
 }
 
 .left-container {

@@ -93,6 +93,62 @@ $('#ats-submit').click(function(e) {
 	})
 })
 
+// Click to zoom images
+$('img[data-enlargable]').addClass('img-enlargable').click(function(){
+    var src = $(this).attr('src');
+    var modal;
+    function removeModal(){ modal.remove(); $('body').off('keyup.modal-close'); }
+    modal = $('<div>').css({
+        background: 'RGBA(0,0,0,.5) url('+src+') no-repeat center',
+        backgroundSize: 'contain',
+        width:'100%', height:'100%',
+        position:'fixed',
+        zIndex:'10000',
+        top:'0', left:'0',
+        cursor: 'zoom-out'
+    }).click(function(){
+        removeModal();
+    }).appendTo('body');
+	
+	//handling ESC
+    $('body').on('keyup.modal-close', function(e){
+      if(e.key==='Escape'){ removeModal(); } 
+    });
+});
+
+
+// Save to wishlist
+$('.bookmarker').click(function(e) {
+	e.preventDefault();
+	const itemId = $(this).attr('id');
+	const _csrf = $('meta[name=_csrf]')[0].content;
+	
+	$.ajax({
+		url: '/item/wishlist',
+		method: 'POST',
+		data: { itemId, _csrf },
+		dataType: 'json'
+	})
+	.done(isWishlisted => {
+		if(isWishlisted) {
+			Toastify({
+				text: 'Item saved to wishlist',
+				backgroundColor: 'darkcyan',
+			}).showToast();
+ 		} else {
+			Toastify({
+				text: 'Item removed from wishlist',
+				backgroundColor: 'darkcyan',
+			}).showToast();	
+		}
+	})
+	.fail(err => {
+		console.log("Save to wishlist failed");
+	});
+
+})
+
+
 
 // Create a Checkout Session
 const createCheckoutSession = (priceId, itemId, _csrf) => {

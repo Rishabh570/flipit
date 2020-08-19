@@ -241,8 +241,8 @@ exports.checkoutItem = async (req, res, next) => {
 			.select({
 				name: 1,
 				picture: 1,
-				stars: 1,
 				email: 1,
+				rating: 1,
 			})
 			.lean();
 

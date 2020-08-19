@@ -46,10 +46,11 @@ exports.reviewPOST = async (req, res, next) => {
 			.lean();
 		const sellerObj = await User.findById(itemObj.sellerId).select({
 			stars: 1,
+			reviews: 1,
 		});
-
-		const newRating = Math.ceil((sellerObj.stars + rating) / 2);
-		sellerObj.stars = newRating;
+		sellerObj.stars = parseInt(sellerObj.stars) + parseInt(rating);
+		sellerObj.reviews += 1;
+		sellerObj.rating = Math.ceil(sellerObj.stars / sellerObj.reviews);
 		await sellerObj.save();
 		return res.send(true);
 	} catch (err) {
