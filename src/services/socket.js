@@ -1,7 +1,8 @@
 'use strict';
 const socketio = require('socket.io');
 const redis = require('redis');
-const client = redis.createClient();
+const { REDIS_URL } = require('../config/vars');
+const client = redis.createClient(6379, REDIS_URL, { no_ready_check: true });
 
 exports.setup = (server) => {
 	const io = socketio(server);
