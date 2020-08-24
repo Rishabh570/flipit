@@ -196,3 +196,58 @@ $('.bookmarker').click(function(e) {
 	});
 
 })
+
+
+// Bill filter
+
+$('#bill-filter').click(function(e) {
+	e.preventDefault();
+	const billBtn = $(this).children('button');
+	const isActive = billBtn.attr('id');
+	if(isActive === 'on') {
+		console.log("turning off");
+		billBtn.attr('id', 'off');
+		billBtn.css('backgroundColor', '#fddbd7');
+		billBtn.css('color', 'rgb(121, 0, 0)');
+		billBtn.css('fontWeight', '450');
+		location.reload();
+		return;
+	}
+	// Change styles and toggle button attr 'id
+	billBtn.attr('id', 'on');
+	billBtn.css('backgroundColor', '#e73930');
+	billBtn.css('color', 'whitesmoke');
+	billBtn.css('fontWeight', 'bold');
+
+	// Fetch items containing bill
+	$.ajax({
+		url: '/filter/bill',
+		method: 'GET',
+		dataType: 'json'
+	})
+	.done(data => {
+		$('#grid').html("");
+		const itemsMarkup = data.map(item => {
+			return `
+			<div class="card mx-auto my-2 col-xs-3 col-sm-4 col-md-3 picture-item"  id='${item._id}'>
+				<i class="fa fa-lg fa-bookmark-o bookmarker"></i>
+				<img class="card-img" src="https://d1azyv1vbeu0vt.cloudfront.net/${item.pictures[0]}">
+				<div class="card-body">
+					<h5 class="picture-item__title card-title">${item.name}</h5>
+					<p> ${item.description.slice(0, 50)}...</p>
+					<small>Available for</small>
+					<p class="card-text lead price-tag">₹${item.price}</p>
+					<a href='/item/checkout/${item._id}' class="btn btn-secondary btn-sm">More Info</a>
+				</div>
+			</div>`;
+		});
+		$('#grid').append(itemsMarkup);
+		$('#grid').append('<div class="col-sm-1 col-xs-1 my-sizer-element"></div>');
+
+		window.demo = new Demo(document.getElementById('grid'));
+	})
+	.fail(err => {
+		console.log('err: ', err);
+
+	})
+})

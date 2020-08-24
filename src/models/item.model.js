@@ -55,7 +55,7 @@ const itemSchema = new mongoose.Schema(
 		},
 		bill: {
 			type: Boolean,
-			default: 0,
+			default: false,
 		},
 	},
 	{

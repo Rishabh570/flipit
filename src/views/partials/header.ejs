@@ -15,9 +15,9 @@
 				<!-- li item 1 -->
 				<% if (user) { %>
 					<li class="nav-item dropdown mr-1">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<% avatarSrc = user.picture ? user.picture : '/images/avatar.svg' %> 
-							<img id="avatar-nav" class="rounded-circle" src="<%= avatarSrc %> " alt width="32" height="32">
+							<img id="avatar-nav" class="rounded" src="<%= avatarSrc %> " alt width="30" height="30">
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 							<a class="dropdown-item texts px-3" href="/profile">
@@ -54,11 +54,10 @@
 					<% if (user) { %>
 						<a class="nav-link texts" href="/item/sell">Sell</a> 
 					<% } else { %>
-						<a class="nav-link texts" href="/auth/register">Sign Up</a> 
+						<a id="sign-up-nav" class="nav-link texts" href="/auth/register">Sign Up</a> 
 					<% } %>
 				</li>
 				<!-- li item 2 ends -->
-
 				<!-- li item 3 -->
 				<% if (user) { %>
 					<li class="nav-item mr-1">

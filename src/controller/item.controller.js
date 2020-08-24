@@ -82,9 +82,7 @@ exports.sellGET = (req, res) => {
 
 exports.sellPOST = async (req, res, next) => {
 	const questions = JSON.parse(req.body.questions);
-	console.log('questions: ', questions);
 	const answers = JSON.parse(req.body.answers);
-	console.log('answers: ', answers);
 	try {
 		// Check for Item Condition field
 		if (req.body.condition === undefined) {
@@ -120,7 +118,6 @@ exports.sellPOST = async (req, res, next) => {
 			new Item(req.body).save(),
 		]);
 
-		console.log('uploaded images..');
 		if (questions && questions.length > 0) {
 			const faqs = questions.map((question, i) => {
 				return { itemId: item._id, question, answer: answers[i] };

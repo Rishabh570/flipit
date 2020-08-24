@@ -28,10 +28,39 @@
 
 		<section class="container my-3">
 			<div class="row sticky-top">
-				<div class="col">
-					<input class="filter__search js-shuffle-search d-block mx-auto" type="search" id="filters-search-input" placeholder="Search listings">
+				<input class="filter__search js-shuffle-search d-block mx-auto" type="search" id="filters-search-input" placeholder="Search listings">
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12 filters-group-wrap">
+					<div class="filters-group">
+						<p class="filter-label">Filter</p>
+						<div class="btn-group filter-options">
+							<button class="btn inner-nav-btn btn--primary" data-group="default">Default</button>
+							<button class="btn inner-nav-btn btn--primary" data-group="bill">Includes Bill</button>
+						</div>
+					</div>
+					<fieldset class="filters-group">
+						<legend class="filter-label">Sort</legend>
+						<div class="btn-group sort-options">
+						  <label class="btn inner-nav-btn active">
+							<input type="radio" name="sort-value" value="dom" checked /> Default
+						  </label>
+						  <label class="btn inner-nav-btn">
+							<input type="radio" name="sort-value" value="title" /> Title
+						  </label>
+						  <label class="btn inner-nav-btn">
+							<input type="radio" name="sort-value" value="date-created" /> Date Created
+						  </label>
+						</div>
+					</fieldset>
 				</div>
 			</div>
+			
+			<!-- <div class="row inner-nav">
+				<div id="bill-filter"><button id="off" class="btn filter-buttons">Includes Bill</button></div>
+				<div><button class="btn filter-buttons">Seller Rating</button></div>
+			</div> -->
 
 			<div class="listings">
 				<% if (!user) { %>
@@ -40,13 +69,14 @@
 					<% if (items) { %>
 						<div id="grid" class="cards my-shuffle-container mx-1 my-2">
 							<% for( let i = 0; i < items.length; i++ ) { %>
+								<% dataGroup = items[i].bill ? 'bill' : 'default' %>
 
-								<div class="card mx-auto my-2 col-xs-3 col-sm-4 col-md-3 picture-item" id=<%= items[i]._id %>>
+								<div class="card mx-auto my-2 col-xs-3 col-sm-4 col-md-3 picture-item" id=<%= items[i]._id %> data-groups='["<%= dataGroup %>"]' data-title="<%= items[i].name %> ">
 									<% imgUrl = `https://d1azyv1vbeu0vt.cloudfront.net/${items[i].pictures[0]}` %> 
 									<i class="fa fa-lg fa-bookmark-o bookmarker"></i>
 									<img class="card-img" src=<%= imgUrl %> alt>
 									<div class="card-body">
-										<h5 class="picture-item__title card-title"><%= items[i].name %></h5>
+										<h5 class="picture-item__title card-title"><%= items[i].name %>  </h5>
 										<% shortDesc = items[i].description.slice(0, 50) + '...' %> 
 										<p><%= shortDesc %> </p>
 										<small>Available for</small>
