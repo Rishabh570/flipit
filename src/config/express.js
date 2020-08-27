@@ -128,6 +128,7 @@ app.use(
 			defaultSrc: [
 				"'self'",
 				'js.stripe.com',
+				'*.hotjar.com',
 				'fonts.googleapis.com',
 				'upload.wikimedia.org',
 				'raw.githubusercontent.com',
@@ -143,6 +144,7 @@ app.use(
 			],
 			styleSrc: [
 				"'self'",
+				"'unsafe-inline'", // TODO: change it hash later
 				'cdn.jsdelivr.net',
 				'fonts.googleapis.com',
 				'stackpath.bootstrapcdn.com',
@@ -151,11 +153,12 @@ app.use(
 				"'self'",
 				'cdn.jsdelivr.net',
 				'js.stripe.com',
+				'*.hotjar.com',
 				'ajax.googleapis.com',
 				'cdnjs.cloudflare.com',
 				'maxcdn.bootstrapcdn.com',
 				'stackpath.bootstrapcdn.com',
-				"'unsafe-inline'", // Unsafe-inline is temp, change to hash
+				"'unsafe-inline'", // TODO: change it hash later
 			],
 		},
 	})
