@@ -31,17 +31,17 @@
 			<div class="left-container p-3">
 				<img src="/images/viewers.svg" alt width="12" height="12">
 				<div class="d-inline-block" id="currentViewers">1</div>
-				<span><small>people are viewing this item right now</small></span>
+				<span><small>watching</small></span>
 				<div class="left-upper">
 					<!-- CAROUSAL STARTS -->
 					<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
 						<div class="carousel-inner">
 							<div class="carousel-item active">
-								<img data-enlargable src=<%= itemImagesPaths[0] %> class="carousal-images d-block" alt>
+								<img data-enlargable src=<%= itemImagesPaths[0] %> class="carousal-images img-fluid d-block" alt>
 							</div>
 							<% for( let i=1; i < itemImagesPaths.length; i++ ) { %>
 								<div class="carousel-item">
-									<img data-enlargable src=<%= itemImagesPaths[i] %> class="carousal-images d-block" alt>
+									<img data-enlargable src=<%= itemImagesPaths[i] %> class="carousal-images img-fluid d-block" alt>
 								</div>
 							<% } %>
 						</div>

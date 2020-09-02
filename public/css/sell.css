@@ -13,6 +13,10 @@ body {
 	justify-content: space-evenly;
 }
 
+#sell-form-submit-div {
+	display: none;
+}
+
 #sell-form-submit {
 	display: none;
 }
@@ -23,6 +27,11 @@ body {
 
 .right-form {
 	width: 40%;
+}
+
+#right-form-heading h5 {
+	font-family: 'Varela Round', serif;
+	font-size: 0.99rem;
 }
 
 .input-group {

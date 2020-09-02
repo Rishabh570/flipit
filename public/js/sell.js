@@ -142,7 +142,7 @@ $('#add-faq').click(function(e) {
 // Submit form on clicking submit alias
 $('#submit-alias').click(function(e) {
 	e.preventDefault();
-	$("#sell-form").submit();
+	$("#sell-form-submit").click();
 })
 
 

@@ -30,18 +30,8 @@ $('#confirmActionPassword').keyup(function(e) {
 	}
 })
 
-
-/* Handle any errors returns from Checkout  */
-const handleResult = function (result) {
-	if (result.error) {
-		const displayError = document.getElementById('error-message');
-		displayError.textContent = result.error.message;
-	}
-};
-
-
+// Copy to clipboard
 $('.clipboard').click(function(e) {
-	console.log("clip clicked");
 	const el = document.createElement('textarea');
 	el.value = `https://localhost:3000/item/checkout/${$(this).attr('id')}`;
 	el.setAttribute('readonly', '');
@@ -52,7 +42,6 @@ $('.clipboard').click(function(e) {
 	document.execCommand('copy');
 	document.body.removeChild(el);
 })
-
 
 // ask the seller
 $('#ats-submit').click(function(e) {
@@ -116,7 +105,6 @@ $('img[data-enlargable]').addClass('img-enlargable').click(function(){
     });
 });
 
-
 // Save to wishlist
 $('.bookmarker').click(function(e) {
 	e.preventDefault();
@@ -147,30 +135,6 @@ $('.bookmarker').click(function(e) {
 	});
 
 })
-
-
-
-// Create a Checkout Session
-const createCheckoutSession = (priceId, itemId, _csrf) => {
-	return fetch('/item/create-checkout-session', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			itemId,
-			priceId,
-			_csrf,
-		}),
-	})
-	.then(result => {
-		return result.json();
-	})
-	.catch(err => {
-		throw err;
-	});
-};
-
 
 // Get action confirmation
 const confirmAction = (password, itemId, _csrf) => {
@@ -207,6 +171,32 @@ const confirmAction = (password, itemId, _csrf) => {
 	})
 }
 
+// Create a Checkout Session
+const checkoutSession = () => {
+	return fetch('/item/create-checkout-session', {
+		method: 'POST',
+		xhrFields: {
+			withCredentials: true
+		},
+		headers: {
+			'Content-Type': 'application/json',
+			"CSRF-Token": csrfToken
+		},
+		body: JSON.stringify({
+			itemId,
+			priceId
+		})
+	})
+	.then(result => {
+		return result.json();
+	})
+	.catch(err => {
+		throw err;
+	});
+}
+
+const checkoutPromise = checkoutSession(); // Pre-fetches the response (promise) for perf
+
 /* Get your Stripe publishable key to initialize Stripe.js */
 fetch('/item/get-stripe-pubkey')
 	.then((result) => {
@@ -220,14 +210,14 @@ fetch('/item/get-stripe-pubkey')
 			confirmAction(confirmActionPasswordValue, itemId, confirmActionCsrf)
 			.then(actionStatus => {
 				if(actionStatus.status === 200) {
-					createCheckoutSession(priceId, itemId, csrfToken)
+					checkoutPromise
 					.then(data => {
 						stripe.redirectToCheckout({
 							sessionId: data.sessionId,
 						})
-						.then(handleResult);
 					})
 					.catch(err => {
+						console.log('err: ', err);
 						throw err;
 					});
 				}
